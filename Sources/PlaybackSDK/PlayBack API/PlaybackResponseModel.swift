@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct VideoDetails: Decodable {
+public struct PlaybackResponseModel: Decodable {
     let message: String? 
     let id: String?
     let name: String?

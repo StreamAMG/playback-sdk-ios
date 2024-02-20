@@ -15,8 +15,7 @@ enum PlayBackAPIError: Error {
     case apiError(statusCode: Int, message: String)
 }
 
-
-protocol PlayBackAPI {
-    func getVideoDetails(forEntryId entryId: String) -> AnyPublisher<VideoDetails, Error>
+public protocol PlayBackAPI {
+    func getVideoDetails(forEntryId entryId: String, andAuthorizationToken: String?) -> AnyPublisher<PlaybackResponseModel, Error>
 }
 

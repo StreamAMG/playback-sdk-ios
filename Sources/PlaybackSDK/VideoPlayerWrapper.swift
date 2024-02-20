@@ -10,41 +10,54 @@ import Combine
 import SwiftUI
 
 public struct VideoPlayerWrapper: View {
-    private let entryId: String
-    @StateObject private var viewModel: VideoPlayerViewModel
-    private var amgAPIKey: String
-    private var playerAPIKey: String
     
-    private var playerViewConfig: BitmovinPlayerCore.PlayerViewConfig?
-    private var sourceConfig: SourceConfig?
+    private var entryId: String
+    private var authorizationToken: String?
+    
+    @ObservedObject private var pluginManager = VideoPlayerPluginManager.shared 
+    
+    
     @State private var hasFetchedVideoDetails = false
+    @State private var videoURL: URL?
     
-    public init(entryId: String, amgAPIKey: String, playerAPIKey: String) {
+    public init(entryId: String, authorizationToken: String?) {
         self.entryId = entryId
-        self.amgAPIKey = amgAPIKey
-        self.playerAPIKey = playerAPIKey
-        self._viewModel = StateObject(wrappedValue: VideoPlayerViewModel(playBackAPI: PlayBackAPIService(authorizationToken: "", apiKey: amgAPIKey)))
+        self.authorizationToken = authorizationToken
     }
     
     public var body: some View {
-        Group {
+        VStack {
+            Spacer()
             if !hasFetchedVideoDetails {
                 ProgressView()
+                    .onAppear {
+                        loadHLSStream()
+                    }
             } else {
-                VideoPlayerViewAMG(apiKey: playerAPIKey, hlsURLString: viewModel.videoDetails?.media?.hls ?? "")
+                if let videoURL = videoURL {
+                    if let plugin = pluginManager.selectedPlugin {
+                        plugin.playerView(hlsURLString: videoURL.absoluteString)
+                    } else {
+                        Text("No plugin selected")
+                    }
+                } else {
+                    Text("Invalid Video URL")
+                }
             }
-            
-            
-        }
-        .onAppear {
-            fetchVideoDetails()
+            Spacer()
         }
     }
     
-    private func fetchVideoDetails() {
-        
-        viewModel.fetchVideoDetails(forEntryId: entryId) {
-            hasFetchedVideoDetails = true
+    private func loadHLSStream() {
+        PlayBackSDKManager.shared.loadHLSStream(forEntryId: entryId, andAuthorizationToken: authorizationToken) { result in
+            switch result {
+            case .success(let hlsURL):
+                print("HLS URL: \(hlsURL)")
+                self.videoURL = hlsURL
+                self.hasFetchedVideoDetails = true
+            case .failure(let error):
+                print("Error loading HLS stream: \(error)")
+            }
         }
     }
 }

@@ -8,10 +8,9 @@
 import SwiftUI
 import BitmovinPlayer
 
-public struct VideoPlayerViewAMG: View {
+public struct BitMovinPlayerView: View {
     private let player: Player
     private let playerViewConfig: PlayerViewConfig
-    private let apiKey: String
     private let hlsURLString: String
     
     private var sourceConfig: SourceConfig? {
@@ -21,29 +20,23 @@ public struct VideoPlayerViewAMG: View {
         return SourceConfig(url: hlsURL, type: .hls)
     }
     
-    public init(apiKey: String, hlsURLString: String) {
-        self.apiKey = apiKey
-        self.hlsURLString = hlsURLString
+    public init(hlsURLString: String, playerConfig: PlayerConfig) {
         
-        // Create player configuration
-        let playerConfig = PlayerConfig()
+        self.hlsURLString = hlsURLString
         
         let uiConfig = BitmovinUserInterfaceConfig()
         uiConfig.hideFirstFrame = true
         playerConfig.styleConfig.userInterfaceConfig = uiConfig
         
-        // Set your player license key on the player configuration
-        playerConfig.key = apiKey
-        
         // Create player based on player and analytics configurations
         self.player = PlayerFactory.createPlayer(
             playerConfig: playerConfig
-            
         )
         
         // Create player view configuration
         self.playerViewConfig = PlayerViewConfig()
     }
+    
     
     public var body: some View {
         ZStack {

@@ -10,15 +10,13 @@ import Combine
 
 class PlayBackAPIService: PlayBackAPI {
     private let baseURL = "https://api.playback.streamamg.com/v1"
-    private let authorizationToken: String
     private let apiKey: String
 
-    init(authorizationToken: String, apiKey: String) {
-        self.authorizationToken = authorizationToken
+    init(apiKey: String) {
         self.apiKey = apiKey
     }
 
-    func getVideoDetails(forEntryId entryId: String) -> AnyPublisher<VideoDetails, Error> {
+    func getVideoDetails(forEntryId entryId: String, andAuthorizationToken: String?) -> AnyPublisher<PlaybackResponseModel, Error> {
         guard let url = URL(string: "\(baseURL)/entry/\(entryId)") else {
             return Fail(error: PlayBackAPIError.invalidResponse).eraseToAnyPublisher()
         }
@@ -26,15 +24,16 @@ class PlayBackAPIService: PlayBackAPI {
         var request = URLRequest(url: url)
         request.addValue("application/json", forHTTPHeaderField: "Accept")
         
-        if !authorizationToken.isEmpty {
-            request.addValue(authorizationToken, forHTTPHeaderField: "Authorization")
+        /// JWT Token can be nil for free videos.
+        if let authorizationTokenExist = andAuthorizationToken {
+            request.addValue(authorizationTokenExist, forHTTPHeaderField: "Authorization")
         }
         
         request.addValue(apiKey, forHTTPHeaderField: "x-api-key")
 
         return URLSession.shared.dataTaskPublisher(for: request)
             .map { $0.data }
-            .decode(type: VideoDetails.self, decoder: JSONDecoder())
+            .decode(type: PlaybackResponseModel.self, decoder: JSONDecoder())
             .mapError { PlayBackAPIError.networkError($0) }
             .eraseToAnyPublisher()
     }
