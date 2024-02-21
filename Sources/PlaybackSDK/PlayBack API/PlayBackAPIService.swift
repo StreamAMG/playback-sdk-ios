@@ -9,7 +9,7 @@ import Foundation
 import Combine
 
 class PlayBackAPIService: PlayBackAPI {
-    private let baseURL = "https://api.playback.streamamg.com/v1" //TODO: chec with Jon
+  
     private let apiKey: String
 
     init(apiKey: String) {
@@ -17,7 +17,7 @@ class PlayBackAPIService: PlayBackAPI {
     }
 
     func getVideoDetails(forEntryId entryId: String, andAuthorizationToken: String?) -> AnyPublisher<PlaybackResponseModel, Error> {
-        guard let url = URL(string: "\(baseURL)/entry/\(entryId)") else {
+        guard let url = URL(string: "\(PlayBackSDKManager.shared.baseURL)/entry/\(entryId)") else {
             return Fail(error: PlayBackAPIError.invalidResponse).eraseToAnyPublisher()
         }
 

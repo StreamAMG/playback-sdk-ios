@@ -9,7 +9,7 @@ import Foundation
 import Combine
 class PlayerInformationAPIService: PlayerInformationAPI {
 
-    private let baseURL = "https://api.playback.streamamg.com/v1"
+ 
     
     private let apiKey: String
 
@@ -18,7 +18,7 @@ class PlayerInformationAPIService: PlayerInformationAPI {
     }
 
     func getPlayerInformation() -> AnyPublisher<PlayerInformationResponseModel, Error> {
-        guard let url = URL(string: "\(baseURL)/player") else {
+        guard let url = URL(string: "\(PlayBackSDKManager.shared.baseURL)/player") else {
             return Fail(error: PlayBackAPIError.invalidResponse).eraseToAnyPublisher()
         }
 

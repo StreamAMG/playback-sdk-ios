@@ -33,18 +33,26 @@ public class PlayBackSDKManager {
     /// Bitmovin license key.
     internal var bitmovinLicense: String?
     internal var amgAPIKey: String?
+    internal var baseURL = "https://api.playback.streamamg.com/v1"
+    
     /// Initializes the `PlayBackSDKManager`.
     public init() {}
     
     /// Initializes the SDK with the provided API key.
+    ///
     /// - Parameters:
     ///   - apiKey: The API key for initializing the SDK.
+    ///   - baseURL: The base URL for API endpoints. Defaults to `nil`.
     ///   - completion: A closure to be called after initialization.
     ///                 It receives a result indicating success or failure.
-    public func initialize(apiKey: String, completion: @escaping (Result<String, Error>) -> Void) {
+    public func initialize(apiKey: String, baseURL: String? = nil, completion: @escaping (Result<String, Error>) -> Void) {
         guard !apiKey.isEmpty else {
             completion(.failure(SDKError.initializationError))
             return
+        }
+        
+        if let baseURLExist = baseURL {
+            self.baseURL = baseURLExist
         }
         
         amgAPIKey = apiKey
