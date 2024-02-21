@@ -8,7 +8,9 @@
 import Foundation
 import Combine
 class PlayerInformationAPIService: PlayerInformationAPI {
-    private let baseURL = "https://api.playback.streamamg.com/v1" //TODO: chec with Jon
+
+    private let baseURL = "https://api.playback.streamamg.com/v1"
+    
     private let apiKey: String
 
     init(apiKey: String) {
