@@ -14,7 +14,7 @@ public struct VideoPlayerWrapper: View {
     private var entryId: String
     private var authorizationToken: String?
     
-    @ObservedObject private var pluginManager = VideoPlayerPluginManager.shared 
+    @ObservedObject private var pluginManager = VideoPlayerPluginManager.shared
     
     
     @State private var hasFetchedVideoDetails = false
@@ -37,10 +37,6 @@ public struct VideoPlayerWrapper: View {
                 if let videoURL = videoURL {
                     if let plugin = pluginManager.selectedPlugin {
                         plugin.playerView(hlsURLString: videoURL.absoluteString)
-                            .onDisappear {
-                                // Clean up actions when the view disappears
-                                pluginManager.selectedPlugin = nil
-                            }
                     } else {
                         Text("No plugin selected")
                     }
