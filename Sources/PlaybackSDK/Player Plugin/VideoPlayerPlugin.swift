@@ -22,4 +22,10 @@ public protocol VideoPlayerPlugin: AnyObject {
     /// func handleEvent(event: BitmovinPlayerCore.PlayerEvent)
     
     func playerView(hlsURLString: String) -> AnyView
+    
+    func play()
+    
+    func pause() 
+    
+    func removePlayer() 
 }

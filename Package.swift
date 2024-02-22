@@ -18,11 +18,6 @@ let package = Package(
     dependencies: [
         // Declare dependencies
         
-        /// Firebase
-        .package(name: "Firebase",
-                 url: "https://github.com/firebase/firebase-ios-sdk.git",
-                 from: "10.12.0"),
-        
         // BitmovinPlayer
         .package(name: "BitmovinPlayer",
                  url: "https://github.com/bitmovin/player-ios.git",
@@ -34,14 +29,7 @@ let package = Package(
         .target(
             name: "PlaybackSDK",
             dependencies: [
-                .product(name: "FirebaseAnalytics", package: "Firebase"),
-                .product(name: "FirebaseCrashlytics", package: "Firebase"),
-                .product(name: "FirebasePerformance", package: "Firebase"),
-                .product(name: "FirebaseMessaging", package: "Firebase"),
-                .product(name: "FirebaseStorage", package: "Firebase"),
                 .product(name: "BitmovinPlayer", package: "BitmovinPlayer"),
-                
-                // ...
               ]
             ),
         .testTarget(

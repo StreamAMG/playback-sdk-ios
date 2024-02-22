@@ -9,7 +9,7 @@ import SwiftUI
 import BitmovinPlayer
 
 public struct BitMovinPlayerView: View {
-    private let player: Player
+    internal let player: Player
     private let playerViewConfig: PlayerViewConfig
     private let hlsURLString: String
     
@@ -53,7 +53,7 @@ public struct BitMovinPlayerView: View {
                 dump(event, name: "[Source Event]", maxDepth: 1)
             }
         }
-        .padding()
+       // .padding()
         .onAppear {
             if let sourceConfig = self.sourceConfig {
                 player.load(sourceConfig: sourceConfig)

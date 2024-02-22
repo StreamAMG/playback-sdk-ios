@@ -18,6 +18,12 @@ public class VideoPlayerPluginManager: ObservableObject {
             self.selectedPlugin = plugin
         }
     }
+    
+    public func removePlugin() {
+           DispatchQueue.main.async {
+               self.selectedPlugin = nil
+           }
+       }
 }
 
 
