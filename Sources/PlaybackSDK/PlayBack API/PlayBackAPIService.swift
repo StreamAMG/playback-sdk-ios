@@ -26,7 +26,7 @@ class PlayBackAPIService: PlayBackAPI {
         
         /// JWT Token can be nil for free videos.
         if let authorizationTokenExist = andAuthorizationToken {
-            request.addValue(authorizationTokenExist, forHTTPHeaderField: "Authorization")
+            request.addValue("Bearer \(authorizationTokenExist)", forHTTPHeaderField: "Authorization")
         }
         
         request.addValue(apiKey, forHTTPHeaderField: "x-api-key")

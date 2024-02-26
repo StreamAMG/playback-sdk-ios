@@ -8,7 +8,9 @@
 import SwiftUI
 
 public class VideoPlayerPluginManager: ObservableObject {
+    
     public static let shared = VideoPlayerPluginManager()
+    
     @Published public var selectedPlugin: VideoPlayerPlugin?
     
     private init() {}
