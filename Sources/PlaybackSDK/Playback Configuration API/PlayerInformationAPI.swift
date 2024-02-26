@@ -8,6 +8,6 @@
 import Foundation
 import Combine
 
-public protocol PlayerInformationAPI {
+internal protocol PlayerInformationAPI {
     func getPlayerInformation() -> AnyPublisher<PlayerInformationResponseModel, Error>
 }

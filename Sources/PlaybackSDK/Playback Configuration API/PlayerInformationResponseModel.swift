@@ -7,7 +7,8 @@
 
 import Foundation
 
-public struct PlayerInformationResponseModel: Decodable {
+internal struct PlayerInformationResponseModel: Decodable {
+    
     let player: PlayerInfo
     let defaults: Defaults
     
@@ -16,7 +17,6 @@ public struct PlayerInformationResponseModel: Decodable {
     
            case defaults
        }
-    
 }
 
 struct PlayerInfo: Decodable {

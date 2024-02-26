@@ -7,25 +7,24 @@
 
 import Foundation
 import Combine
-class PlayerInformationAPIService: PlayerInformationAPI {
 
- 
+internal class PlayerInformationAPIService: PlayerInformationAPI {
     
     private let apiKey: String
-
+    
     init(apiKey: String) {
         self.apiKey = apiKey
     }
-
+    
     func getPlayerInformation() -> AnyPublisher<PlayerInformationResponseModel, Error> {
         guard let url = URL(string: "\(PlayBackSDKManager.shared.baseURL)/player") else {
             return Fail(error: PlayBackAPIError.invalidResponse).eraseToAnyPublisher()
         }
-
+        
         var request = URLRequest(url: url)
         request.addValue("application/json", forHTTPHeaderField: "Accept")
         request.addValue(apiKey, forHTTPHeaderField: "x-api-key")
-
+        
         return URLSession.shared.dataTaskPublisher(for: request)
             .map { $0.data }
             .decode(type: PlayerInformationResponseModel.self, decoder: JSONDecoder())
