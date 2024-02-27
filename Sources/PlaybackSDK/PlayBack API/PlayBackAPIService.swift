@@ -42,7 +42,7 @@ internal class PlayBackAPIService: PlayBackAPI {
         request.addValue("application/json", forHTTPHeaderField: "Accept")
         
         /// JWT Token can be nil for free videos.
-        if let authorizationTokenExist = andAuthorizationToken {
+        if let authorizationTokenExist = andAuthorizationToken, !authorizationTokenExist.isEmpty {
             request.addValue("Bearer \(authorizationTokenExist)", forHTTPHeaderField: "Authorization")
         }
         

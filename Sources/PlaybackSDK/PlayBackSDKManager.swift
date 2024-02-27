@@ -7,6 +7,7 @@
 
 import Foundation
 import Combine
+import SwiftUI
 
 // Errors.swift
 // Define custom error types for SDK-related errors
@@ -17,7 +18,7 @@ public enum SDKError: Error {
     case loadHLSStreamError
 }
 
-/// Responsible for initializing the SDK and managing player information
+/// Singleton responsible for initializing the SDK and managing player information
 public class PlayBackSDKManager {
     
     //MARK: Piblic Properties
@@ -35,10 +36,13 @@ public class PlayBackSDKManager {
     internal var amgAPIKey: String?
     internal var baseURL = "https://api.playback.streamamg.com/v1"
     
+    // MARK: Public fuctions
+    
     /// Initializes the `PlayBackSDKManager`.
     public init() {}
     
     /// Initializes the SDK with the provided API key.
+    /// This fuction must be called in the AppDelegate
     ///
     /// - Parameters:
     ///   - apiKey: The API key for initializing the SDK.
@@ -62,6 +66,25 @@ public class PlayBackSDKManager {
         /// Fetching Bitmovin license
         fetchPlayerInfo(completion: completion)
     }
+    
+    /**
+     Loads a video player with the specified entry ID and authorization token.
+     
+     - Parameters:
+     - entryID: The unique identifier of the video entry to be loaded.
+     - authorizationToken: The token used for authorization to access the video content.
+     
+     - Returns: A view representing the video player configured with the provided entry ID and authorization token.
+     
+     Example usage:
+     ```swift
+     let playerView = loadPlayer(entryID: "exampleEntryID", authorizationToken: "exampleToken")
+     */
+    public func loadPlayer(entryID: String, authorizationToken: String) -> some View {
+        return VideoPlayerWrapper(entryId: entryID, authorizationToken: authorizationToken)
+    }
+    
+    // MARK: Private fuctions
     
     /// Fetches player information from the player information API.
     ///
@@ -108,7 +131,7 @@ public class PlayBackSDKManager {
     ///   - authorizationToken: Authorization token for accessing the video entry.
     ///   - completion: A closure to be called after loading the HLS stream.
     ///                 It receives a result containing the HLS stream URL or an error.
-    func loadHLSStream(forEntryId entryId: String, andAuthorizationToken: String?, completion: @escaping (Result<URL, Error>) -> Void) {
+    internal func loadHLSStream(forEntryId entryId: String, andAuthorizationToken: String?, completion: @escaping (Result<URL, Error>) -> Void) {
         guard let playBackAPIExist = playBackAPI else {
             completion(.failure(SDKError.initializationError))
             return
