@@ -14,6 +14,10 @@ let package = Package(
             name: "PlaybackSDK",
             targets: ["PlaybackSDK"]
         ),
+        .library(
+            name: "BitMovinPlugin",
+            targets: ["BitMovinPlugin"]
+        ),
     ],
     dependencies: [
         // Declare dependencies
