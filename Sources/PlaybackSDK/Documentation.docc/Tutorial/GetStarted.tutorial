@@ -1,0 +1,120 @@
+@Tutorial(time: 30) {
+    @Intro(title: "Playback SDK Overview") {
+        Playback SDK simplifies integrating video playback functionalities into OTT applications. It provides a unified interface for interacting with video APIs and managing playback logic.
+
+        **Key Features:**
+
+        - **Abstraction:** Hides the complexities of underlying video APIs, allowing you to focus on the core playback experience.
+        - **Flexibility:** Supports different video providers and allows the creation of custom playback plugins for extended functionalities.
+        - **Error Handling:** Provides mechanisms to handle potential issues during playback and notify your application.
+    }
+
+    @Section(title: "Installation") {
+        @ContentAndMedia {
+            To install the Playback SDK, follow these steps:
+
+            1. Add the Playback SDK dependency to your project using Swift Package Manager.
+
+            Swift
+
+            ```
+            dependencies: [
+                .package(url: "https://github.com/your-organization/playback-sdk.git", .branch("master"))
+            ]
+            ```
+
+            2. Import the `PlaybackSDK` module in your Swift files.
+
+            Swift
+
+            ```
+            import PlaybackSDK
+            ```
+        }
+
+        @Steps {
+            @Step {
+                **Step 1:** Initialize the Playback SDK by providing your API key.
+                
+                @Code(name: "InitializeSdkExample", file: InitializeSdkExample.swift)
+            }
+
+            @Step {
+                **Step 2:** Load HLS Stream by providing the entry ID and optional authorization token.
+
+                @Code(name: "LoadHlsStreamTutorial", file: LoadHlsStreamTutorial.swift)
+            }
+            
+            @Step {
+                **Step 3:** Add player plugin. Note: This should be done in the AppDelegate. 
+                @Code(name: "InstallPlayerPluginTutorial", file: InstallPlayerPluginTutorial.swift)
+            }
+            
+            @Step {
+                **Step 4:** Load the player view in your player view and handle errors.
+                @Code(name: "LoadPlayerViewTutorial", file: LoadPlayerViewTutorial.swift)
+            }
+        }
+    }
+
+    @Section(title: "Video Player Plugins (Optional)") {
+        @ContentAndMedia {
+            The Playback SDK supports extending functionalities through custom video player plugins. These plugins can provide extended functionalities or integrate with third-party video players. Refer to the full source code for details on creating custom plugins.
+            
+            ```swift
+            // Implement your custom player plugin conforming to VideoPlayerPlugin protocol
+
+            // Register your custom plugin with the manager
+            let pluginManager = VideoPlayerPluginManager.shared
+            pluginManager.registerPlugin(YourCustomPlayerPlugin())
+            // Use the selected plugin for playback
+            pluginManager.selectedPlugin?.play()
+            ```
+
+            @Image(source: "custom_plugin.png", alt: "Custom Video Player Plugin")
+        }
+
+        @Steps {
+            @Step {
+                **Step 1:** Implement your custom player plugin conforming to the `VideoPlayerPlugin` protocol.
+
+                @Image(source: "custom_plugin_step1.png", alt: "Implement Custom Plugin")
+            }
+
+            @Step {
+                **Step 2:** Register your custom plugin with the manager and use the selected plugin for playback.
+
+                @Image(source: "custom_plugin_step2.png", alt: "Register Custom Plugin")
+                @Code(name: "RegisterAndUsePlugin", file: RegisterAndUsePlugin.swift)
+            }
+        }
+    }
+
+    @Section(title: "Error Handling") {
+        @ContentAndMedia {
+            The library propagates errors through completion handlers. You can handle these errors to provide appropriate feedback to the user.
+
+            **Example:**
+
+            Swift
+
+            ```
+            PlaybackSDKManager.shared.initialize(apiKey: "YOUR_API_KEY") { result in
+                switch result {
+                case .success:
+                    print("Playback SDK initialized successfully.")
+
+                    let entryId = "YOUR_ENTRY_ID"
+                    let authorizationToken = "YOUR_AUTHORIZATION_TOKEN" // optional
+
+                    PlaybackUIView(entryId: entryId, authorizationToken: authorizationToken)
+                case .failure(let error):
+                    print("Error initializing Playback SDK: \(error)")
+                }
+            }
+            ```
+
+            @Image(source: "error_handling.png", alt: "Error Handling")
+        }
+    }
+}
