@@ -28,6 +28,10 @@ let package = Package(
         // Targets can depend on other targets in this package and products from dependencies.
         .target(
             name: "PlaybackSDK",
+            dependencies: [ ]
+            ),
+        .target(
+            name: "BitMovinPlugin",
             dependencies: [
                 .product(name: "BitmovinPlayer", package: "BitmovinPlayer"),
               ]

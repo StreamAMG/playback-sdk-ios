@@ -1,5 +1,5 @@
 //
-//  File.swift
+//  PlayBackSDKManager.swift
 //
 //
 //  Created by Franco Driansetti on 20/02/2024.
@@ -80,8 +80,8 @@ public class PlayBackSDKManager {
      ```swift
      let playerView = loadPlayer(entryID: "exampleEntryID", authorizationToken: "exampleToken")
      */
-    public func loadPlayer(entryID: String, authorizationToken: String) -> some View {
-        return VideoPlayerWrapper(entryId: entryID, authorizationToken: authorizationToken)
+    public func loadPlayer(entryID: String, authorizationToken: String, onError: ((PlayBackAPIError) -> Void)?) -> some View {
+        return PlaybackUIView(entryId: entryID, authorizationToken: authorizationToken, onError: onError)
     }
     
     // MARK: Private fuctions
@@ -103,7 +103,7 @@ public class PlayBackSDKManager {
                 case .failure(let error):
                     completion(.failure(error))
                 case .finished:
-                    print("License aquired.")
+                    print("Player license aquired.")
                     break
                 }
             }, receiveValue: { playerInfo in
@@ -131,9 +131,9 @@ public class PlayBackSDKManager {
     ///   - authorizationToken: Authorization token for accessing the video entry.
     ///   - completion: A closure to be called after loading the HLS stream.
     ///                 It receives a result containing the HLS stream URL or an error.
-    internal func loadHLSStream(forEntryId entryId: String, andAuthorizationToken: String?, completion: @escaping (Result<URL, Error>) -> Void) {
+    internal func loadHLSStream(forEntryId entryId: String, andAuthorizationToken: String?, completion: @escaping (Result<URL, PlayBackAPIError>) -> Void) {
         guard let playBackAPIExist = playBackAPI else {
-            completion(.failure(SDKError.initializationError))
+            completion(.failure(PlayBackAPIError.initializationError))
             return
         }
         
@@ -142,7 +142,11 @@ public class PlayBackSDKManager {
             .sink(receiveCompletion: { result in
                 switch result {
                 case .failure(let error):
-                    completion(.failure(error))
+                    if let playbackAPIError = error as? PlayBackAPIError {
+                        completion(.failure(playbackAPIError))
+                    } else {
+                        completion(.failure(.networkError(error)))
+                    }
                 case .finished:
                     print("Video details fetched successfully.")
                     break
@@ -154,7 +158,7 @@ public class PlayBackSDKManager {
                 // Extract the HLS stream URL from video details
                 guard let hlsURLString = videoDetails.media?.hls,
                       let hlsURL = URL(string: hlsURLString) else {
-                    completion(.failure(SDKError.loadHLSStreamError))
+                    completion(.failure(PlayBackAPIError.loadHLSStreamError))
                     return
                 }
                 

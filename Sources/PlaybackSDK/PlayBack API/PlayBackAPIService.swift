@@ -1,5 +1,5 @@
 //
-//  File.swift
+//  PlayBackAPIService.swift
 //
 //
 //  Created by Franco Driansetti on 19/02/2024.
@@ -35,7 +35,7 @@ internal class PlayBackAPIService: PlayBackAPI {
      */
     func getVideoDetails(forEntryId entryId: String, andAuthorizationToken: String?) -> AnyPublisher<PlaybackResponseModel, Error> {
         guard let url = URL(string: "\(PlayBackSDKManager.shared.baseURL)/entry/\(entryId)") else {
-            return Fail(error: PlayBackAPIError.invalidResponse).eraseToAnyPublisher()
+            return Fail(error: PlayBackAPIError.invalidPlaybackDataURL).eraseToAnyPublisher()
         }
 
         var request = URLRequest(url: url)
@@ -49,11 +49,34 @@ internal class PlayBackAPIService: PlayBackAPI {
         request.addValue(apiKey, forHTTPHeaderField: "x-api-key")
 
         return URLSession.shared.dataTaskPublisher(for: request)
-            .map { $0.data }
+            .tryMap { data, response in
+                guard let httpResponse = response as? HTTPURLResponse else {
+                    throw PlayBackAPIError.invalidResponsePlaybackData
+                }
+                
+                switch httpResponse.statusCode {
+                case 200...299:
+                    return data
+                default:
+                    let decoder = JSONDecoder()
+                    if let errorResponse = try? decoder.decode(PlaybackResponseModel.self, from: data) {
+                        throw PlayBackAPIError.apiError(statusCode: httpResponse.statusCode, message: errorResponse.message ?? "Unknown authentication error message")
+                    } else {
+                        throw PlayBackAPIError.apiError(statusCode: httpResponse.statusCode, message: "Unknown authentication error")
+                    }
+                }
+            }
             .decode(type: PlaybackResponseModel.self, decoder: JSONDecoder())
-            .mapError { PlayBackAPIError.networkError($0) }
+            .mapError { error in
+                if let apiError = error as? PlayBackAPIError {
+                    return apiError
+                } else {
+                    return PlayBackAPIError.networkError(error)
+                }
+            }
             .eraseToAnyPublisher()
     }
+
 }
 
 

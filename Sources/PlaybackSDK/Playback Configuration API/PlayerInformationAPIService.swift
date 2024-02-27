@@ -1,5 +1,5 @@
 //
-//  File.swift
+//  PlayerInformationAPIService.swift
 //  
 //
 //  Created by Franco Driansetti on 19/02/2024.
@@ -18,7 +18,7 @@ internal class PlayerInformationAPIService: PlayerInformationAPI {
     
     func getPlayerInformation() -> AnyPublisher<PlayerInformationResponseModel, Error> {
         guard let url = URL(string: "\(PlayBackSDKManager.shared.baseURL)/player") else {
-            return Fail(error: PlayBackAPIError.invalidResponse).eraseToAnyPublisher()
+            return Fail(error: PlayBackAPIError.invalidPlayerInformationURL).eraseToAnyPublisher()
         }
         
         var request = URLRequest(url: url)

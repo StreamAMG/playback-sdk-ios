@@ -1,5 +1,5 @@
 //
-//  File.swift
+//  PlaybackUIView.swift
 //
 //
 //  Created by Franco Driansetti on 19/02/2024.
@@ -9,27 +9,9 @@ import Combine
 import SwiftUI
 
 /**
- `VideoPlayerWrapper` is a SwiftUI view that facilitates playing HLS streams. It utilizes an external plugin to render the video player.
- 
- ## Overview:
- 
- - The `VideoPlayerWrapper` struct serves as a container for displaying HLS streams within a SwiftUI environment.
- - It asynchronously fetches the HLS stream URL using the provided `entryId` and optional `authorizationToken`.
- - Once the HLS stream URL is fetched, it renders the video player using the selected plugin from `VideoPlayerPluginManager`.
- 
- ## Usage:
- 
- - Initialize an instance of `VideoPlayerWrapper` with the required parameters: `entryId` and optional `authorizationToken`.
- 
- ## Important Points:
- 
- - Ensure that the provided `entryId` corresponds to a valid video entry.
- - If an `authorizationToken` is required for fetching video details, provide it; otherwise, pass `nil`.
- - `VideoPlayerPluginManager` manages the plugins for the video player.
- 
+ `PlaybackUIView` is a SwiftUI view that facilitates playing HLS streams. It utilizes an external plugin to render the video player.
  */
-
-internal struct VideoPlayerWrapper: View {
+internal struct PlaybackUIView: View {
     
     /// The entry ID of the video to be played.
     private var entryId: String
@@ -46,16 +28,19 @@ internal struct VideoPlayerWrapper: View {
     /// State variable to store the HLS stream URL.
     @State private var videoURL: URL?
     
+    /// Closure to handle errors during HLS stream loading.
+    private var onError: ((PlayBackAPIError) -> Void)?
     /**
-     Initializes the `VideoPlayerWrapper` with the provided entry ID and authorization token.
+     Initializes the `PlaybackUIView` with the provided entry ID and authorization token.
      
      - Parameters:
      - entryId: The entry ID of the video to be played.
      - authorizationToken: Optional authorization token if required to fetch the video details.
      */
-    internal init(entryId: String, authorizationToken: String?) {
+    internal init(entryId: String, authorizationToken: String?, onError: ((PlayBackAPIError) -> Void)?) {
         self.entryId = entryId
         self.authorizationToken = authorizationToken
+        self.onError = onError
     }
     
     /// The body of the view.
@@ -71,10 +56,12 @@ internal struct VideoPlayerWrapper: View {
                     if let plugin = pluginManager.selectedPlugin {
                         plugin.playerView(hlsURLString: videoURL.absoluteString)
                     } else {
-                        Text("No plugin selected")
+                        ErrorUIView(errorMessage: "No plugin selected")
+                            .background(Color.white)
                     }
                 } else {
-                    Text("Invalid Video URL")
+                    ErrorUIView(errorMessage: "Invalid Video URL")
+                        .background(Color.white)
                 }
             }
         }
@@ -93,8 +80,12 @@ internal struct VideoPlayerWrapper: View {
                 self.videoURL = hlsURL
                 self.hasFetchedVideoDetails = true
             case .failure(let error):
+                // Trow error to the app
+                onError?(error)
                 print("Error loading HLS stream: \(error)")
             }
         }
     }
 }
+
+

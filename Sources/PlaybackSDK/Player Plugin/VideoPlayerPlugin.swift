@@ -1,5 +1,5 @@
 //
-//  File.swift
+//  VideoPlayerPlugin.swift
 //
 //
 //  Created by Franco Driansetti on 19/02/2024.
@@ -15,7 +15,6 @@ public protocol VideoPlayerPlugin: AnyObject {
     var name: String { get }
     var version: String { get }
     
-    // TODO: Consider to set a: player: VideoPlayerViewModel
     func setup()
     
     // TODO: add event

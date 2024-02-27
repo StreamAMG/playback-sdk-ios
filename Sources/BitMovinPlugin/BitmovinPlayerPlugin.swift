@@ -1,5 +1,5 @@
 //
-//  File.swift
+//  BitmovinPlayerPlugin.swift
 //
 //
 //  Created by Franco Driansetti on 19/02/2024.
@@ -9,9 +9,9 @@ import BitmovinPlayer
 import SwiftUI
 
 public class BitmovinPlayerPlugin: VideoPlayerPlugin {
-  
+    
     private let playerConfig: PlayerConfig
-    private var player: Player?
+    private var player: BitMovinPlayerView?
     
     // Required properties
     public let name: String
@@ -29,7 +29,7 @@ public class BitmovinPlayerPlugin: VideoPlayerPlugin {
     }
     
     func getPlayer() -> Player? {
-        return player
+        return player?.player
     }
     
     // MARK: VideoPlayerPlugin protocol implementation
@@ -40,26 +40,24 @@ public class BitmovinPlayerPlugin: VideoPlayerPlugin {
     
     public func playerView(hlsURLString: String) -> AnyView {
         let videoPlayerView = BitMovinPlayerView(hlsURLString: hlsURLString, playerConfig: playerConfig)
-       
-        self.player = videoPlayerView.player
+        
+        self.player = videoPlayerView
         
         return AnyView(videoPlayerView)
     }
     
     public func play() {
-        player?.play()
+        getPlayer()?.play()
     }
     
     public func pause() {
-        player?.pause()
+        getPlayer()?.pause()
     }
     
     public func removePlayer() {
-        player = nil // TODO: Remove properly
+        player = nil
+        // TODO: Remove properly
     }
-    
-    
-    
 }
 
 

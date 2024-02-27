@@ -62,7 +62,7 @@ Swift
 let entryId = "YOUR_ENTRY_ID"
 let authorizationToken = "YOUR_AUTHORIZATION_TOKEN" (optional)
 
-VideoPlayerWrapper(entryId: entryId, authorizationToken: authorizationToken)
+        PlaybackUIView(entryId: entryId, authorizationToken: authorizationToken)
 
 ```
 
@@ -97,7 +97,7 @@ PlaybackSDKManager.shared.initialize(apiKey: "YOUR_API_KEY") { result in
         let entryId = "YOUR_ENTRY_ID"
         let authorizationToken = "YOUR_AUTHORIZATION_TOKEN" (optional)
 
-        VideoPlayerWrapper(entryId: entryId, authorizationToken: authorizationToken)
+                PlaybackUIView(entryId: entryId, authorizationToken: authorizationToken)
     case .failure(let error):
         print("Error initializing Playback SDK: \(error)")
     }
