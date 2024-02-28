@@ -1,0 +1,52 @@
+{
+  "object": {
+    "pins": [
+      {
+        "package": "BitmovinAnalytics",
+        "repositoryURL": "https://github.com/bitmovin/bitmovin-analytics-collector-ios.git",
+        "state": {
+          "branch": null,
+          "revision": "3feebb1db5f6bc2d3ad0b7241f3baea523e9ab9e",
+          "version": "3.6.0"
+        }
+      },
+      {
+        "package": "BitmovinPlayer",
+        "repositoryURL": "https://github.com/bitmovin/player-ios.git",
+        "state": {
+          "branch": null,
+          "revision": "31ed8a5fb931bd600c5e1ca6d19c17d77762b56b",
+          "version": "3.56.1"
+        }
+      },
+      {
+        "package": "BitmovinPlayerCore",
+        "repositoryURL": "https://github.com/bitmovin/player-ios-core.git",
+        "state": {
+          "branch": null,
+          "revision": "7a2742ff415a7423fd62c0ed23fe1c9ca8fcaa9f",
+          "version": "3.56.1"
+        }
+      },
+      {
+        "package": "SwiftDocCPlugin",
+        "repositoryURL": "https://github.com/apple/swift-docc-plugin",
+        "state": {
+          "branch": null,
+          "revision": "26ac5758409154cc448d7ab82389c520fa8a8247",
+          "version": "1.3.0"
+        }
+      },
+      {
+        "package": "SymbolKit",
+        "repositoryURL": "https://github.com/apple/swift-docc-symbolkit",
+        "state": {
+          "branch": null,
+          "revision": "b45d1f2ed151d057b54504d653e0da5552844e34",
+          "version": "1.0.0"
+        }
+      }
+    ]
+  },
+  "version": 1
+}

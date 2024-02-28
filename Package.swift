@@ -21,7 +21,11 @@ let package = Package(
         // BitmovinPlayer
         .package(name: "BitmovinPlayer",
                  url: "https://github.com/bitmovin/player-ios.git",
-                 .exact("3.56.1"))
+                 .exact("3.56.1")),
+        
+        // other dependencies
+               .package(url: "https://github.com/apple/swift-docc-plugin", from: "1.0.0")
+        
     ],
     targets: [
         // Targets are the basic building blocks of a package, defining a module or a test suite.

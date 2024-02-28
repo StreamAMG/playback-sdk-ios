@@ -10,13 +10,29 @@ import Combine
 import SwiftUI
 
 // Errors.swift
-// Define custom error types for SDK-related errors
 
+// Define custom error types for SDK-related errors
 public enum SDKError: Error {
-    case initializationError
-    case missingLicense
-    case loadHLSStreamError
+   case initializationError
+   case missingLicense
+   case loadHLSStreamError
 }
+
+/**
+ Define the errors that can occur during API interactions
+ */
+public enum PlayBackAPIError: Error {
+    
+    case invalidResponsePlaybackData
+    case invalidPlaybackDataURL
+    case invalidPlayerInformationURL
+    case initializationError
+    case loadHLSStreamError
+
+    case networkError(Error)
+    case apiError(statusCode: Int, message: String)
+}
+
 
 /// Singleton responsible for initializing the SDK and managing player information
 public class PlayBackSDKManager {
@@ -109,7 +125,7 @@ public class PlayBackSDKManager {
             }, receiveValue: { playerInfo in
                 // Print the received player information
                 print("Received player information: \(playerInfo)")
-                
+               
                 // Extract the Bitmovin license
                 if playerInfo.player.bitmovin.license.isEmpty {
                     completion(.failure(SDKError.missingLicense))

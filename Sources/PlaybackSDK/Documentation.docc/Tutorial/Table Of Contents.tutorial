@@ -1,0 +1,32 @@
+@Tutorials(name: "PlaybackSDK Tutorial") {
+    @Intro(title: "Introduction to PlaybackSDK") {
+        Welcome to the PlaybackSDK tutorial! In this tutorial, you will learn how to integrate and use the PlaybackSDK in your iOS applications.
+    }
+    
+    @Chapter(name: "Getting Started") {
+        In this chapter, we'll start by setting up the PlaybackSDK in your Xcode project and understanding its basic components.
+
+        @Image(source: "ios-marketing.png", alt: "Getting Started with PlaybackSDK")
+
+        @TutorialReference(tutorial: "doc:GetStarted")
+    }
+    
+    @Chapter(name: "Creating a Custom Playback Player Plugin") {
+        In this chapter, we'll learn how to create a custom Playback Player Plugin using your favorite video player.
+
+        @Image(source: "ios-marketing.png", alt: "Creating a Custom Playback Player Plugin")
+
+        @TutorialReference(tutorial: "doc:CustomPluginTutorial")
+    }
+    
+    @Resources {
+        Explore more resources for learning about PlaybackSDK.
+
+        @Documentation {
+            Browse and search the PlaybackSDK documentation.
+
+            - [GitHub Repository](https://github.com/StreamAMG/playback-sdk-ios/tree/main)
+            - [Stoplight Documentation](https://streamamg.stoplight.io)
+        }
+    }
+}
