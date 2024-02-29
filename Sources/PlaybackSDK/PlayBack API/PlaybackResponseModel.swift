@@ -4,7 +4,7 @@
 //
 //  Created by Franco Driansetti on 19/02/2024.
 //
-
+#if !os(macOS)
 import Foundation
 
 // Struct representing the response model for playback data, conforming to the Decodable protocol.
@@ -61,4 +61,4 @@ internal struct PlaybackResponseModel: Decodable {
     }
     
 }
-
+#endif

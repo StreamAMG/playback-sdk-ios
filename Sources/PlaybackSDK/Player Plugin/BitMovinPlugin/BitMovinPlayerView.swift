@@ -4,7 +4,7 @@
 //
 //  Created by Franco Driansetti on 19/02/2024.
 //
-
+#if !os(macOS)
 import SwiftUI
 import BitmovinPlayer
 
@@ -61,3 +61,4 @@ public struct BitMovinPlayerView: View {
         }
     }
 }
+#endif

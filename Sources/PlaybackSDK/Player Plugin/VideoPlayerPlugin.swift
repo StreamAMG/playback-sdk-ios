@@ -4,7 +4,7 @@
 //
 //  Created by Franco Driansetti on 19/02/2024.
 //
-
+#if !os(macOS)
 import AVFoundation
 import SwiftUI
 
@@ -27,3 +27,4 @@ public protocol VideoPlayerPlugin: AnyObject {
     
     func removePlayer() 
 }
+#endif

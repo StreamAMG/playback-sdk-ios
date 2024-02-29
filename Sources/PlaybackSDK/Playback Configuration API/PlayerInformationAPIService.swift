@@ -4,7 +4,7 @@
 //
 //  Created by Franco Driansetti on 19/02/2024.
 //
-
+#if !os(macOS)
 import Foundation
 import Combine
 
@@ -38,3 +38,4 @@ internal class PlayerInformationAPIService: PlayerInformationAPI {
             .eraseToAnyPublisher()
     }
 }
+#endif

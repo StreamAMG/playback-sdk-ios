@@ -4,7 +4,7 @@
 //
 //  Created by Franco Driansetti on 19/02/2024.
 //
-
+#if !os(macOS)
 import Combine
 import SwiftUI
 
@@ -89,3 +89,4 @@ internal struct PlaybackUIView: View {
 }
 
 
+#endif
