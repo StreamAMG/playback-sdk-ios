@@ -6,30 +6,65 @@
 //
 
 import XCTest
+import Combine
+@testable import PlaybackSDK
 
-final class PlayBackSDKManagerTests_swift: XCTestCase {
+class PlayBackSDKManagerTests: XCTestCase {
+
+    var cancellables = Set<AnyCancellable>()
+    var manager: PlayBackSDKManager!
+    var apiKey: String!
 
     override func setUpWithError() throws {
-        // Put setup code here. This method is called before the invocation of each test method in the class.
+        try super.setUpWithError()
+        manager = PlayBackSDKManager()
+        apiKey = ProcessInfo.processInfo.environment["API_KEY"]
+        XCTAssertNotNil(apiKey, "API key should be provided via environment variable")
     }
 
     override func tearDownWithError() throws {
-        // Put teardown code here. This method is called after the invocation of each test method in the class.
+        manager = nil
+        cancellables.removeAll()
+        try super.tearDownWithError()
     }
 
-    func testExample() throws {
-        // This is an example of a functional test case.
-        // Use XCTAssert and related functions to verify your tests produce the correct results.
-        // Any test you write for XCTest can be annotated as throws and async.
-        // Mark your test throws to produce an unexpected failure when your test encounters an uncaught error.
-        // Mark your test async to allow awaiting for asynchronous code to complete. Check the results with assertions afterwards.
+    func testInitialization() throws {
+        XCTAssertNotNil(manager, "Manager should not be nil after initialization")
     }
 
-    func testPerformanceExample() throws {
-        // This is an example of a performance test case.
-        self.measure {
-            // Put the code you want to measure the time of here.
+    func testInitializeWithValidAPIKey() {
+        let expectation = expectation(description: "Initialization expectation")
+
+        manager.initialize(apiKey: apiKey) { result in
+            switch result {
+            case .success(let license):
+                XCTAssertNotNil(license, "Bitmovin license should not be nil")
+                XCTAssertFalse(license.isEmpty, "Bitmovin license should not be empty")
+                XCTAssertEqual(license, "12345678-1111-1111-1111-123456789012", "Expected Bitmovin license not received")
+                expectation.fulfill()
+            case .failure(let error):
+                XCTFail("Initialization failed with error: \(error.localizedDescription)")
+            }
         }
+
+        waitForExpectations(timeout: 5, handler: nil)
     }
 
+    func testInitializeWithEmptyAPIKey() {
+        let expectation = expectation(description: "Initialization expectation")
+
+        manager.initialize(apiKey: "") { result in
+            switch result {
+            case .success:
+                XCTFail("Initialization should fail with empty API key")
+            case .failure(let error):
+                XCTAssertEqual(error as? SDKError, SDKError.initializationError, "Initialization should fail with initialization error")
+                expectation.fulfill()
+            }
+        }
+
+        waitForExpectations(timeout: 5, handler: nil)
+    }
+
+    // Add more tests for other functionalities as needed
 }

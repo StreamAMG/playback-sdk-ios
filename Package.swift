@@ -24,7 +24,7 @@ let package = Package(
                  .exact("3.56.1")),
         
         // other dependencies
-               .package(url: "https://github.com/apple/swift-docc-plugin", from: "1.0.0")
+        .package(url: "https://github.com/apple/swift-docc-plugin", from: "1.0.0")
         
     ],
     targets: [
@@ -34,8 +34,8 @@ let package = Package(
             name: "PlaybackSDK",
             dependencies: [
                 .product(name: "BitmovinPlayer", package: "BitmovinPlayer"),
-              ]
-            ),
+            ]
+        ),
         .testTarget(
             name: "PlaybackSDKTests",
             dependencies: ["PlaybackSDK"]),
