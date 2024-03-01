@@ -4,7 +4,7 @@
 //
 //  Created by Franco Driansetti on 20/02/2024.
 //
-
+#if !os(macOS)
 import Foundation
 import Combine
 import SwiftUI
@@ -186,3 +186,4 @@ public class PlayBackSDKManager {
 }
 
 
+#endif

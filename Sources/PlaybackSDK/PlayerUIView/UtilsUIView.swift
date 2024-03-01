@@ -4,7 +4,7 @@
 //
 //  Created by Franco Driansetti on 27/02/2024.
 //
-
+#if !os(macOS)
 import SwiftUI
 
 internal struct ErrorUIView: View {
@@ -31,3 +31,4 @@ internal struct ErrorUIView: View {
 #Preview {
     ErrorUIView(errorMessage: "Error message")
 }
+#endif

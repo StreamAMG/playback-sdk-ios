@@ -4,20 +4,20 @@
     }
     
     @Chapter(name: "Getting Started") {
-        In this chapter, we'll start by setting up the PlaybackSDK in your Xcode project and understanding its basic components.
+        In this chapter, we'll start by setting up the PlaybackSDK from the initialisation to load the PlayBack Player Plugin. 
 
         @Image(source: "ios-marketing.png", alt: "Getting Started with PlaybackSDK")
 
         @TutorialReference(tutorial: "doc:GetStarted")
     }
     
-    @Chapter(name: "Creating a Custom Playback Player Plugin") {
-        In this chapter, we'll learn how to create a custom Playback Player Plugin using your favorite video player.
-
-        @Image(source: "ios-marketing.png", alt: "Creating a Custom Playback Player Plugin")
-
-        @TutorialReference(tutorial: "doc:CustomPluginTutorial")
-    }
+<!--    @Chapter(name: "Creating a Custom Playback Player Plugin") {-->
+<!--        In this chapter, we'll learn how to create a custom Playback Player Plugin using your favorite video player.-->
+<!---->
+<!--        @Image(source: "ios-marketing.png", alt: "Creating a Custom Playback Player Plugin")-->
+<!---->
+<!--        @TutorialReference(tutorial: "doc:CustomPluginTutorial")-->
+<!--    }-->
     
     @Resources {
         Explore more resources for learning about PlaybackSDK.
@@ -26,7 +26,7 @@
             Browse and search the PlaybackSDK documentation.
 
             - [GitHub Repository](https://github.com/StreamAMG/playback-sdk-ios/tree/main)
-            - [Stoplight Documentation](https://streamamg.stoplight.io)
+            - [Stoplight PlayBack API](https://streamamg.stoplight.io)
         }
     }
 }
