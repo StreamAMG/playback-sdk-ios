@@ -15,15 +15,14 @@ class PlayBackSDKManagerTests: XCTestCase {
     var manager: PlayBackSDKManager!
     var apiKey: String!
     var entryID: String!
-    
+
     override func setUpWithError() throws {
         try super.setUpWithError()
         manager = PlayBackSDKManager()
         apiKey = ProcessInfo.processInfo.environment["API_KEY"]
         XCTAssertNotNil(apiKey, "API key should be provided via environment variable")
         entryID = ProcessInfo.processInfo.environment["ENTRY_ID"]
-        XCTAssertNotNil(entryID, "API key should be provided via environment variable")
-        
+        XCTAssertNotNil(entryID, "Entry ID should be provided via environment variable")
     }
 
     override func tearDownWithError() throws {
@@ -52,7 +51,7 @@ class PlayBackSDKManagerTests: XCTestCase {
 
         waitForExpectations(timeout: 5, handler: nil)
     }
-    
+
     func testLoadHLSStream() {
         let initializationExpectation = expectation(description: "SDK initialization")
         manager.initialize(apiKey: apiKey) { result in
@@ -78,7 +77,7 @@ class PlayBackSDKManagerTests: XCTestCase {
 
         waitForExpectations(timeout: 5, handler: nil)
     }
-    
+
     func testInitializeWithEmptyAPIKey() {
         let expectation = expectation(description: "Initialization expectation")
 
@@ -94,7 +93,7 @@ class PlayBackSDKManagerTests: XCTestCase {
 
         waitForExpectations(timeout: 5, handler: nil)
     }
-
+    
     func testLoadPlayer() {
         let playerView = manager.loadPlayer(entryID: "exampleEntryID", authorizationToken: "exampleToken", onError: { _ in })
         // Assert that playerView is not nil or do further UI testing if possible
