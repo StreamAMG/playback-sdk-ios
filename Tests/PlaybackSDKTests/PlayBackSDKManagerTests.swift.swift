@@ -96,7 +96,7 @@ class PlayBackSDKManagerTests: XCTestCase {
     }
 
     func testLoadPlayer() {
-        let playerView = manager.loadPlayer(entryID: "exampleEntryID", authorizationToken: "exampleToken", onError: nil)
+        let playerView = manager.loadPlayer(entryID: "exampleEntryID", authorizationToken: "exampleToken", onError: { _ in })
         // Assert that playerView is not nil or do further UI testing if possible
         XCTAssertNotNil(playerView)
     }
