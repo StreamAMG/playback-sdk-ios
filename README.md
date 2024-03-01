@@ -12,7 +12,6 @@ This library simplifies integrating video playback functionalities into OTT appl
 **Supported Platforms and Version**
 
 - Platforms: iOS 14 and later
-- Swift Package Manager:
 
 **Installation**
 
@@ -36,71 +35,18 @@ import PlaybackSDK
 
 ```
 
-**Usage**
 
-1.  **Initialization:**
+**Resources:**
 
-Swift
+- **Tutorial:** [Tutorial](https://streamamg.github.io/playback-sdk-ios/tutorials/table-of-contents/#resources)
+- **Demo app:** [GitHub Repository](https://github.com/StreamAMG/playback-demo-ios)
+- **Stoplight API documentation:** [Documentation](https://streamamg.stoplight.io)
 
-```
-PlaybackSDKManager.shared.initialize(apiKey: "YOUR_API_KEY") { result in
-    switch result {
-    case .success:
-        print("Playback SDK initialized successfully.")
-    case .failure(let error):
-        print("Error initializing Playback SDK: \(error)")
-    }
-}
+**Collaboration:**
 
-```
+To update the documentation, follow these steps:
 
-1.  **Loading HLS Stream:**
+1. Make changes to the documentation code.
+2. Build the documentation following the instructions in [this URL](https://apple.github.io/swift-docc-plugin/documentation/swiftdoccplugin/publishing-to-github-pages/).
+3. Merge the code into the `gh-pages` branch.
 
-Swift
-
-```
-let entryId = "YOUR_ENTRY_ID"
-let authorizationToken = "YOUR_AUTHORIZATION_TOKEN" (optional)
-
-        PlaybackUIView(entryId: entryId, authorizationToken: authorizationToken)
-
-```
-
-**Video Player Plugins (Optional)**
-
-The Playback SDK supports extending functionalities through custom video player plugins. These plugins can provide extended functionalities or integrate with third-party video players. Refer to the full source code for details on creating custom plugins.
-
-```
-// Implement your custom player plugin conforming to VideoPlayerPlugin protocol
-
-// Register your custom plugin with the manager
-let pluginManager = VideoPlayerPluginManager.shared
-pluginManager.registerPlugin(YourCustomPlayerPlugin())
-// Use the selected plugin for playback
-pluginManager.selectedPlugin?.play()
-```
-
-**Error Handling**
-
-The library propagates errors through completion handlers. You can handle these errors to provide appropriate feedback to the user.
-
-**Example**
-
-Swift
-
-```
-PlaybackSDKManager.shared.initialize(apiKey: "YOUR_API_KEY") { result in
-    switch result {
-    case .success:
-        print("Playback SDK initialized successfully.")
-
-        let entryId = "YOUR_ENTRY_ID"
-        let authorizationToken = "YOUR_AUTHORIZATION_TOKEN" (optional)
-
-                PlaybackUIView(entryId: entryId, authorizationToken: authorizationToken)
-    case .failure(let error):
-        print("Error initializing Playback SDK: \(error)")
-    }
-}
-
-```
