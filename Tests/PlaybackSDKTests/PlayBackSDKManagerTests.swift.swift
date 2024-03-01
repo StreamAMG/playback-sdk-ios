@@ -14,7 +14,6 @@ class PlayBackSDKManagerTests: XCTestCase {
     var cancellables = Set<AnyCancellable>()
     var manager: PlayBackSDKManager!
     var apiKey: String!
-    var baseURL: String!
     var entryID: String!
     
     override func setUpWithError() throws {
@@ -56,7 +55,7 @@ class PlayBackSDKManagerTests: XCTestCase {
     
     func testLoadHLSStream() {
         let initializationExpectation = expectation(description: "SDK initialization")
-        manager.initialize(apiKey: apiKey, baseURL: baseURL) { result in
+        manager.initialize(apiKey: apiKey) { result in
             switch result {
             case .success:
                 initializationExpectation.fulfill()
