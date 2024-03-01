@@ -19,9 +19,9 @@ class PlayBackSDKManagerTests: XCTestCase {
     override func setUpWithError() throws {
         try super.setUpWithError()
         manager = PlayBackSDKManager()
-        apiKey = ProcessInfo.processInfo.environment["API_KEY"]
+        apiKey = TestConfig.testAPIKey
         XCTAssertNotNil(apiKey, "API key should be provided via environment variable")
-        entryID = ProcessInfo.processInfo.environment["ENTRY_ID"]
+        entryID = TestConfig.testEntryID
         XCTAssertNotNil(entryID, "Entry ID should be provided via environment variable")
     }
 

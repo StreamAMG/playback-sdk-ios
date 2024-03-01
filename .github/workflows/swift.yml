@@ -14,10 +14,6 @@ jobs:
 
     runs-on: macos-latest
 
-    env:
-      API_KEY: ${{ secrets.API_KEY }}
-      ENTRY_ID: ${{ secrets.ENTRY_ID }}
-
     steps:
     - uses: actions/checkout@v4
     - name: Build and run tests
