@@ -5,22 +5,18 @@
 //  Created by Franco Driansetti on 27/02/2024.
 //
 
-import Foundation
+Swift
 
-import SwiftUI
+```
+dependencies: [
+    .package(url: "https://github.com/your-organization/playback-sdk.git", .branch("master"))
+]
+```
 
-internal struct ContentView: View {
-    let entryId = "YOUR_ENTRY_ID"
-    let authorizationToken = "YOUR_AUTHORIZATION_TOKEN" // optional
+2. Import the `PlaybackSDK` module in your Swift files.
 
+Swift
 
-    var body: some View {
-        PlaybackUIView(entryId: entryId, authorizationToken: authorizationToken)
-    }
-}
-
-struct ContentView_Previews: PreviewProvider {
-    static var previews: some View {
-        ContentView()
-    }
-}
+```
+import PlaybackSDK
+```

@@ -10,21 +10,26 @@
     }
 
     @Section(title: "Video Player Plugins (Optional)") {
-        @ContentAndMedia {
-            The Playback SDK supports extending functionalities through custom video player plugins. These plugins can provide extended functionalities or integrate with third-party video players. Refer to the full source code for details on creating custom plugins.
-            
-            ```swift
-            // Implement your custom player plugin conforming to VideoPlayerPlugin protocol
+    
+        
+        @Stack {
+            @ContentAndMedia {
+                The Playback SDK supports extending functionalities through custom video player plugins. These plugins can provide extended functionalities or integrate with third-party video players. Refer to the full source code for details on creating custom plugins.
+                
+                ```swift
+                // Implement your custom player plugin conforming to VideoPlayerPlugin protocol
 
-            // Register your custom plugin with the manager
-            let pluginManager = VideoPlayerPluginManager.shared
-            pluginManager.registerPlugin(YourCustomPlayerPlugin())
-            // Use the selected plugin for playback
-            pluginManager.selectedPlugin?.play()
-            ```
+                // Register your custom plugin with the manager
+                let pluginManager = VideoPlayerPluginManager.shared
+                pluginManager.registerPlugin(YourCustomPlayerPlugin())
+                // Use the selected plugin for playback
+                pluginManager.selectedPlugin?.play()
+                ```
 
-            @Image(source: "custom_plugin.png", alt: "Custom Video Player Plugin")
+                @Image(source: "custom_plugin.png", alt: "Custom Video Player Plugin")
+            }
         }
+       
 
         @Steps {
             @Step {
@@ -42,31 +47,46 @@
         }
     }
 
-    @Section(title: "Error Handling") {
-        @ContentAndMedia {
-            The library propagates errors through completion handlers. You can handle these errors to provide appropriate feedback to the user.
-
-            **Example:**
-
-            Swift
-
-            ```
-            PlaybackSDKManager.shared.initialize(apiKey: "YOUR_API_KEY") { result in
-                switch result {
-                case .success:
-                    print("Playback SDK initialized successfully.")
-
-                    let entryId = "YOUR_ENTRY_ID"
-                    let authorizationToken = "YOUR_AUTHORIZATION_TOKEN" // optional
-
-                    PlaybackUIView(entryId: entryId, authorizationToken: authorizationToken)
-                case .failure(let error):
-                    print("Error initializing Playback SDK: \(error)")
-                }
+    @Section(title: "Add a customization view") {
+            @ContentAndMedia {
+                Add the ability for users to customize sloths and select their powers.
+                
+                @Image(source: 01-creating-section2.png, alt: "An outline of a sloth surrounded by four power type icons. The power type icons are arranged in the following order, clockwise from the top: fire, wind, lightning, and ice.")
             }
-            ```
+            
+            @Stack {
+                @ContentAndMedia {
+                    The Playback SDK supports extending functionalities through custom video player plugins. These plugins can provide extended functionalities or integrate with third-party video players. Refer to the full source code for details on creating custom plugins.
+                    
+                    ```swift
+                    // Implement your custom player plugin conforming to VideoPlayerPlugin protocol
 
-            @Image(source: "error_handling.png", alt: "Error Handling")
-        }
-    }
+                    // Register your custom plugin with the manager
+                    let pluginManager = VideoPlayerPluginManager.shared
+                    pluginManager.registerPlugin(YourCustomPlayerPlugin())
+                    // Use the selected plugin for playback
+                    pluginManager.selectedPlugin?.play()
+                    ```
+
+                    @Image(source: "custom_plugin.png", alt: "Custom Video Player Plugin")
+                }
+
+
+                @ContentAndMedia {
+                    The Playback SDK sudasdasdsadsadsadsads or integrate with third-party video players. Refer to the full source code for details on creating custom plugins.
+                    
+                    ```swiftasdas.registerPlugin(YourCustomPlayerPlugin())
+                    // Use the selectasded plugin for playback
+                    pluginManager.selectedPlugin?.play()
+                    ```
+
+                    @Image(source: "custom_plugin.png", alt: "Custom Video Player Plugin")
+                }
+
+
+                @ContentAndMedia {
+                    ...
+                }
+            
+            }            
 }
