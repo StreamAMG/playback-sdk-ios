@@ -55,8 +55,8 @@ public class BitmovinPlayerPlugin: VideoPlayerPlugin {
     }
     
     public func removePlayer() {
+        player?.player.destroy()
         player = nil
-        // TODO: Remove properly
     }
 }
 
