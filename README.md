@@ -30,7 +30,7 @@ dependencies: [
 
 ```
 
-1.  Import the `PlaybackSDK` module in your Swift files.
+2.  Import the `PlaybackSDK` module in your Swift files.
 
 Swift
 
