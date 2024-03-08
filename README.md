@@ -25,7 +25,7 @@ Swift
 
 ```
 dependencies: [
-    .package(url: "https://github.com/your-organization/playback-sdk.git", .branch("master"))
+    .package(url: "https://github.com/StreamAMG/playback-sdk-ios", .branch("main"))
 ]
 
 ```
