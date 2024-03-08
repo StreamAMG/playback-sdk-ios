@@ -17,6 +17,13 @@ This library simplifies integrating video playback functionalities into OTT appl
 
 - Platforms: iOS 14 and later
 
+**Getting Started**
+
+To initialize the SDK, you will need an **API key**, which can be obtained by contacting your StreamAMG account manager. Additionally, to use the playback default plugin, your app needs to be **whitelisted**. Please communicate the bundle ID of your app to your StreamAMG account manager for whitelisting.
+
+Once you have obtained the API key and your app has been whitelisted, you can proceed with the initialisation of the SDK in your project.
+
+
 **Installation**
 
 1.  Add the Playback SDK dependency to your project using Swift Package Manager.
