@@ -29,9 +29,9 @@ struct PlayerTestView: View {
     
     private func handlePlaybackError(_ error: PlaybackError) {
         switch error {
-        case .apiError(let statusCode, let errorMessage):
+        case .apiError(let statusCode, let errorMessage, let reason):
             print("\(errorMessage) Status Code \(statusCode)")
-            errorMessage = "\(errorMessage) Status Code \(statusCode)"
+            errorMessage = "\(errorMessage) Status Code \(statusCode) Reason \(reason)"
         default:
             print("Error loading HLS stream in PlaybackUIView: \(error.localizedDescription)")
             errorMessage = "Error code and errorrMessage not found: \(error.localizedDescription)"
