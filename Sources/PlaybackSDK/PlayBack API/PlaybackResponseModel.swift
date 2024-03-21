@@ -10,6 +10,7 @@ import Foundation
 // Struct representing the response model for playback data, conforming to the Decodable protocol.
 internal struct PlaybackResponseModel: Decodable {
     let message: String?
+    let reason: String? 
     let id: String?
     let name: String?
     let description: String?

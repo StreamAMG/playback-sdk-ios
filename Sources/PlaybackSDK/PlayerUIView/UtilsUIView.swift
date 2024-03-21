@@ -27,8 +27,4 @@ internal struct ErrorUIView: View {
         .padding()
     }
 }
-
-#Preview {
-    ErrorUIView(errorMessage: "Error message")
-}
 #endif

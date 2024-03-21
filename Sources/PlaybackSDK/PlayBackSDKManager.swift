@@ -30,7 +30,7 @@ public enum PlayBackAPIError: Error {
     case loadHLSStreamError
 
     case networkError(Error)
-    case apiError(statusCode: Int, message: String)
+    case apiError(statusCode: Int, message: String, reason: String)
 }
 
 
@@ -96,7 +96,7 @@ public class PlayBackSDKManager {
      ```swift
      let playerView = loadPlayer(entryID: "exampleEntryID", authorizationToken: "exampleToken")
      */
-    public func loadPlayer(entryID: String, authorizationToken: String, onError: ((PlayBackAPIError) -> Void)?) -> some View {
+    public func loadPlayer(entryID: String, authorizationToken: String? = nil, onError: ((PlayBackAPIError) -> Void)?) -> some View {
         return PlaybackUIView(entryId: entryID, authorizationToken: authorizationToken, onError: onError)
     }
     
