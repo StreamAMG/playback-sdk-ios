@@ -245,7 +245,7 @@
                       },
                       {
                         "type": "text",
-                        "text": "If you want to allow users to access free content or if you're implementing a guest mode, you can pass an empty string or "
+                        "text": "\n\nIf you want to allow users to access free content or if you're implementing a guest mode, you can pass an empty string or "
                       },
                       {
                         "type": "strong",
@@ -271,7 +271,7 @@
                       },
                       {
                         "type": "text",
-                        "text": " when calling the"
+                        "text": " when calling the "
                       },                                            
                       {
                         "type": "strong",
