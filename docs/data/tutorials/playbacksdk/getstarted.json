@@ -334,110 +334,20 @@
                     "inlineContent": [
                       {
                         "type": "text",
-                        "text": "In this step, the code utilizes the "
-                      },
-                      {
-                        "type": "strong",
-                        "inlineContent": [
-                          {
-                            "text": "loadPlayer",
-                            "type": "text"
-                          }
-                        ]
+                        "text": "In this step described enum for error handling."
                       },
                       {
                         "type": "text",
-                        "text": " function provided by the Playback SDK to initialize and load the video player. The function takes the entry ID and authorization token as parameters. Additionally, it includes a closure to handle any potential playback errors that may occur during the loading process."
+                        "text": "Above is the error enum returned by the SDK, in this the apiError also return the reason code and message for the API error."
                       },
                       {
                         "type": "text",
-                        "text": " "
+                        "text": "The playback API is returning the reason code in the response , refer"
                       },
                       {
-                        "type": "text",
-                        "text": "The "
-                      },
-                      {
-                        "type": "strong",
-                        "inlineContent": [
-                          {
-                            "type": "text",
-                            "text": "handlePlaybackError"
-                          }
-                        ]
-                      },
-                      {
-                        "type": "text",
-                        "text": " function is called within the closure to handle the playback errors. It switches on the type of error received and provides appropriate error handling based on the type of error encountered."
-                      },
-                      {
-                        "type": "text",
-                        "text": " "
-                      },
-                      {
-                        "type": "text",
-                        "text": "The code also includes a placeholder comment to indicate where the removal of the player could be implemented in the "
-                      },
-                      {
-                        "type": "strong",
-                        "inlineContent": [
-                          {
-                            "type": "text",
-                            "text": "onDisappear"
-                          }
-                        ]
-                      },
-                      {
-                        "type": "text",
-                        "text": " modifier."
-                      },
-                      {
-                        "type": "paragraph",
-                        "inlineContent": [
-                          {
-                            "type": "text",
-                            "text": "If you want to allow users to access free content or if you're implementing a guest mode, you can pass an empty string or "
-                          },
-                          {
-                            "type": "strong",
-                            "inlineContent": [
-                              {
-                                "type": "text",
-                                "text": "nil"
-                              }
-                            ]
-                          },
-                          {
-                            "type": "text",
-                            "text": " value as the "
-                          },
-                          {
-                            "type": "strong",
-                            "inlineContent": [
-                              {
-                                "type": "text",
-                                "text": "authorizationToken"
-                              }
-                            ]
-                          },
-                          {
-                            "type": "text",
-                            "text": " when calling the "
-                          },                                            
-                          {
-                            "type": "strong",
-                            "inlineContent": [
-                              {
-                                "type": "text",
-                                "text": "loadPlayer"
-                              }
-                            ]
-                          },
-                          {
-                            "type": "text",
-                            "text": " function. This will bypass the need for authentication, enabling unrestricted access to the specified content."
-                          }
-                        ]                        
+                        "type": "link",
+                        "text": "Get Video Playback Data | Playback",
+                        "link": "https://streamamg.stoplight.io/docs/playback-documentation-portal/ec642e6dcbb13-get-video-playback-data"
                       }
                     ]
                   }
