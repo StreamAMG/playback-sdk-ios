@@ -345,12 +345,17 @@
                         "text": "The playback API is returning the reason code in the response , refer "
                       },
                       {
-                        "text": "Get Video Playback Data | Playback",
-                        "type": "text",
-                        "identifier": "https://streamamg.stoplight.io/docs/playback-documentation-portal/d2503d48e9a16-error-handling",
-                        "isActive": true,
-                        "tutorials": [
-                          "playback_link"
+                        "type": "paragraph",
+                        "inlineContent": [
+                          {
+                            "text": "Get Video Playback Data | Playback",
+                            "type": "reference",
+                            "identifier": "https://streamamg.stoplight.io/docs/playback-documentation-portal/d2503d48e9a16-error-handling",
+                            "isActive": true,
+                            "tutorials": [
+                              "playback_link"
+                            ]
+                          }
                         ]
                       }            
                     ]
