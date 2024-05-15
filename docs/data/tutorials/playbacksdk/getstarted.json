@@ -604,6 +604,20 @@
           }
         ]
       },
+      "Get Video Playback Data | Playback": {
+        "title": "Playback SDK",
+        "role": "pseudoSymbol",
+        "type": "section",
+        "url": "https://streamamg.stoplight.io/docs/playback-documentation-portal/ec642e6dcbb13-get-video-playback-data",
+        "kind": "section",
+        "identifier": "Get Video Playback Data | Playback ",
+        "abstract": [
+          {
+            "text": "Get Video Playback Data | Playback",
+            "type": "text"
+          }
+        ]
+      }
       "doc://PlaybackSDK/tutorials/Table-Of-Contents": {
         "identifier": "doc://PlaybackSDK/tutorials/Table-Of-Contents",
         "kind": "overview",
