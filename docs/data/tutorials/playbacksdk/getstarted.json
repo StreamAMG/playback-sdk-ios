@@ -346,9 +346,12 @@
                       },
                       {
                         "text": "Get Video Playback Data | Playback",
-                        "type": "reference",
+                        "type": "text",
                         "identifier": "https://streamamg.stoplight.io/docs/playback-documentation-portal/d2503d48e9a16-error-handling",
-                        "isActive": true
+                        "isActive": true,
+                        "tutorials": [
+                          "playback_link"
+                        ]
                       }            
                     ]
                   }
