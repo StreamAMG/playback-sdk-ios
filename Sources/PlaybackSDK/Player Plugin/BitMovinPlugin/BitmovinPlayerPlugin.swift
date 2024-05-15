@@ -25,7 +25,7 @@ public class BitmovinPlayerPlugin: VideoPlayerPlugin {
         playerConfig.key = PlayBackSDKManager.shared.bitmovinLicense
         self.playerConfig = playerConfig
         self.name = "BitmovinPlayerPlugin"
-        self.version = "1.0"
+        self.version = "1.0.1"
     }
     
     func getPlayer() -> Player? {
