@@ -351,10 +351,7 @@
                             "text": "Get Video Playback Data | Playback",
                             "type": "text",
                             "identifier": "https://streamamg.stoplight.io/docs/playback-documentation-portal/d2503d48e9a16-error-handling",
-                            "isActive": true,
-                            "tutorials": [
-                              "playback_link"
-                            ]
+                            "isActive": true
                           },
                           {
                             "type": "unorderedList",
@@ -365,6 +362,7 @@
                                     "inlineContent": [
                                       {
                                         "type": "reference",
+                                        "overridingTitle": "Get Video Playback Data | Playback",
                                         "identifier": "https://github.com/StreamAMG/playback-sdk-ios/tree/main",
                                         "isActive": true
                                       }
