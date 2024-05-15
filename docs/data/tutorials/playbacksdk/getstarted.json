@@ -338,16 +338,11 @@
                       },
                       {
                         "type": "text",
-                        "text": "Above is the error enum returned by the SDK, in this the apiError also return the reason code and message for the API error."
+                        "text": "Above is the error enum returned by the SDK, in this the apiError also return the reason code and message for the API error. "
                       },
                       {
                         "type": "text",
-                        "text": "The playback API is returning the reason code in the response , refer"
-                      },
-                      {
-                        "type": "link",
-                        "text": "Get Video Playback Data | Playback",
-                        "link": "https://streamamg.stoplight.io/docs/playback-documentation-portal/ec642e6dcbb13-get-video-playback-data"
+                        "text": "The playback API is returning the reason code in the response , refer [Get Video Playback Data | Playback](https://streamamg.stoplight.io/docs/playback-documentation-portal/ec642e6dcbb13-get-video-playback-data)."
                       }
                     ]
                   }
