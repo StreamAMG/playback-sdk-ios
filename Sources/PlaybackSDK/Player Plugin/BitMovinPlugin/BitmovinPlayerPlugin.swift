@@ -9,7 +9,7 @@ import BitmovinPlayer
 import SwiftUI
 
 public class BitmovinPlayerPlugin: VideoPlayerPlugin {
-    
+
     private let playerConfig: PlayerConfig
     private var player: BitMovinPlayerView?
     

@@ -16,7 +16,7 @@ internal class PlayerInformationAPIService: PlayerInformationAPI {
         self.apiKey = apiKey
     }
     
-    func getPlayerInformation() -> AnyPublisher<PlayerInformationResponseModel, Error> {
+    func getPlayerInformation(userAgent: String?) -> AnyPublisher<PlayerInformationResponseModel, Error> {
         guard let url = URL(string: "\(PlayBackSDKManager.shared.baseURL)/player") else {
             return Fail(error: PlayBackAPIError.invalidPlayerInformationURL).eraseToAnyPublisher()
         }
@@ -24,7 +24,10 @@ internal class PlayerInformationAPIService: PlayerInformationAPI {
         var request = URLRequest(url: url)
         request.addValue("application/json", forHTTPHeaderField: "Accept")
         request.addValue(apiKey, forHTTPHeaderField: "x-api-key")
-        
+        if let userAgent {
+            request.addValue(userAgent, forHTTPHeaderField: "User-Agent")
+        }
+
         return URLSession.shared.dataTaskPublisher(for: request)
             .map { $0.data }
             .decode(type: PlayerInformationResponseModel.self, decoder: JSONDecoder())
