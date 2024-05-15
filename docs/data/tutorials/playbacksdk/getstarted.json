@@ -342,15 +342,13 @@
                       },
                       {
                         "type": "text",
-                        "text": "The playback API is returning the reason code in the response , refer [Get Video Playback Data | Playback](https://streamamg.stoplight.io/docs/playback-documentation-portal/d2503d48e9a16-error-handling)."
+                        "text": "The playback API is returning the reason code in the response , refer "
                       },
                       {
-                        "type": "text",
                         "text": "Get Video Playback Data | Playback",
-                        "identifier": {
-                          "interfaceLanguage": "swift",
-                          "url": "https://streamamg.stoplight.io/docs/playback-documentation-portal/d2503d48e9a16-error-handling"
-                        }                        
+                        "type": "reference",
+                        "identifier": "https://streamamg.stoplight.io/docs/playback-documentation-portal/d2503d48e9a16-error-handling",
+                        "isActive": true
                       }            
                     ]
                   }
