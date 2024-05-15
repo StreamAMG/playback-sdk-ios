@@ -342,7 +342,12 @@
                       },
                       {
                         "type": "text",
-                        "text": "The playback API is returning the reason code in the response , refer [Get Video Playback Data | Playback](https://streamamg.stoplight.io/docs/playback-documentation-portal/ec642e6dcbb13-get-video-playback-data)."
+                        "text": "The playback API is returning the reason code in the response , refer"
+                      },
+                      {
+                        "type": "reference",
+                        "text": "Get Video Playback Data | Playback",
+                        "reference": "https://streamamg.stoplight.io/docs/playback-documentation-portal/ec642e6dcbb13-get-video-playback-data"
                       }
                     ]
                   }
