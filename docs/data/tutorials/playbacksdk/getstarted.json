@@ -294,6 +294,154 @@
                     ]
                   }
                 ]
+              },
+              {
+                "content": [
+                  {
+                    "type": "paragraph",
+                    "inlineContent": [
+                      {
+                        "type": "strong",
+                        "inlineContent": [
+                          {
+                            "type": "text",
+                            "text": "Step 3:"
+                          }
+                        ]
+                      },
+                      {
+                        "type": "text",
+                        "text": ""
+                      },
+                      {
+                        "text": " ",
+                        "type": "text"
+                      },
+                      {
+                        "type": "text",
+                        "text": "Load the player using the Playback SDK and handle any playback errors."
+                      }
+                    ]
+                  }
+                ],
+                "type": "step",
+                "media": null,
+                "code": "Errors.swift",
+                "runtimePreview": null,
+                "caption": [
+                  {
+                    "type": "paragraph",
+                    "inlineContent": [
+                      {
+                        "type": "text",
+                        "text": "In this step, the code utilizes the "
+                      },
+                      {
+                        "type": "strong",
+                        "inlineContent": [
+                          {
+                            "text": "loadPlayer",
+                            "type": "text"
+                          }
+                        ]
+                      },
+                      {
+                        "type": "text",
+                        "text": " function provided by the Playback SDK to initialize and load the video player. The function takes the entry ID and authorization token as parameters. Additionally, it includes a closure to handle any potential playback errors that may occur during the loading process."
+                      },
+                      {
+                        "type": "text",
+                        "text": " "
+                      },
+                      {
+                        "type": "text",
+                        "text": "The "
+                      },
+                      {
+                        "type": "strong",
+                        "inlineContent": [
+                          {
+                            "type": "text",
+                            "text": "handlePlaybackError"
+                          }
+                        ]
+                      },
+                      {
+                        "type": "text",
+                        "text": " function is called within the closure to handle the playback errors. It switches on the type of error received and provides appropriate error handling based on the type of error encountered."
+                      },
+                      {
+                        "type": "text",
+                        "text": " "
+                      },
+                      {
+                        "type": "text",
+                        "text": "The code also includes a placeholder comment to indicate where the removal of the player could be implemented in the "
+                      },
+                      {
+                        "type": "strong",
+                        "inlineContent": [
+                          {
+                            "type": "text",
+                            "text": "onDisappear"
+                          }
+                        ]
+                      },
+                      {
+                        "type": "text",
+                        "text": " modifier."
+                      },
+                      {
+                        "type": "paragraph",
+                        "inlineContent": [
+                          {
+                            "type": "text",
+                            "text": "If you want to allow users to access free content or if you're implementing a guest mode, you can pass an empty string or "
+                          },
+                          {
+                            "type": "strong",
+                            "inlineContent": [
+                              {
+                                "type": "text",
+                                "text": "nil"
+                              }
+                            ]
+                          },
+                          {
+                            "type": "text",
+                            "text": " value as the "
+                          },
+                          {
+                            "type": "strong",
+                            "inlineContent": [
+                              {
+                                "type": "text",
+                                "text": "authorizationToken"
+                              }
+                            ]
+                          },
+                          {
+                            "type": "text",
+                            "text": " when calling the "
+                          },                                            
+                          {
+                            "type": "strong",
+                            "inlineContent": [
+                              {
+                                "type": "text",
+                                "text": "loadPlayer"
+                              }
+                            ]
+                          },
+                          {
+                            "type": "text",
+                            "text": " function. This will bypass the need for authentication, enabling unrestricted access to the specified content."
+                          }
+                        ]                        
+                      }
+                    ]
+                  }
+                ]
               }
             ],
             "anchor": "PlayBack-SDK",
@@ -428,6 +576,34 @@
         "highlights": [],
         "fileName": "PlayerTestView.swift",
         "type": "file"
+      },
+      "Errors.swift": {
+        "identifier": "Errors.swift",
+        "highlights": [],
+        "fileType": "swift",
+        "type": "file",
+        "syntax": "swift",
+        "fileName": "Errors.swift",
+        "content": [
+          "",
+          "public enum PlayBackAPIError: Error {",
+          "",
+          "  case invalidResponsePlaybackData",
+          "",  
+          "  case invalidPlaybackDataURL",
+          "",  
+          "  case invalidPlayerInformationURL",
+          "",  
+          "  case initializationError",
+          "",  
+          "  case loadHLSStreamError",
+          "",  
+          "  case networkError(Error)",
+          "",  
+          "  case apiError(statusCode: Int, message: String)",
+          "",  
+          "}"
+        ]
       },
       "PlayBackDemoApp.swift": {
         "identifier": "PlayBackDemoApp.swift",
