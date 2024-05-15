@@ -334,7 +334,7 @@
                     "inlineContent": [
                       {
                         "type": "text",
-                        "text": "In this step described enum for error handling."
+                        "text": "In this step described enum for error handling. "
                       },
                       {
                         "type": "text",
@@ -342,13 +342,16 @@
                       },
                       {
                         "type": "text",
-                        "text": "The playback API is returning the reason code in the response , refer"
+                        "text": "The playback API is returning the reason code in the response , refer "
                       },
                       {
-                        "type": "url",
-                        "description": "Get Video Playback Data | Playback",
-                        "url": "https://streamamg.stoplight.io/docs/playback-documentation-portal/ec642e6dcbb13-get-video-playback-data"
-                      }
+                        "type": "text",
+                        "text": "Get Video Playback Data | Playback",
+                        "identifier": {
+                          "interfaceLanguage": "swift",
+                          "url": "playback_links"
+                        }                        
+                      }            
                     ]
                   }
                 ]
