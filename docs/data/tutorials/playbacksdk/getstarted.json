@@ -617,7 +617,7 @@
             "type": "text"
           }
         ]
-      }
+      },
       "doc://PlaybackSDK/tutorials/Table-Of-Contents": {
         "identifier": "doc://PlaybackSDK/tutorials/Table-Of-Contents",
         "kind": "overview",
