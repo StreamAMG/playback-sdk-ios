@@ -348,8 +348,8 @@
                         "type": "paragraph",
                         "inlineContent": [
                           {
-                            "text": "Get Video Playback Data | Playback",
-                            "type": "text",
+                            "overridingTitle": "Get Video Playback Data | Playback",
+                            "type": "reference",
                             "identifier": "https://streamamg.stoplight.io/docs/playback-documentation-portal/d2503d48e9a16-error-handling",
                             "isActive": true
                           },
@@ -368,20 +368,6 @@
                                       }
                                     ],
                                     "type": "paragraph"
-                                  }
-                                ]
-                              },
-                              {
-                                "content": [
-                                  {
-                                    "type": "paragraph",
-                                    "inlineContent": [
-                                      {
-                                        "isActive": true,
-                                        "identifier": "https://streamamg.stoplight.io",
-                                        "type": "reference"
-                                      }
-                                    ]
                                   }
                                 ]
                               }
