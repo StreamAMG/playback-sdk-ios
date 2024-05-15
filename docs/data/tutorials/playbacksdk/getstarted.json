@@ -345,11 +345,11 @@
                         "text": "The playback API is returning the reason code in the response , refer "
                       },
                       {
-                        "type": "text",
+                        "type": "reference",
                         "text": "Get Video Playback Data | Playback",
                         "identifier": {
                           "interfaceLanguage": "swift",
-                          "url": "playback_links"
+                          "url": "https://streamamg.stoplight.io/docs/playback-documentation-portal/d2503d48e9a16-error-handling"
                         }                        
                       }            
                     ]
