@@ -345,36 +345,11 @@
                         "text": "The playback API is returning the reason code in the response , refer "
                       },
                       {
-                        "type": "paragraph",
-                        "inlineContent": [
-                          {
-                            "overridingTitle": "Get Video Playback Data | Playback",
-                            "type": "reference",
-                            "identifier": "playback_link",
-                            "isActive": true
-                          },
-                          {
-                            "type": "unorderedList",
-                            "items": [
-                              {
-                                "content": [
-                                  {
-                                    "inlineContent": [
-                                      {
-                                        "type": "reference",
-                                        "overridingTitle": "Get Video Playback Data | Playback",
-                                        "identifier": "https://github.com/StreamAMG/playback-sdk-ios/tree/main",
-                                        "isActive": true
-                                      }
-                                    ],
-                                    "type": "paragraph"
-                                  }
-                                ]
-                              }
-                            ]
-                          }
-                        ]
-                      }            
+                        "overridingTitle": "Get Video Playback Data | Playback",
+                        "type": "reference",
+                        "identifier": "playback_link",
+                        "isActive": true
+                      }           
                     ]
                   }
                 ]
