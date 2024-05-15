@@ -33,7 +33,11 @@ internal class PlayBackAPIService: PlayBackAPI {
         - andAuthorizationToken: Optional authorization token, can be nil for free videos.
      - Returns: A publisher emitting the response model or an error.
      */
-    func getVideoDetails(forEntryId entryId: String, andAuthorizationToken: String?) -> AnyPublisher<PlaybackResponseModel, Error> {
+    func getVideoDetails(
+        forEntryId entryId: String,
+        andAuthorizationToken: String?,
+        userAgent: String?
+    ) -> AnyPublisher<PlaybackResponseModel, Error> {
         guard let url = URL(string: "\(PlayBackSDKManager.shared.baseURL)/entry/\(entryId)") else {
             return Fail(error: PlayBackAPIError.invalidPlaybackDataURL).eraseToAnyPublisher()
         }
@@ -45,7 +49,11 @@ internal class PlayBackAPIService: PlayBackAPI {
         if let authorizationTokenExist = andAuthorizationToken, !authorizationTokenExist.isEmpty {
             request.addValue("Bearer \(authorizationTokenExist)", forHTTPHeaderField: "Authorization")
         }
-        
+
+        if let userAgent, !userAgent.isEmpty {
+            request.addValue(userAgent, forHTTPHeaderField: "User-Agent")
+        }
+
         request.addValue(apiKey, forHTTPHeaderField: "x-api-key")
 
         return URLSession.shared.dataTaskPublisher(for: request)
