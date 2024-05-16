@@ -9,7 +9,8 @@ import SwiftUI
 import BitmovinPlayer
 
 public struct BitMovinPlayerView: View {
-    internal let player: Player
+    @State var player: Player
+//    internal let playerView: PlayerView
     private let playerViewConfig: PlayerViewConfig
     private let hlsURLString: String
     
@@ -35,23 +36,34 @@ public struct BitMovinPlayerView: View {
         
         // Create player view configuration
         self.playerViewConfig = PlayerViewConfig()
+        
+//        self.playerView = VideoPlayerView(
+//            player: player,
+//            playerViewConfig: playerViewConfig
+//        )
+//        self.playerView.fullscreenHandler = self
     }
     
     
     public var body: some View {
         ZStack {
             Color.black
-
-            VideoPlayerView(
-                player: player,
-                playerViewConfig: playerViewConfig
-            )
-            .onReceive(player.events.on(PlayerEvent.self)) { (event: PlayerEvent) in
-                dump(event, name: "[Player Event]", maxDepth: 1)
-            }
-            .onReceive(player.events.on(SourceEvent.self)) { (event: SourceEvent) in
-                dump(event, name: "[Source Event]", maxDepth: 1)
-            }
+            
+//            VideoPlayerView(
+//                player: player,
+//                playerViewConfig: playerViewConfig
+//            )
+//            self.playerView
+//            .onReceive(player.events.on(PlayerEvent.self)) { (event: PlayerEvent) in
+//                dump(event, name: "[Player Event]", maxDepth: 1)
+//            }
+//            .onReceive(player.events.on(SourceEvent.self)) { (event: SourceEvent) in
+//                dump(event, name: "[Source Event]", maxDepth: 1)
+//            }
+//            .fullscreenHandler = self
+            
+            BitmovinPlayerViewRepresentable(player: self.$player)
+            
         }
        // .padding()
         .onAppear {
