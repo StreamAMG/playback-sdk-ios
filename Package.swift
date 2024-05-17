@@ -20,8 +20,11 @@ let package = Package(
         // Declare dependencies
         
         // BitmovinPlayer
-        .package(url: "https://github.com/bitmovin/player-ios.git",
-                 revision: "3.56.1"),
+        .package(
+            name: "BitmovinPlayer",
+            url: "https://github.com/bitmovin/player-ios.git",
+            .exact("3.56.1")
+        ),
 
         // other dependencies
         .package(url: "https://github.com/apple/swift-docc-plugin", from: "1.0.0")
@@ -33,7 +36,7 @@ let package = Package(
         .target(
             name: "PlaybackSDK",
             dependencies: [
-                .product(name: "BitmovinPlayer", package: "player-ios"),
+                .product(name: "BitmovinPlayer", package: "BitmovinPlayer"),
             ]
         ),
         .testTarget(
