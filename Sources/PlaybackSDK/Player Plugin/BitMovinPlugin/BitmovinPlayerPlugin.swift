@@ -9,7 +9,7 @@ import BitmovinPlayer
 import SwiftUI
 
 public class BitmovinPlayerPlugin: VideoPlayerPlugin {
-    
+
     private let playerConfig: PlayerConfig
     private var player: BitMovinPlayerView?
     
@@ -25,7 +25,7 @@ public class BitmovinPlayerPlugin: VideoPlayerPlugin {
         playerConfig.key = PlayBackSDKManager.shared.bitmovinLicense
         self.playerConfig = playerConfig
         self.name = "BitmovinPlayerPlugin"
-        self.version = "1.0"
+        self.version = "1.0.1"
     }
     
     func getPlayer() -> Player? {

@@ -21,7 +21,7 @@ internal protocol PlayBackAPI {
      - andAuthorizationToken: Optional authorization token, can be nil for free videos.
      - Returns: A publisher emitting the response model or an error.
      */
-    func getVideoDetails(forEntryId entryId: String, andAuthorizationToken: String?) -> AnyPublisher<PlaybackResponseModel, Error>
+    func getVideoDetails(forEntryId entryId: String, andAuthorizationToken: String?, userAgent: String?) -> AnyPublisher<PlaybackResponseModel, Error>
 }
 
 #endif

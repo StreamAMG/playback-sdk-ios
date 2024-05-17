@@ -45,6 +45,59 @@ Swift
 import PlaybackSDK
 
 ```
+# PlaybackSDKManager
+
+The `PlaybackSDKManager` is a singleton object designed to manage the functionalities of the playback SDK. It provides methods for initialization, loading player UI, and loading HLS streams.
+
+# Initialization
+
+To initialize the playback SDK, use the `initialize` method of the `PlaybackSDKManager` singleton object. This method requires an API key for authentication. Optionally, you can specify a base URL for the playback API.
+
+Example:
+
+```swift
+    // Initialize SDK with the settings
+    PlaybackSDKManager.shared.initialize(apiKey: "<API_KEY>", baseURL: "<BASE_URL>") { result ->
+        // Register default layer plugin 
+
+        switch result {
+        case .success(let license):
+            val customPlugin = BitmovinVideoPlayerPlugin()
+            VideoPlayerPluginManager.shared.registerPlugin(customPlugin)
+        case .failure(let error):
+            // Handle error
+        }
+    }
+```
+
+
+# Loading Player UI
+
+To load the player UI in your application, use the `loadPlayer` method of the `PlaybackSDKManager` singleton object. This method is a Composable function that you can use to load and render the player UI.
+
+Example:
+
+```swift
+PlayBackSDKManager.shared.loadPlayer(entryID: entryId, authorizationToken: authorizationToken) { error in
+    // Handle player UI error 
+} 
+```
+
+# Playing Access-Controlled Content
+To play premium or freemium on-demand and live videos, an `authorizationToken` has to be passed into the player. 
+Before loading the player, a call to CloudPay to start session must be made with the same token.
+```swift
+"\(baseURL)/sso/start?token=\(authorizationToken)"
+```
+In case a custom `user-agent` header is set for the request when creating a token, it should be passed to the player as well.  
+
+Example:
+
+```swift
+PlayBackSDKManager.shared.initialize(apiKey: apiKey, baseURL: baseURL, userAgent: customUserAgent) { result in 
+    // Handle player UI error 
+} 
+```
 
 
 **Resources:**

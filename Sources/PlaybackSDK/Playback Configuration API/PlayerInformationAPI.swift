@@ -9,6 +9,6 @@ import Foundation
 import Combine
 
 internal protocol PlayerInformationAPI {
-    func getPlayerInformation() -> AnyPublisher<PlayerInformationResponseModel, Error>
+    func getPlayerInformation(userAgent: String?) -> AnyPublisher<PlayerInformationResponseModel, Error>
 }
 #endif
