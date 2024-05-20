@@ -1,1 +1,638 @@
-{"sections":[{"chapter":"Getting Started","estimatedTimeInMinutes":30,"title":"Playback SDK Overview","content":[{"inlineContent":[{"type":"text","text":"Playback SDK simplifies integrating video playback functionalities into OTT applications. It provides a unified interface for interacting with video APIs and managing playback logic."}],"type":"paragraph"},{"inlineContent":[{"inlineContent":[{"type":"text","text":"Key Features:"}],"type":"strong"}],"type":"paragraph"},{"items":[{"content":[{"type":"paragraph","inlineContent":[{"type":"strong","inlineContent":[{"type":"text","text":"Abstraction:"}]},{"text":" Hides the complexities of underlying video APIs, allowing you to focus on the core playback experience.","type":"text"}]}]},{"content":[{"inlineContent":[{"inlineContent":[{"text":"Flexibility:","type":"text"}],"type":"strong"},{"type":"text","text":" Supports different video providers and allows the creation of custom playback plugins for extended functionalities."}],"type":"paragraph"}]},{"content":[{"inlineContent":[{"type":"strong","inlineContent":[{"type":"text","text":"Error Handling:"}]},{"type":"text","text":" Provides mechanisms to handle potential issues during playback and notify your application."}],"type":"paragraph"}]}],"type":"unorderedList"}],"kind":"hero"},{"tasks":[{"title":"Playback SDK","stepsSection":[{"content":[{"type":"paragraph","inlineContent":[{"type":"strong","inlineContent":[{"text":"Step 1:","type":"text"}]},{"type":"text","text":" Initialize the Playback SDK by providing your API key and register the default player plugin."},{"type":"text","text":" "},{"inlineContent":[{"text":"Make sure this step is done when the app starts.","type":"text"}],"type":"strong"}]}],"caption":[],"type":"step","media":null,"code":"PlayBackDemoApp.swift","runtimePreview":null},{"content":[{"type":"paragraph","inlineContent":[{"type":"strong","inlineContent":[{"type":"text","text":"Step 2:"}]},{"type":"text","text":""},{"text":" ","type":"text"},{"type":"text","text":"Load the player using the Playback SDK and handle any playback errors."}]}],"type":"step","media":null,"code":"PlayerTestView.swift","runtimePreview":null,"caption":[{"type":"paragraph","inlineContent":[{"type":"text","text":"In this step, the code utilizes the "},{"type":"strong","inlineContent":[{"text":"loadPlayer","type":"text"}]},{"type":"text","text":" function provided by the Playback SDK to initialize and load the video player. The function takes the entry ID and authorization token as parameters. Additionally, it includes a closure to handle any potential playback errors that may occur during the loading process."},{"type":"text","text":" "},{"type":"text","text":"The "},{"type":"strong","inlineContent":[{"type":"text","text":"handlePlaybackError"}]},{"type":"text","text":" function is called within the closure to handle the playback errors. It switches on the type of error received and provides appropriate error handling based on the type of error encountered."},{"type":"text","text":" "},{"type":"text","text":"The code also includes a placeholder comment to indicate where the removal of the player could be implemented in the "},{"type":"strong","inlineContent":[{"type":"text","text":"onDisappear"}]},{"type":"text","text":" modifier."}]}]}],"anchor":"PlayBack-SDK","contentSection":[{"content":[{"inlineContent":[{"type":"strong","inlineContent":[{"text":"Explore how to use StreamAMG Playback SDK.","type":"text"}]}],"type":"paragraph"}],"kind":"fullWidth"}]}],"kind":"tasks"}],"hierarchy":{"reference":"doc:\/\/PlaybackSDK\/tutorials\/Table-Of-Contents","modules":[{"reference":"doc:\/\/PlaybackSDK\/tutorials\/Table-Of-Contents\/Getting-Started","projects":[{"reference":"doc:\/\/PlaybackSDK\/tutorials\/PlaybackSDK\/GetStarted","sections":[{"kind":"task","reference":"doc:\/\/PlaybackSDK\/tutorials\/PlaybackSDK\/GetStarted#PlayBack-SDK"}]}]}],"paths":[["doc:\/\/PlaybackSDK\/tutorials\/Table-Of-Contents","doc:\/\/PlaybackSDK\/tutorials\/Table-Of-Contents\/$volume","doc:\/\/PlaybackSDK\/tutorials\/Table-Of-Contents\/Getting-Started"]]},"kind":"project","metadata":{"title":"Playback SDK Overview","category":"PlaybackSDK Tutorial","categoryPathComponent":"Table-Of-Contents","role":"project"},"schemaVersion":{"major":0,"minor":3,"patch":0},"variants":[{"traits":[{"interfaceLanguage":"swift"}],"paths":["\/tutorials\/playbacksdk\/getstarted"]}],"identifier":{"interfaceLanguage":"swift","url":"doc:\/\/PlaybackSDK\/tutorials\/PlaybackSDK\/GetStarted"},"references":{"PlayerTestView.swift":{"identifier":"PlayerTestView.swift","content":["\/\/","\/\/  LoadPlayerViewTutorial.swift","\/\/","\/\/","\/\/  Created by Franco Driansetti on 27\/02\/2024.","\/\/","","import SwiftUI","import PlaybackSDK","","struct PlayerTestView: View {","    ","    private let entryID = \"ENTRY_ID\"","    private let authorizationToken = \"JWT_TOKEN\"","    ","    var body: some View {","        VStack {","            \/\/ Load player with the playback SDK","            PlayBackSDKManager.shared.loadPlayer(entryID: entryID, authorizationToken: authorizationToken) { error in","                handlePlaybackError(error)","            }","            .onDisappear {","                \/\/ Remove the player here","            }","            Spacer()","        }","        .padding()","    }","    ","    private func handlePlaybackError(_ error: PlaybackError) {","        switch error {","        case .apiError(let statusCode, let errorMessage, let reason):","            print(\"\\(errorMessage) Status Code \\(statusCode)\")","            errorMessage = \"\\(errorMessage) Status Code \\(statusCode) Reason \\(reason)\"","        default:","            print(\"Error loading HLS stream in PlaybackUIView: \\(error.localizedDescription)\")","            errorMessage = \"Error code and errorrMessage not found: \\(error.localizedDescription)\"","        }","    }","    ","}"],"syntax":"swift","fileType":"swift","highlights":[],"fileName":"PlayerTestView.swift","type":"file"},"PlayBackDemoApp.swift":{"identifier":"PlayBackDemoApp.swift","highlights":[],"fileType":"swift","type":"file","syntax":"swift","fileName":"PlayBackDemoApp.swift","content":["\/\/","\/\/  InitializeSdkExample.swift","\/\/","\/\/","\/\/  Created by Franco Driansetti on 27\/02\/2024.","\/\/","","import SwiftUI","import PlaybackSDK","","@main","struct PlayBackDemoApp: App {","    ","    let sdkManager = PlayBackSDKManager()","    let apiKey = \"API_KEY\"","    var body: some Scene {","        WindowGroup {","            HomeView()","        }","    }","    ","    init() {","        \/\/ Initialize the Playback SDK with the provided API key and base URL","        PlayBackSDKManager.shared.initialize(apiKey: apiKey) { result in","            switch result {","            case .success(let license):","                \/\/ Obtained license upon successful initialization","                print(\"SDK initialized with license: \\(license)\")","                ","                \/\/ Register the video player plugin","                let bitmovinPlugin = BitmovinPlayerPlugin()","                VideoPlayerPluginManager.shared.registerPlugin(bitmovinPlugin)","                ","            case .failure(let error):","                \/\/ Print an error message and set initializationError flag upon initialization failure","                print(\"SDK initialization failed with error: \\(error)\")","                ","            }","        }","    }","}"]},"doc://PlaybackSDK/tutorials/Table-Of-Contents/Getting-Started":{"title":"Getting Started","identifier":"doc:\/\/PlaybackSDK\/tutorials\/Table-Of-Contents\/Getting-Started","role":"article","url":"\/tutorials\/table-of-contents\/getting-started","abstract":[],"kind":"article","type":"topic"},"doc://PlaybackSDK/tutorials/PlaybackSDK/GetStarted":{"title":"Playback SDK Overview","abstract":[{"text":"Playback SDK simplifies integrating video playback functionalities into OTT applications. It provides a unified interface for interacting with video APIs and managing playback logic.","type":"text"}],"identifier":"doc:\/\/PlaybackSDK\/tutorials\/PlaybackSDK\/GetStarted","url":"\/tutorials\/playbacksdk\/getstarted","kind":"project","role":"project","estimatedTime":"30min","type":"topic"},"doc://PlaybackSDK/tutorials/PlaybackSDK/GetStarted#PlayBack-SDK":{"title":"Playback SDK","role":"pseudoSymbol","type":"section","url":"\/tutorials\/playbacksdk\/getstarted#PlayBack-SDK","kind":"section","identifier":"doc:\/\/PlaybackSDK\/tutorials\/PlaybackSDK\/GetStarted#PlayBack-SDK","abstract":[{"text":"Playback SDK simplifies integrating video playback functionalities into OTT applications. It provides a unified interface for interacting with video APIs and managing playback logic.","type":"text"}]},"doc://PlaybackSDK/tutorials/Table-Of-Contents":{"identifier":"doc:\/\/PlaybackSDK\/tutorials\/Table-Of-Contents","kind":"overview","role":"overview","abstract":[{"text":"Welcome to the PlaybackSDK tutorial! In this tutorial, you will learn how to integrate and use the PlaybackSDK in your iOS applications.","type":"text"}],"url":"\/tutorials\/table-of-contents","title":"Introduction to PlaybackSDK","type":"topic"}}}
+{
+    "sections": [
+      {
+        "chapter": "Getting Started",
+        "estimatedTimeInMinutes": 30,
+        "title": "Playback SDK Overview",
+        "content": [
+          {
+            "inlineContent": [
+              {
+                "type": "text",
+                "text": "Playback SDK simplifies integrating video playback functionalities into OTT applications. It provides a unified interface for interacting with video APIs and managing playback logic."
+              }
+            ],
+            "type": "paragraph"
+          },
+          {
+            "inlineContent": [
+              {
+                "inlineContent": [
+                  {
+                    "type": "text",
+                    "text": "Key Features:"
+                  }
+                ],
+                "type": "strong"
+              }
+            ],
+            "type": "paragraph"
+          },
+          {
+            "items": [
+              {
+                "content": [
+                  {
+                    "type": "paragraph",
+                    "inlineContent": [
+                      {
+                        "type": "strong",
+                        "inlineContent": [
+                          {
+                            "type": "text",
+                            "text": "Abstraction:"
+                          }
+                        ]
+                      },
+                      {
+                        "text": " Hides the complexities of underlying video APIs, allowing you to focus on the core playback experience.",
+                        "type": "text"
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "content": [
+                  {
+                    "inlineContent": [
+                      {
+                        "inlineContent": [
+                          {
+                            "text": "Flexibility:",
+                            "type": "text"
+                          }
+                        ],
+                        "type": "strong"
+                      },
+                      {
+                        "type": "text",
+                        "text": " Supports different video providers and allows the creation of custom playback plugins for extended functionalities."
+                      }
+                    ],
+                    "type": "paragraph"
+                  }
+                ]
+              },
+              {
+                "content": [
+                  {
+                    "inlineContent": [
+                      {
+                        "type": "strong",
+                        "inlineContent": [
+                          {
+                            "type": "text",
+                            "text": "Error Handling:"
+                          }
+                        ]
+                      },
+                      {
+                        "type": "text",
+                        "text": " Provides mechanisms to handle potential issues during playback and notify your application."
+                      }
+                    ],
+                    "type": "paragraph"
+                  }
+                ]
+              }
+            ],
+            "type": "unorderedList"
+          }
+        ],
+        "kind": "hero"
+      },
+      {
+        "tasks": [
+          {
+            "title": "Playback SDK",
+            "stepsSection": [
+              {
+                "content": [
+                  {
+                    "type": "paragraph",
+                    "inlineContent": [
+                      {
+                        "type": "strong",
+                        "inlineContent": [
+                          {
+                            "text": "Step 1:",
+                            "type": "text"
+                          }
+                        ]
+                      },
+                      {
+                        "type": "text",
+                        "text": " Initialize the Playback SDK by providing your API key and register the default player plugin."
+                      },
+                      {
+                        "type": "text",
+                        "text": " "
+                      },
+                      {
+                        "inlineContent": [
+                          {
+                            "text": "Make sure this step is done when the app starts.",
+                            "type": "text"
+                          }
+                        ],
+                        "type": "strong"
+                      }
+                    ]
+                  }
+                ],
+                "caption": [],
+                "type": "step",
+                "media": null,
+                "code": "PlayBackDemoApp.swift",
+                "runtimePreview": null
+              },
+              {
+                "content": [
+                  {
+                    "type": "paragraph",
+                    "inlineContent": [
+                      {
+                        "type": "strong",
+                        "inlineContent": [
+                          {
+                            "type": "text",
+                            "text": "Step 2:"
+                          }
+                        ]
+                      },
+                      {
+                        "type": "text",
+                        "text": ""
+                      },
+                      {
+                        "text": " ",
+                        "type": "text"
+                      },
+                      {
+                        "type": "text",
+                        "text": "Load the player using the Playback SDK and handle any playback errors."
+                      }
+                    ]
+                  }
+                ],
+                "type": "step",
+                "media": null,
+                "code": "PlayerTestView.swift",
+                "runtimePreview": null,
+                "caption": [
+                  {
+                    "type": "paragraph",
+                    "inlineContent": [
+                      {
+                        "type": "text",
+                        "text": "In this step, the code utilizes the "
+                      },
+                      {
+                        "type": "strong",
+                        "inlineContent": [
+                          {
+                            "text": "loadPlayer",
+                            "type": "text"
+                          }
+                        ]
+                      },
+                      {
+                        "type": "text",
+                        "text": " function provided by the Playback SDK to initialize and load the video player. The function takes the entry ID and authorization token as parameters. Additionally, it includes a closure to handle any potential playback errors that may occur during the loading process."
+                      },
+                      {
+                        "type": "text",
+                        "text": " "
+                      },
+                      {
+                        "type": "text",
+                        "text": "The "
+                      },
+                      {
+                        "type": "strong",
+                        "inlineContent": [
+                          {
+                            "type": "text",
+                            "text": "handlePlaybackError"
+                          }
+                        ]
+                      },
+                      {
+                        "type": "text",
+                        "text": " function is called within the closure to handle the playback errors. It switches on the type of error received and provides appropriate error handling based on the type of error encountered."
+                      },
+                      {
+                        "type": "text",
+                        "text": " "
+                      },
+                      {
+                        "type": "text",
+                        "text": "The code also includes a placeholder comment to indicate where the removal of the player could be implemented in the "
+                      },
+                      {
+                        "type": "strong",
+                        "inlineContent": [
+                          {
+                            "type": "text",
+                            "text": "onDisappear"
+                          }
+                        ]
+                      },
+                      {
+                        "type": "text",
+                        "text": " modifier."
+                      },
+                      {
+                        "type": "paragraph",
+                        "inlineContent": [
+                          {
+                            "type": "text",
+                            "text": "If you want to allow users to access free content or if you're implementing a guest mode, you can pass an empty string or "
+                          },
+                          {
+                            "type": "strong",
+                            "inlineContent": [
+                              {
+                                "type": "text",
+                                "text": "nil"
+                              }
+                            ]
+                          },
+                          {
+                            "type": "text",
+                            "text": " value as the "
+                          },
+                          {
+                            "type": "strong",
+                            "inlineContent": [
+                              {
+                                "type": "text",
+                                "text": "authorizationToken"
+                              }
+                            ]
+                          },
+                          {
+                            "type": "text",
+                            "text": " when calling the "
+                          },                                            
+                          {
+                            "type": "strong",
+                            "inlineContent": [
+                              {
+                                "type": "text",
+                                "text": "loadPlayer"
+                              }
+                            ]
+                          },
+                          {
+                            "type": "text",
+                            "text": " function. This will bypass the need for authentication, enabling unrestricted access to the specified content."
+                          }
+                        ]                        
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "content": [
+                  {
+                    "type": "paragraph",
+                    "inlineContent": [
+                      {
+                        "type": "strong",
+                        "inlineContent": [
+                          {
+                            "type": "text",
+                            "text": "Step 3:"
+                          }
+                        ]
+                      },
+                      {
+                        "type": "text",
+                        "text": ""
+                      },
+                      {
+                        "text": " ",
+                        "type": "text"
+                      },
+                      {
+                        "type": "text",
+                        "text": "Load the player using the Playback SDK and handle any playback errors."
+                      }
+                    ]
+                  }
+                ],
+                "type": "step",
+                "media": null,
+                "code": "Errors.swift",
+                "runtimePreview": null,
+                "caption": [
+                  {
+                    "type": "paragraph",
+                    "inlineContent": [
+                      {
+                        "type": "text",
+                        "text": "In this step described enum for error handling. "
+                      },
+                      {
+                        "type": "text",
+                        "text": "Above is the error enum returned by the SDK, in this the apiError also return the reason code and message for the API error. "
+                      },
+                      {
+                        "type": "text",
+                        "text": "The playback API is returning the reason code in the response , refer "
+                      },
+                      {
+                        "overridingTitle": "Get Video Playback Data | Playback",
+                        "type": "reference",
+                        "identifier": "playback_link",
+                        "isActive": true
+                      }           
+                    ]
+                  }
+                ]
+              }
+            ],
+            "anchor": "PlayBack-SDK",
+            "contentSection": [
+              {
+                "content": [
+                  {
+                    "inlineContent": [
+                      {
+                        "type": "strong",
+                        "inlineContent": [
+                          {
+                            "text": "Explore how to use StreamAMG Playback SDK.",
+                            "type": "text"
+                          }
+                        ]
+                      }
+                    ],
+                    "type": "paragraph"
+                  }
+                ],
+                "kind": "fullWidth"
+              }
+            ]
+          }
+        ],
+        "kind": "tasks"
+      }
+    ],
+    "hierarchy": {
+      "reference": "doc://PlaybackSDK/tutorials/Table-Of-Contents",
+      "modules": [
+        {
+          "reference": "doc://PlaybackSDK/tutorials/Table-Of-Contents/Getting-Started",
+          "projects": [
+            {
+              "reference": "doc://PlaybackSDK/tutorials/PlaybackSDK/GetStarted",
+              "sections": [
+                {
+                  "kind": "task",
+                  "reference": "doc://PlaybackSDK/tutorials/PlaybackSDK/GetStarted#PlayBack-SDK"
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "paths": [
+        [
+          "doc://PlaybackSDK/tutorials/Table-Of-Contents",
+          "doc://PlaybackSDK/tutorials/Table-Of-Contents/$volume",
+          "doc://PlaybackSDK/tutorials/Table-Of-Contents/Getting-Started"
+        ]
+      ]
+    },
+    "kind": "project",
+    "metadata": {
+      "title": "Playback SDK Overview",
+      "category": "PlaybackSDK Tutorial",
+      "categoryPathComponent": "Table-Of-Contents",
+      "role": "project"
+    },
+    "schemaVersion": {
+      "major": 0,
+      "minor": 3,
+      "patch": 0
+    },
+    "variants": [
+      {
+        "traits": [
+          {
+            "interfaceLanguage": "swift"
+          }
+        ],
+        "paths": [
+          "/tutorials/playbacksdk/getstarted"
+        ]
+      }
+    ],
+    "identifier": {
+      "interfaceLanguage": "swift",
+      "url": "doc://PlaybackSDK/tutorials/PlaybackSDK/GetStarted"
+    },
+    "references": {
+      "PlayerTestView.swift": {
+        "identifier": "PlayerTestView.swift",
+        "content": [
+          "//",
+          "//  LoadPlayerViewTutorial.swift",
+          "//",
+          "//",
+          "//  Created by Franco Driansetti on 27/02/2024.",
+          "//",
+          "",
+          "import SwiftUI",
+          "import PlaybackSDK",
+          "",
+          "struct PlayerTestView: View {",
+          "    ",
+          "    private let entryID = \"ENTRY_ID\"",
+          "    private let authorizationToken = \"JWT_TOKEN\"",
+          "    ",
+          "    var body: some View {",
+          "        VStack {",
+          "            // Load player with the playback SDK",
+          "            PlayBackSDKManager.shared.loadPlayer(entryID: entryID, authorizationToken: authorizationToken) { error in",
+          "                handlePlaybackError(error)",
+          "            }",
+          "            .onDisappear {",
+          "                // Remove the player here",
+          "            }",
+          "            Spacer()",
+          "        }",
+          "        .padding()",
+          "    }",
+          "    ",
+          "    private func handlePlaybackError(_ error: PlaybackError) {",
+          "        switch error {",
+          "        case .apiError(let statusCode, let errorMessage, let reason):",
+          "            print(\"\\(errorMessage) Status Code \\(statusCode)\")",
+          "            errorMessage = \"\\(errorMessage) Status Code \\(statusCode) Reason \\(reason)\"",
+          "        default:",
+          "            print(\"Error loading HLS stream in PlaybackUIView: \\(error.localizedDescription)\")",
+          "            errorMessage = \"Error code and errorrMessage not found: \\(error.localizedDescription)\"",
+          "        }",
+          "    }",
+          "    ",
+          "}"
+        ],
+        "syntax": "swift",
+        "fileType": "swift",
+        "highlights": [],
+        "fileName": "PlayerTestView.swift",
+        "type": "file"
+      },
+      "Errors.swift": {
+        "identifier": "Errors.swift",
+        "highlights": [],
+        "fileType": "swift",
+        "type": "file",
+        "syntax": "swift",
+        "fileName": "Errors.swift",
+        "content": [
+          "",
+          "public enum PlayBackAPIError: Error {",
+          "",
+          "  case invalidResponsePlaybackData",
+          "",  
+          "  case invalidPlaybackDataURL",
+          "",  
+          "  case invalidPlayerInformationURL",
+          "",  
+          "  case initializationError",
+          "",  
+          "  case loadHLSStreamError",
+          "",  
+          "  case networkError(Error)",
+          "",  
+          "  case apiError(statusCode: Int, message: String)",
+          "",  
+          "}"
+        ]
+      },
+      "PlayBackDemoApp.swift": {
+        "identifier": "PlayBackDemoApp.swift",
+        "highlights": [],
+        "fileType": "swift",
+        "type": "file",
+        "syntax": "swift",
+        "fileName": "PlayBackDemoApp.swift",
+        "content": [
+          "//",
+          "//  InitializeSdkExample.swift",
+          "//",
+          "//",
+          "//  Created by Franco Driansetti on 27/02/2024.",
+          "//",
+          "",
+          "import SwiftUI",
+          "import PlaybackSDK",
+          "",
+          "@main",
+          "struct PlayBackDemoApp: App {",
+          "    ",
+          "    let sdkManager = PlayBackSDKManager()",
+          "    let apiKey = \"API_KEY\"",
+          "    var body: some Scene {",
+          "        WindowGroup {",
+          "            HomeView()",
+          "        }",
+          "    }",
+          "    ",
+          "    init() {",
+          "        // Initialize the Playback SDK with the provided API key and base URL",
+          "        PlayBackSDKManager.shared.initialize(apiKey: apiKey) { result in",
+          "            switch result {",
+          "            case .success(let license):",
+          "                // Obtained license upon successful initialization",
+          "                print(\"SDK initialized with license: \\(license)\")",
+          "                ",
+          "                // Register the video player plugin",
+          "                let bitmovinPlugin = BitmovinPlayerPlugin()",
+          "                VideoPlayerPluginManager.shared.registerPlugin(bitmovinPlugin)",
+          "                ",
+          "            case .failure(let error):",
+          "                // Print an error message and set initializationError flag upon initialization failure",
+          "                print(\"SDK initialization failed with error: \\(error)\")",
+          "                ",
+          "            }",
+          "        }",
+          "    }",
+          "}"
+        ]
+      },
+      "doc://PlaybackSDK/tutorials/Table-Of-Contents/Getting-Started": {
+        "title": "Getting Started",
+        "identifier": "doc://PlaybackSDK/tutorials/Table-Of-Contents/Getting-Started",
+        "role": "article",
+        "url": "/tutorials/table-of-contents/getting-started",
+        "abstract": [],
+        "kind": "article",
+        "type": "topic"
+      },
+      "doc://PlaybackSDK/tutorials/PlaybackSDK/GetStarted": {
+        "title": "Playback SDK Overview",
+        "abstract": [
+          {
+            "text": "Playback SDK simplifies integrating video playback functionalities into OTT applications. It provides a unified interface for interacting with video APIs and managing playback logic.",
+            "type": "text"
+          }
+        ],
+        "identifier": "doc://PlaybackSDK/tutorials/PlaybackSDK/GetStarted",
+        "url": "/tutorials/playbacksdk/getstarted",
+        "kind": "project",
+        "role": "project",
+        "estimatedTime": "30min",
+        "type": "topic"
+      },
+      "doc://PlaybackSDK/tutorials/PlaybackSDK/GetStarted#PlayBack-SDK": {
+        "title": "Playback SDK",
+        "role": "pseudoSymbol",
+        "type": "section",
+        "url": "/tutorials/playbacksdk/getstarted#PlayBack-SDK",
+        "kind": "section",
+        "identifier": "doc://PlaybackSDK/tutorials/PlaybackSDK/GetStarted#PlayBack-SDK",
+        "abstract": [
+          {
+            "text": "Playback SDK simplifies integrating video playback functionalities into OTT applications. It provides a unified interface for interacting with video APIs and managing playback logic.",
+            "type": "text"
+          }
+        ]
+      },
+      "playback_link": {
+        "title": "Get Video Playback Data | Playback",
+        "role": "overview",
+        "type": "topic",
+        "role": "overview",
+        "url": "https://streamamg.stoplight.io/docs/playback-documentation-portal/ec642e6dcbb13-get-video-playback-data",
+        "kind": "section",
+        "identifier": "Get Video Playback Data | Playback ",
+        "abstract": [
+          {
+            "text": "Get Video Playback Data | Playback",
+            "type": "text"
+          }
+        ]
+      },
+      "doc://PlaybackSDK/tutorials/Table-Of-Contents": {
+        "identifier": "doc://PlaybackSDK/tutorials/Table-Of-Contents",
+        "kind": "overview",
+        "role": "overview",
+        "abstract": [
+          {
+            "text": "Welcome to the PlaybackSDK tutorial! In this tutorial, you will learn how to integrate and use the PlaybackSDK in your iOS applications.",
+            "type": "text"
+          }
+        ],
+        "url": "/tutorials/table-of-contents",
+        "title": "Introduction to PlaybackSDK",
+        "type": "topic"
+      }
+    }
+  }
