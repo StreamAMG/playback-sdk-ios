@@ -44,8 +44,9 @@ public class PlayBackSDKManager {
     // MARK: Private properties
     private var playerInfoAPI: PlayerInformationAPI?
     private var playBackAPI: PlayBackAPI?
+    private var userAgentHeader: String?
     private var cancellables = Set<AnyCancellable>()
-    
+
     // MARK: Internal properties
     /// Bitmovin license key.
     internal var bitmovinLicense: String?
@@ -63,9 +64,10 @@ public class PlayBackSDKManager {
     /// - Parameters:
     ///   - apiKey: The API key for initializing the SDK.
     ///   - baseURL: The base URL for API endpoints. Defaults to `nil`.
+    ///   - userAgent: Custom `User-Agent` header to use with playback requests. Can be used if there was a custom header set to start session request. Defaults to `nil`
     ///   - completion: A closure to be called after initialization.
     ///                 It receives a result indicating success or failure.
-    public func initialize(apiKey: String, baseURL: String? = nil, completion: @escaping (Result<String, Error>) -> Void) {
+    public func initialize(apiKey: String, baseURL: String? = nil, userAgent: String? = nil, completion: @escaping (Result<String, Error>) -> Void) {
         guard !apiKey.isEmpty else {
             completion(.failure(SDKError.initializationError))
             return
@@ -76,6 +78,7 @@ public class PlayBackSDKManager {
         }
         
         amgAPIKey = apiKey
+        userAgentHeader = userAgent
         playerInfoAPI = PlayerInformationAPIService(apiKey: apiKey)
         let playBackAPIService = PlayBackAPIService(apiKey: apiKey)
         self.playBackAPI = playBackAPIService
@@ -113,7 +116,7 @@ public class PlayBackSDKManager {
             return
         }
         
-        playerInfoAPIExist.getPlayerInformation()
+        playerInfoAPIExist.getPlayerInformation(userAgent: userAgentHeader)
             .sink(receiveCompletion: { result in
                 switch result {
                 case .failure(let error):
@@ -154,7 +157,11 @@ public class PlayBackSDKManager {
         }
         
         // Call the /entry endpoint for the given entry ID
-        playBackAPIExist.getVideoDetails(forEntryId: entryId, andAuthorizationToken: andAuthorizationToken)
+        playBackAPIExist.getVideoDetails(
+            forEntryId: entryId,
+            andAuthorizationToken: andAuthorizationToken,
+            userAgent: userAgentHeader
+        )
             .sink(receiveCompletion: { result in
                 switch result {
                 case .failure(let error):
