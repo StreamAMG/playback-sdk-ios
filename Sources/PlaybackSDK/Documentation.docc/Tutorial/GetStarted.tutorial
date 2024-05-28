@@ -11,8 +11,8 @@
         - **Error Handling:** Provides mechanisms to handle potential issues during playback and notify your application.
     }
     
-    @Section(title: "PlayBack SDK") {
-        **Explore how to use StreamAMG PlayBack SDK.**
+    @Section(title: "Playback SDK") {
+        **Explore how to use StreamAMG Playback SDK.**
         @Steps {
             
             @Step {
@@ -29,6 +29,7 @@
                 In this step, the code utilizes the **loadPlayer** function provided by the Playback SDK to initialize and load the video player. The function takes the entry ID and authorization token as parameters. Additionally, it includes a closure to handle any potential playback errors that may occur during the loading process.
                 The **handlePlaybackError** function is called within the closure to handle the playback errors. It switches on the type of error received and provides appropriate error handling based on the type of error encountered.
                 The code also includes a placeholder comment to indicate where the removal of the player could be implemented in the **onDisappear** modifier.
+                If you want to allow users to access free content or if you're implementing a guest mode, you can pass an empty string or **nil** value as the **authorizationToken** when calling the **loadPlayer** function. This will bypass the need for authentication, enabling unrestricted access to the specified content.
                 
                 
                 @Code(name: "PlayerTestView.swift", file: PlayerTestView.swift)
