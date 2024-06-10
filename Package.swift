@@ -35,11 +35,11 @@ let package = Package(
         // Targets can depend on other targets in this package and products from dependencies.
         .target(
             name: "PlaybackSDK",
-            resources: [
-                .process("PrivacyInfo.xcprivacy")],
             dependencies: [
                 .product(name: "BitmovinPlayer", package: "BitmovinPlayer"),
-            ]
+            ],
+            resources: [
+                .process("PrivacyInfo.xcprivacy")]
         ),
         .testTarget(
             name: "PlaybackSDKTests",
