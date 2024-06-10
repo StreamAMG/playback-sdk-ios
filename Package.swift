@@ -37,7 +37,9 @@ let package = Package(
             name: "PlaybackSDK",
             dependencies: [
                 .product(name: "BitmovinPlayer", package: "BitmovinPlayer"),
-            ]
+            ],
+            resources: [
+                .process("PrivacyInfo.xcprivacy")]
         ),
         .testTarget(
             name: "PlaybackSDKTests",
