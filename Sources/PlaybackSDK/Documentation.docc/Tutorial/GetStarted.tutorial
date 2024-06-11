@@ -34,6 +34,13 @@
                 
                 @Code(name: "PlayerTestView.swift", file: PlayerTestView.swift)
             }
+            @Step {
+                **Step 3:**
+                Handle the playback errors from Playback SDK.
+
+                This step describes enum for error handling. Above is the error enum returned by the SDK, where the apiError also has the reason code and message for the API error. The playback API is returning the reason code in the response. For the list of the error codes and reasons, please refer to [Get Video Playback Data | Playback](https://streamamg.stoplight.io/docs/playback-documentation-portal/ec642e6dcbb13-get-video-playback-data)
+                @Code(name: "PlayBackAPIError.swift", file: PlayBackAPIError.swift)
+            }
         }
     }
 }
