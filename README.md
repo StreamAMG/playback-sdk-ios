@@ -84,23 +84,33 @@ PlayBackSDKManager.shared.loadPlayer(entryID: entryId, authorizationToken: autho
 ```
 
 # Playing Access-Controlled Content
-To play premium or freemium on-demand and live videos, an `authorizationToken` has to be passed into the player. 
-Before loading the player, a call to CloudPay to start session must be made with the same token.
+To play on-demand and live videos that require authorization, at some point before loading the player your app must call CloudPay to start session, passing the authorization token:
 ```swift
 "\(baseURL)/sso/start?token=\(authorizationToken)"
 ```
-In case a custom `user-agent` header is set for the request when creating a token, it should be passed to the player as well.  
+Then the same token should be passed into the `loadPlayer(entryID:, authorizationToken:)` method of `PlayBackSDkManager`.
+For the free videos that user should be able to watch without logging in, starting the session is not required and `authorizationToken` can be set to an empty string.  
+
+> [!NOTE]
+> If the user is authenticated, has enough access level to watch a video, the session was started and the same token was passed to the player but the videos still throw a 401 error, it might be related to these requests having different user-agent headers.
+
+## Configure user-agent
+Sometimes a custom `user-agent` header is automatically set for the requests on iOS when creating a token and starting a session. `Alamofire` and other 3rd party networking frameworks can modify this header to include information about themselves. In such cases they should either be configured to not modify the header, or the custom header should be passed to the player as well. 
 
 Example:
 
 ```swift
-PlayBackSDKManager.shared.initialize(apiKey: apiKey, baseURL: baseURL, userAgent: customUserAgent) { result in 
-    // Handle player UI error 
-} 
+PlayBackSDKManager.shared.initialize(
+    apiKey: apiKey,
+    baseURL: baseURL,
+    userAgent: customUserAgent
+) { result in
+    // Handle player UI error
+}
 ```
+By default the SDK uses system user agent, so if your app uses native URL Session, the `userAgent` parameter most likely can be omitted.
 
-
-**Resources:**
+# Resources
 
 - **Tutorial:** [Tutorial](https://streamamg.github.io/playback-sdk-ios/tutorials/table-of-contents/#resources)
 - **Demo app:** [GitHub Repository](https://github.com/StreamAMG/playback-demo-ios)

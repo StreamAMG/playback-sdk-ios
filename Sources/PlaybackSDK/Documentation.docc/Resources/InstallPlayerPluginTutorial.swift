@@ -1,10 +1,3 @@
-//
-//  InstallPlayerPluginTutorial.swift
-//
-//
-//  Created by Franco Driansetti on 27/02/2024.
-//
-
 import Foundation
 
 PlayBackSDKManager.shared.initialize(apiKey: settingsManager.apiKey, baseURL: settingsManager.baseURL) { result in
