@@ -1,10 +1,3 @@
-//
-//  PlayBackAPIError.swift
-//  
-//
-//  Created by Artem Yelizarov on 11.06.2024.
-//
-
 import Foundation
 
 public enum PlayBackAPIError: Error {

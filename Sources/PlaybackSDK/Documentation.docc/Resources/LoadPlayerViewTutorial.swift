@@ -1,10 +1,3 @@
-//
-//  LoadPlayerViewTutorial.swift
-//  
-//
-//  Created by Franco Driansetti on 27/02/2024.
-//
-
 import Foundation
 
 PlayBackSDKManager.shared.loadPlayer(entryID: settingsManager.entryId, authorizationToken: settingsManager.authorizationToken, onError: { error in
