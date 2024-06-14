@@ -16,14 +16,20 @@
         @Steps {
             
             @Step {
-                **Step 1:** Initialize the Playback SDK by providing your API key and register the default player plugin. 
+                Initialize the Playback SDK by providing your API key and register the default player plugin. 
                 **Make sure this step is done when the app starts.**
                 
                 
                 @Code(name: "PlayBackDemoApp.swift", file: PlayBackDemoApp.swift) 
             }
             @Step {
-                **Step 2:** 
+                Add custom `user-agent` header.
+                
+                This step is only required for content that needs a token, when using Alamofire or other 3rd party frameworks that overwrite the standard `user-agent` header with their own.  
+                If the content requires starting a CloudPay session, it's important that the request to start the session has the same `user-agent` header as the video loading requests from the player. This can be achieved either by disabling the overwriting behaviour in the 3rd party networking framework you're using, or by passing a `userAgent` parameter to the `initialize` method, like in this example with Alamofire.
+                @Code(name: "PlayBackDemoAppWithUserAgent.swift", file: PlayBackDemoAppWithUserAgent.swift, previousFile: PlayBackDemoApp.swift)
+            }
+            @Step {
                 Load the player using the Playback SDK and handle any playback errors.
                 
                 In this step, the code utilizes the **loadPlayer** function provided by the Playback SDK to initialize and load the video player. The function takes the entry ID and authorization token as parameters. Additionally, it includes a closure to handle any potential playback errors that may occur during the loading process.
@@ -33,6 +39,12 @@
                 
                 
                 @Code(name: "PlayerTestView.swift", file: PlayerTestView.swift)
+            }
+            @Step {
+                Handle the playback errors from Playback SDK.
+
+                This step describes enum for error handling. Above is the error enum returned by the SDK, where the apiError also has the reason code and message for the API error. The playback API is returning the reason code in the response. For the list of the error codes and reasons, please refer to [Get Video Playback Data | Playback](https://streamamg.stoplight.io/docs/playback-documentation-portal/ec642e6dcbb13-get-video-playback-data)
+                @Code(name: "PlayBackAPIError.swift", file: PlayBackAPIError.swift)
             }
         }
     }
