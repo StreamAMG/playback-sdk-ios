@@ -21,6 +21,7 @@ public class BitmovinPlayerPlugin: VideoPlayerPlugin {
         let playerConfig = PlayerConfig()
         
         playerConfig.playbackConfig.isAutoplayEnabled = true
+        playerConfig.playbackConfig.isBackgroundPlaybackEnabled = true
         
         playerConfig.key = PlayBackSDKManager.shared.bitmovinLicense
         self.playerConfig = playerConfig
@@ -33,9 +34,9 @@ public class BitmovinPlayerPlugin: VideoPlayerPlugin {
     }
     
     // MARK: VideoPlayerPlugin protocol implementation
-    public func setup() {
-        // Additional setup logic if needed, not required in this case
-        // Might call here the configuration API
+    public func setup(config: VideoPlayerConfig) {
+        playerConfig.playbackConfig.isAutoplayEnabled = config.playbackConfig.autoplayEnabled
+        playerConfig.playbackConfig.isBackgroundPlaybackEnabled = config.playbackConfig.backgroundPlaybackEnabled
     }
     
     public func playerView(hlsURLString: String) -> AnyView {
