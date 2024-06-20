@@ -39,8 +39,8 @@ public class BitmovinPlayerPlugin: VideoPlayerPlugin {
         playerConfig.playbackConfig.isBackgroundPlaybackEnabled = config.playbackConfig.backgroundPlaybackEnabled
     }
     
-    public func playerView(hlsURLString: String) -> AnyView {
-        let videoPlayerView = BitMovinPlayerView(hlsURLString: hlsURLString, playerConfig: playerConfig)
+    public func playerView(hlsURLString: String, title: String = "") -> AnyView {
+        let videoPlayerView = BitMovinPlayerView(hlsURLString: hlsURLString, playerConfig: playerConfig, title: title)
         
         self.player = videoPlayerView
         
@@ -56,6 +56,7 @@ public class BitmovinPlayerPlugin: VideoPlayerPlugin {
     }
     
     public func removePlayer() {
+        player?.player.unload()
         player?.player.destroy()
         player = nil
     }

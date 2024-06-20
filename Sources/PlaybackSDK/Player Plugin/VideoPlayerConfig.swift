@@ -4,7 +4,7 @@ public struct VideoPlayerConfig {
     public init() {}
 }
 
-public class PlaybackConfig {
+public struct PlaybackConfig {
     public var autoplayEnabled: Bool = true
     public var backgroundPlaybackEnabled: Bool = true
 }
