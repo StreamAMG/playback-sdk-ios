@@ -67,10 +67,12 @@ internal class PlayBackAPIService: PlayBackAPI {
                     return data
                 default:
                     let decoder = JSONDecoder()
-                    if let errorResponse = try? decoder.decode(PlaybackResponseModel.self, from: data) {
-                        throw PlayBackAPIError.apiError(statusCode: httpResponse.statusCode, message: errorResponse.message ?? "Unknown authentication error message", reason: errorResponse.reason ?? "Unknown authentication error reason")
+                    if let errorResponse = try? decoder.decode(PlaybackResponseModel.self, from: data) {       
+                        let errorReason = errorResponse.reason ?? "Unknown authentication error reason"
+                        throw PlayBackAPIError.apiError(statusCode: httpResponse.statusCode, message: errorResponse.message ?? "Unknown authentication error message", reason: PlaybackErrorReason(fromString: errorReason))
                     } else {
-                        throw PlayBackAPIError.apiError(statusCode: httpResponse.statusCode, message: "Unknown authentication error", reason: "Unknown authentication error reason")
+                        let errorReason = "Unknown authentication error reason"
+                        throw PlayBackAPIError.apiError(statusCode: httpResponse.statusCode, message: "Unknown authentication error", reason: PlaybackErrorReason(fromString: errorReason))
                     }
                 }
             }
