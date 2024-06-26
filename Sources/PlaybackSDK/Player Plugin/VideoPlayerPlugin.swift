@@ -14,12 +14,12 @@ public protocol VideoPlayerPlugin: AnyObject {
     var name: String { get }
     var version: String { get }
     
-    func setup()
+    func setup(config: VideoPlayerConfig)
     
     // TODO: add event
     /// func handleEvent(event: BitmovinPlayerCore.PlayerEvent)
     
-    func playerView(hlsURLString: String) -> AnyView
+    func playerView(hlsURLString: String, title: String) -> AnyView
     
     func play()
     
