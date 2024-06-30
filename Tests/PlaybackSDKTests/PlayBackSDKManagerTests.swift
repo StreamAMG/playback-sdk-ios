@@ -34,6 +34,23 @@ class PlayBackSDKManagerTests: XCTestCase {
     func testInitialization() throws {
         XCTAssertNotNil(manager, "Manager should not be nil after initialization")
     }
+    
+    func testInitializeWithCustomUserAgent() {
+        let expectation = expectation(description: "Initialization expectation")
+
+        manager.initialize(apiKey: apiKey, userAgent: "IOS Tests") { result in
+            switch result {
+            case .success(let license):
+                XCTAssertNotNil(license, "Bitmovin license should not be nil")
+                XCTAssertFalse(license.isEmpty, "Bitmovin license should not be empty")
+                expectation.fulfill()
+            case .failure(let error):
+                XCTFail("Initialization failed with error: \(error.localizedDescription)")
+            }
+        }
+
+        waitForExpectations(timeout: 5, handler: nil)
+    }
 
     func testInitializeWithValidAPIKey() {
         let expectation = expectation(description: "Initialization expectation")
@@ -88,6 +105,37 @@ class PlayBackSDKManagerTests: XCTestCase {
             case .failure(let error):
                 XCTAssertEqual(error as? SDKError, SDKError.initializationError, "Initialization should fail with initialization error")
                 expectation.fulfill()
+            }
+        }
+
+        waitForExpectations(timeout: 5, handler: nil)
+    }
+    
+    func testFailedEntryId() {
+        let initializationExpectation = expectation(description: "SDK initialization")
+        manager.initialize(apiKey: apiKey) { result in
+            switch result {
+            case .success:
+                initializationExpectation.fulfill()
+            case .failure(let error):
+                XCTFail("SDK initialization failed with error: \(error.localizedDescription)")
+            }
+        }
+        waitForExpectations(timeout: 5, handler: nil)
+
+        let hlsExpectation = expectation(description: "Empty entry id loading expectation")
+        manager.loadHLSStream(forEntryId: "", andAuthorizationToken: nil) { result in
+            switch result {
+            case .success(let hlsURL):
+                XCTFail("Empty entry id provided but got HLS stream")
+            case .failure(let error):
+                switch error {
+                    case .networkError(_):
+                        hlsExpectation.fulfill()
+                default:
+                    hlsExpectation.fulfill()
+                }
+                
             }
         }
 
