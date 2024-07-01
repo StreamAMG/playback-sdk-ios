@@ -22,6 +22,11 @@ jobs:
     - name: Clean DerivedData
       run: rm -rf ~/Library/Developer/Xcode/DerivedData
 
+    - name: Checkout code
     - uses: actions/checkout@v4
+
+    - name: Generate Folder Structure
+      run: bash generate_folder_structure.sh
+
     - name: Build and run tests
       run: xcodebuild test -scheme PlaybackSDK -destination 'platform=iOS Simulator,name=iPhone 13'
