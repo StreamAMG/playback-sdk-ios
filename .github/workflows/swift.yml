@@ -18,6 +18,10 @@ jobs:
         platform: [ ios ]
 
     steps:
+
+    - name: Clean DerivedData
+      run: rm -rf ~/Library/Developer/Xcode/DerivedData
+
     - uses: actions/checkout@v4
     - name: Build and run tests
       run: xcodebuild test -scheme PlaybackSDK -destination 'platform=iOS Simulator,name=iPhone 13'
