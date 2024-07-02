@@ -16,6 +16,9 @@ internal struct PlaybackUIView: View {
     /// The entry ID of the video to be played.
     private var entryId: String
     
+    /// The title of the video to be played.
+    private var mediaTitle: String?
+    
     /// Optional authorization token if required to fetch the video details.
     private var authorizationToken: String?
     
@@ -37,10 +40,11 @@ internal struct PlaybackUIView: View {
      - entryId: The entry ID of the video to be played.
      - authorizationToken: Optional authorization token if required to fetch the video details.
      */
-    internal init(entryId: String, authorizationToken: String?, onError: ((PlayBackAPIError) -> Void)?) {
+    internal init(entryId: String, authorizationToken: String?, mediaTitle: String?, onError: ((PlayBackAPIError) -> Void)?) {
         self.entryId = entryId
         self.authorizationToken = authorizationToken
         self.onError = onError
+        self.mediaTitle = mediaTitle
     }
     
     /// The body of the view.
@@ -54,7 +58,7 @@ internal struct PlaybackUIView: View {
             } else {
                 if let videoURL = videoURL {
                     if let plugin = pluginManager.selectedPlugin {
-                        plugin.playerView(hlsURLString: videoURL.absoluteString)
+                        plugin.playerView(hlsURLString: videoURL.absoluteString, title: self.mediaTitle ?? "")
                     } else {
                         ErrorUIView(errorMessage: "No plugin selected")
                             .background(Color.white)
