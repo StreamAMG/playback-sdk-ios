@@ -5,9 +5,9 @@ name: SPM Build and Test
 
 on:
   push:
-    branches: [ "feature/unit-test", "main", "release/1.0.3"]
+    branches: [ "feature/unit-test", "main", "release/*"]
   pull_request:
-    branches: [ "feature/unit-test", "main", "release/1.0.3" ]
+    branches: [ "feature/unit-test", "main", "release/*" ]
 
 jobs:
   build:
