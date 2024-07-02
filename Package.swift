@@ -43,6 +43,11 @@ let package = Package(
         ),
         .testTarget(
             name: "PlaybackSDKTests",
-            dependencies: ["PlaybackSDK"]),
+            dependencies: ["PlaybackSDK"],
+            exclude: ["Folder Structure.md"], // Exclude non-Swift test files if needed
+            swiftSettings: [
+                // Set the swift settings specifically for iOS platform
+                .define("iOS_TEST", .when(platforms: [.iOS])),
+            ]),
     ]
 )
