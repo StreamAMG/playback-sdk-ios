@@ -130,8 +130,8 @@ class PlayBackSDKManagerTests: XCTestCase {
                 XCTFail("Empty entry id provided but got HLS stream")
             case .failure(let error):
                 switch error {
-                    case .networkError(_):
-                        hlsExpectation.fulfill()
+                case .networkError(_):
+                    hlsExpectation.fulfill()
                 default:
                     hlsExpectation.fulfill()
                 }
