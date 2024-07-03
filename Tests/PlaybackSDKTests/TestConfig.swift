@@ -8,6 +8,6 @@
 import Foundation
 
 internal struct TestConfig {
-    static let testAPIKey = "f3Beljhmlz2ea7M9TfErE6mKPsAcY3BrasMMEG24"
-    static let testEntryID = "0_k3mz0mf8"
+    static let testAPIKey = "EJEZPIezBkaf0EQ7ey5Iu2MDA2ARUkgc79eyDOnG"
+    static let testEntryID = "0_qt9cy11s"
 }

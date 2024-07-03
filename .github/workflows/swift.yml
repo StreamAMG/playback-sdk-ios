@@ -5,16 +5,28 @@ name: SPM Build and Test
 
 on:
   push:
-    branches: [ "feature/unit-test" ]
+    branches: [ "feature/unit-test", "main", "release/*"]
   pull_request:
-    branches: [ "feature/unit-test" ]
+    branches: [ "feature/unit-test", "main", "release/*" ]
 
 jobs:
   build:
 
     runs-on: macos-latest
+    strategy:
+      matrix:
+        platform: [ ios ]
 
     steps:
-    - uses: actions/checkout@v4
+
+    - name: Clean DerivedData
+      run: rm -rf ~/Library/Developer/Xcode/DerivedData
+
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Generate Folder Structure
+      run: bash generate_folder_structure.sh
+
     - name: Build and run tests
-      run: xcodebuild test -scheme PlaybackSDK -destination 'platform=iOS Simulator,name=iPhone 13'
+      run: xcodebuild test -scheme PlaybackSDK -destination 'platform=iOS Simulator,name=iPhone 15,OS=17.4'
