@@ -10,10 +10,15 @@ import BitmovinPlayer
 import MediaPlayer
 
 public struct BitMovinPlayerView: View {
+    // These targets are used by the MPRemoteCommandCenter,
+    // to remove the command event handlers from memory.
+    @State private var playEventTarget: Any?
+    @State private var pauseEventTarget: Any?
+
     internal let player: Player
     private let playerViewConfig: PlayerViewConfig
     private let hlsURLString: String
-    
+
     private var sourceConfig: SourceConfig? {
         guard let hlsURL = URL(string: hlsURLString) else {
             return nil
@@ -75,35 +80,37 @@ public struct BitMovinPlayerView: View {
             removeRemoteTransportControlsAndAudioSession()
         }
     }
-    
+
     func setupRemoteTransportControls() {
         // Get the shared MPRemoteCommandCenter
         let commandCenter = MPRemoteCommandCenter.shared()
 
         // Add handler for Play Command
-        commandCenter.playCommand.addTarget(handler: playTarget)
+        playEventTarget = commandCenter.playCommand.addTarget(handler: handleRemotePlayEvent)
         commandCenter.playCommand.isEnabled = true
 
         // Add handler for Pause Command
-        commandCenter.pauseCommand.addTarget(handler: pauseTarget)
+        pauseEventTarget = commandCenter.pauseCommand.addTarget(handler: handleRemotePauseEvent)
         commandCenter.pauseCommand.isEnabled = true
     }
-    
+
     /// Remove RemoteCommandCenter and AudioSession
     func removeRemoteTransportControlsAndAudioSession() {
         let commandCenter = MPRemoteCommandCenter.shared()
         commandCenter.playCommand.isEnabled = false
-        commandCenter.playCommand.removeTarget(playTarget)
+        commandCenter.playCommand.removeTarget(playEventTarget)
+        playEventTarget = nil
         commandCenter.pauseCommand.isEnabled = false
-        commandCenter.pauseCommand.removeTarget(pauseTarget)
-        
+        commandCenter.pauseCommand.removeTarget(pauseEventTarget)
+        pauseEventTarget = nil
+
         let sessionAV = AVAudioSession.sharedInstance()
         try? sessionAV.setActive(false, options: AVAudioSession.SetActiveOptions.notifyOthersOnDeactivation)
         MPNowPlayingInfoCenter.default().nowPlayingInfo = [:]
         UIApplication.shared.endReceivingRemoteControlEvents()
     }
-    /// Play Target for RemoteCommandCenter
-    func playTarget(_: MPRemoteCommandEvent) -> MPRemoteCommandHandlerStatus {
+    /// Play event handler for RemoteCommandCenter
+    func handleRemotePlayEvent(_: MPRemoteCommandEvent) -> MPRemoteCommandHandlerStatus {
         guard let player = self.player as? Player else { return .commandFailed }
 
         player.play()
@@ -113,8 +120,8 @@ public struct BitMovinPlayerView: View {
         return .commandFailed
     }
     
-    /// Pause Target for RemoteCommandCenter
-    func pauseTarget(_: MPRemoteCommandEvent) -> MPRemoteCommandHandlerStatus {
+    /// Pause event handler for RemoteCommandCenter
+    func handleRemotePauseEvent(_: MPRemoteCommandEvent) -> MPRemoteCommandHandlerStatus {
         guard let player = self.player as? Player else { return .commandFailed }
         
         player.pause()
