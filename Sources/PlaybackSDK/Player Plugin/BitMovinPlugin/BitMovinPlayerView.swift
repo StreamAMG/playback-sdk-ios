@@ -15,8 +15,8 @@ public struct BitMovinPlayerView: View {
     @State private var playEventTarget: Any?
     @State private var pauseEventTarget: Any?
 
-    internal let player: Player
-    private let playerViewConfig: PlayerViewConfig
+    private let player: Player
+    private let playerViewConfig = PlayerViewConfig()
     private let hlsURLString: String
 
     private var sourceConfig: SourceConfig? {
@@ -27,7 +27,16 @@ public struct BitMovinPlayerView: View {
 
         return sConfig
     }
-    
+
+    public init(hlsURLString: String, player: Player, title: String) {
+
+        self.hlsURLString = hlsURLString
+
+        self.player = player
+
+        setup(title: title)
+    }
+
     public init(hlsURLString: String, playerConfig: PlayerConfig, title: String) {
         
         self.hlsURLString = hlsURLString
@@ -40,21 +49,10 @@ public struct BitMovinPlayerView: View {
         self.player = PlayerFactory.createPlayer(
             playerConfig: playerConfig
         )
-        
-        // Create player view configuration
-        self.playerViewConfig = PlayerViewConfig()
-        
-        // Setup remote control commands to be able to control playback from Control Center
-        setupRemoteTransportControls()
-        
-        // Set playback metadata. Updates to the other metadata values are done in the specific listeners
-        setupNowPlayingMetadata(key: MPMediaItemPropertyTitle, value: title)
-        
-        // Make sure that the correct audio session category is set to allow for background playback.
-        handleAudioSessionCategorySetting()
+
+        setup(title: title)
     }
-    
-    
+
     public var body: some View {
         ZStack {
             Color.black
@@ -70,7 +68,6 @@ public struct BitMovinPlayerView: View {
                 dump(event, name: "[Source Event]", maxDepth: 1)
             }
         }
-       // .padding()
         .onAppear {
             if let sourceConfig = self.sourceConfig {
                 player.load(sourceConfig: sourceConfig)
@@ -97,9 +94,11 @@ public struct BitMovinPlayerView: View {
     /// Remove RemoteCommandCenter and AudioSession
     func removeRemoteTransportControlsAndAudioSession() {
         let commandCenter = MPRemoteCommandCenter.shared()
+
         commandCenter.playCommand.isEnabled = false
         commandCenter.playCommand.removeTarget(playEventTarget)
         playEventTarget = nil
+
         commandCenter.pauseCommand.isEnabled = false
         commandCenter.pauseCommand.removeTarget(pauseEventTarget)
         pauseEventTarget = nil
@@ -111,24 +110,14 @@ public struct BitMovinPlayerView: View {
     }
     /// Play event handler for RemoteCommandCenter
     func handleRemotePlayEvent(_: MPRemoteCommandEvent) -> MPRemoteCommandHandlerStatus {
-        guard let player = self.player as? Player else { return .commandFailed }
-
         player.play()
-        if player.isPlaying {
-            return .success
-        }
-        return .commandFailed
+        return player.isPlaying ? .success : .commandFailed
     }
     
     /// Pause event handler for RemoteCommandCenter
     func handleRemotePauseEvent(_: MPRemoteCommandEvent) -> MPRemoteCommandHandlerStatus {
-        guard let player = self.player as? Player else { return .commandFailed }
-        
         player.pause()
-        if player.isPaused {
-            return .success
-        }
-        return .commandFailed
+        return player.isPaused ? .success : .commandFailed
     }
     
     func setupNowPlayingMetadata(key: String, value: Any) {
@@ -157,6 +146,17 @@ public struct BitMovinPlayerView: View {
             print("Setting category to AVAudioSessionCategoryPlayback failed.")
         }
     }
-    
+
+    private func setup(title: String) {
+
+        // Setup remote control commands to be able to control playback from Control Center
+        setupRemoteTransportControls()
+
+        // Set playback metadata. Updates to the other metadata values are done in the specific listeners
+        setupNowPlayingMetadata(key: MPMediaItemPropertyTitle, value: title)
+
+        // Make sure that the correct audio session category is set to allow for background playback.
+        handleAudioSessionCategorySetting()
+    }
 }
 #endif

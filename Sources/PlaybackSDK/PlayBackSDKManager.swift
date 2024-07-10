@@ -146,8 +146,20 @@ public class PlayBackSDKManager {
      ```swift
      let playerView = loadPlayer(entryID: "exampleEntryID", authorizationToken: "exampleToken")
      */
-    public func loadPlayer(entryID: String, authorizationToken: String? = nil, mediaTitle: String? = nil, onError: ((PlayBackAPIError) -> Void)?) -> some View {
-        return PlaybackUIView(entryId: entryID, authorizationToken: authorizationToken, mediaTitle: mediaTitle, onError: onError)
+    public func loadPlayer(
+        entryID: String,
+        authorizationToken: String? = nil,
+        mediaTitle: String? = nil,
+        onError: ((PlayBackAPIError) -> Void)?
+    ) -> some View {
+
+        PlaybackUIView(
+            entryId: entryID,
+            authorizationToken: authorizationToken,
+            mediaTitle: mediaTitle,
+            onError: onError
+        )
+        .id(entryID)
     }
     
     // MARK: Private fuctions
@@ -197,7 +209,7 @@ public class PlayBackSDKManager {
     ///   - authorizationToken: Authorization token for accessing the video entry.
     ///   - completion: A closure to be called after loading the HLS stream.
     ///                 It receives a result containing the HLS stream URL or an error.
-    internal func loadHLSStream(forEntryId entryId: String, andAuthorizationToken: String?, completion: @escaping (Result<URL, PlayBackAPIError>) -> Void) {
+    public func loadHLSStream(forEntryId entryId: String, andAuthorizationToken: String?, completion: @escaping (Result<URL, PlayBackAPIError>) -> Void) {
         guard let playBackAPIExist = playBackAPI else {
             completion(.failure(PlayBackAPIError.initializationError))
             return

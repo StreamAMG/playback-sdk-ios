@@ -81,8 +81,10 @@ internal struct PlaybackUIView: View {
             switch result {
             case .success(let hlsURL):
                 print("HLS URL: \(hlsURL)")
-                self.videoURL = hlsURL
-                self.hasFetchedVideoDetails = true
+                DispatchQueue.main.async {
+                    self.videoURL = hlsURL
+                    self.hasFetchedVideoDetails = true
+                }
             case .failure(let error):
                 // Trow error to the app
                 onError?(error)
