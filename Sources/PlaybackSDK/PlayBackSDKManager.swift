@@ -209,7 +209,7 @@ public class PlayBackSDKManager {
     ///   - authorizationToken: Authorization token for accessing the video entry.
     ///   - completion: A closure to be called after loading the HLS stream.
     ///                 It receives a result containing the HLS stream URL or an error.
-    public func loadHLSStream(forEntryId entryId: String, andAuthorizationToken: String?, completion: @escaping (Result<URL, PlayBackAPIError>) -> Void) {
+    internal func loadHLSStream(forEntryId entryId: String, andAuthorizationToken: String?, completion: @escaping (Result<URL, PlayBackAPIError>) -> Void) {
         guard let playBackAPIExist = playBackAPI else {
             completion(.failure(PlayBackAPIError.initializationError))
             return

@@ -28,6 +28,14 @@ public struct BitMovinPlayerView: View {
         return sConfig
     }
 
+    /// Initializes the view with the player passed from outside.
+    ///
+    /// This version of the initializer does not modify the `player`'s configuration, so any additional configuration steps 
+    /// like setting `userInterfaceConfig` should be performed externally.
+    ///
+    /// - parameter hlsURLString: Full URL of the HLS video stream that will be loaded by the player as the video source
+    /// - parameter player: Instance of the player that was created and configured outside of this view.
+    /// - parameter title: Video source title that will be set in playback metadata for the "now playing" source
     public init(hlsURLString: String, player: Player, title: String) {
 
         self.hlsURLString = hlsURLString
@@ -37,6 +45,16 @@ public struct BitMovinPlayerView: View {
         setup(title: title)
     }
 
+    /// Initializes the view with an instance of player created inside of it, upon initialization.
+    ///
+    /// In this version of the initializer, a `userInterfaceConfig` is being added to the `playerConfig`'s style configuration.
+    ///
+    /// - Note: If the player config had `userInterfaceConfig` already modified before passing into this `init`,
+    /// those changes will take no effect sicne they will get overwritten here.
+    ///
+    /// - parameter hlsURLString: Full URL of the HLS video stream that will be loaded by the player as the video source
+    /// - parameter playerConfig: Configuration that will be passed into the player upon creation, with an additional update in this initializer.
+    /// - parameter title: Video source title that will be set in playback metadata for the "now playing" source
     public init(hlsURLString: String, playerConfig: PlayerConfig, title: String) {
         
         self.hlsURLString = hlsURLString
