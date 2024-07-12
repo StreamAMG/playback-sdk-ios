@@ -11,8 +11,8 @@ import SwiftUI
 public class BitmovinPlayerPlugin: VideoPlayerPlugin {
 
     private let playerConfig: PlayerConfig
-    private var player: BitMovinPlayerView?
-    
+    private weak var player: Player?
+
     // Required properties
     public let name: String
     public let version: String
@@ -29,36 +29,49 @@ public class BitmovinPlayerPlugin: VideoPlayerPlugin {
         self.version = "1.0.1"
     }
     
-    func getPlayer() -> Player? {
-        return player?.player
-    }
-    
     // MARK: VideoPlayerPlugin protocol implementation
     public func setup(config: VideoPlayerConfig) {
         playerConfig.playbackConfig.isAutoplayEnabled = config.playbackConfig.autoplayEnabled
         playerConfig.playbackConfig.isBackgroundPlaybackEnabled = config.playbackConfig.backgroundPlaybackEnabled
+
+        let uiConfig = BitmovinUserInterfaceConfig()
+        uiConfig.hideFirstFrame = true
+        playerConfig.styleConfig.userInterfaceConfig = uiConfig
     }
     
     public func playerView(hlsURLString: String, title: String = "") -> AnyView {
-        let videoPlayerView = BitMovinPlayerView(hlsURLString: hlsURLString, playerConfig: playerConfig, title: title)
-        
-        self.player = videoPlayerView
-        
-        return AnyView(videoPlayerView)
+
+        // Create player based on player and analytics configurations
+        let player = PlayerFactory.createPlayer(
+            playerConfig: playerConfig
+        )
+
+        self.player = player
+
+        return AnyView(
+            BitMovinPlayerView(
+                hlsURLString: hlsURLString,
+                player: player,
+                title: title
+            )
+        )
     }
-    
+
     public func play() {
-        getPlayer()?.play()
+        player?.play()
     }
-    
+
     public func pause() {
-        getPlayer()?.pause()
+        player?.pause()
     }
-    
+
+    public func unload() {
+        player?.unload()
+    }
+
     public func removePlayer() {
-        player?.player.unload()
-        player?.player.destroy()
-        player = nil
+        player?.unload()
+        player?.destroy()
     }
 }
 

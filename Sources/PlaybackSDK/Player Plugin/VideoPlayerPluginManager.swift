@@ -22,10 +22,10 @@ public class VideoPlayerPluginManager: ObservableObject {
     }
     
     public func removePlugin() {
-           DispatchQueue.main.async {
-               self.selectedPlugin = nil
-           }
-       }
+        DispatchQueue.main.async {
+            self.selectedPlugin = nil
+        }
+    }
 }
 
 #endif
