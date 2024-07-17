@@ -146,8 +146,20 @@ public class PlayBackSDKManager {
      ```swift
      let playerView = loadPlayer(entryID: "exampleEntryID", authorizationToken: "exampleToken")
      */
-    public func loadPlayer(entryID: String, authorizationToken: String? = nil, mediaTitle: String? = nil, onError: ((PlayBackAPIError) -> Void)?) -> some View {
-        return PlaybackUIView(entryId: entryID, authorizationToken: authorizationToken, mediaTitle: mediaTitle, onError: onError)
+    public func loadPlayer(
+        entryID: String,
+        authorizationToken: String? = nil,
+        mediaTitle: String? = nil,
+        onError: ((PlayBackAPIError) -> Void)?
+    ) -> some View {
+
+        PlaybackUIView(
+            entryId: entryID,
+            authorizationToken: authorizationToken,
+            mediaTitle: mediaTitle,
+            onError: onError
+        )
+        .id(entryID)
     }
     
     // MARK: Private fuctions
