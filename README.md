@@ -121,6 +121,6 @@ By default the SDK uses system user agent, so if your app uses native URL Sessio
 To update the documentation, follow these steps:
 
 1. Make changes to the documentation code.
-2. Build the documentation following the instructions in [this URL](https://apple.github.io/swift-docc-plugin/documentation/swiftdoccplugin/publishing-to-github-pages/).
+2. Build the documentation following the instructions in [this URL](https://swiftlang.github.io/swift-docc-plugin/documentation/swiftdoccplugin/publishing-to-github-pages/).
 3. Merge the code into the `gh-pages` branch.
 
