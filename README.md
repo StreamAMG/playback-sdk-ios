@@ -121,6 +121,15 @@ By default the SDK uses system user agent, so if your app uses native URL Sessio
 To update the documentation, follow these steps:
 
 1. Make changes to the documentation code.
-2. Build the documentation following the instructions in [this URL](https://swiftlang.github.io/swift-docc-plugin/documentation/swiftdoccplugin/publishing-to-github-pages/).
-3. Merge the code into the `gh-pages` branch.
-
+2. Build the documentation by running the convenience script from the root of this repository.
+   ```sh
+   ./generate_docc
+   ```
+   or
+   ```sh
+   sh generate_docc
+   ```
+   Alternatively, follow the instructions at [this URL](https://swiftlang.github.io/swift-docc-plugin/documentation/swiftdoccplugin/publishing-to-github-pages/).
+3. Commit and push the changes onto your branch.
+4. Go to [GitHub Pages settings](https://github.com/StreamAMG/playback-sdk-ios/settings/pages), change the Branch in `Build and deployment` section to your branch and press "Save".
+5. After merging, redo step 4 to re-deploy the documentation from the branch where it was merged to.
