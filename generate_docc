@@ -1,0 +1,11 @@
+#!/bin/bash
+
+# This is a convenience script to re-generate Swift DocC documentation to prepare for GitHub Pages publishing
+# Source: https://swiftlang.github.io/swift-docc-plugin/documentation/swiftdoccplugin/publishing-to-github-pages/
+
+swift package --allow-writing-to-directory docs \
+    generate-documentation --target PlaybackSDK \
+    --disable-indexing \
+    --transform-for-static-hosting \
+    --hosting-base-path playback-sdk-ios \
+    --output-path docs
