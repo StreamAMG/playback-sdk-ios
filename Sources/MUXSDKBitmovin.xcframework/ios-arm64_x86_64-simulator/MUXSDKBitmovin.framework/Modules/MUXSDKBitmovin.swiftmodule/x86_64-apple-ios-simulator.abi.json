@@ -1,0 +1,415 @@
+{
+  "ABIRoot": {
+    "kind": "Root",
+    "name": "TopLevel",
+    "printedName": "TopLevel",
+    "children": [
+      {
+        "kind": "Import",
+        "name": "Foundation",
+        "printedName": "Foundation",
+        "declKind": "Import",
+        "moduleName": "MUXSDKBitmovin",
+        "declAttributes": [
+          "RawDocComment"
+        ]
+      },
+      {
+        "kind": "Import",
+        "name": "BitmovinPlayer",
+        "printedName": "BitmovinPlayer",
+        "declKind": "Import",
+        "moduleName": "MUXSDKBitmovin"
+      },
+      {
+        "kind": "TypeDecl",
+        "name": "MUXSDKPlayerBinding",
+        "printedName": "MUXSDKPlayerBinding",
+        "children": [
+          {
+            "kind": "Constructor",
+            "name": "init",
+            "printedName": "init()",
+            "children": [
+              {
+                "kind": "TypeNominal",
+                "name": "MUXSDKPlayerBinding",
+                "printedName": "MUXSDKBitmovin.MUXSDKPlayerBinding",
+                "usr": "c:@M@MUXSDKBitmovin@objc(cs)MUXSDKPlayerBinding"
+              }
+            ],
+            "declKind": "Constructor",
+            "usr": "c:@M@MUXSDKBitmovin@objc(cs)MUXSDKPlayerBinding(im)init",
+            "mangledName": "$s14MUXSDKBitmovin19MUXSDKPlayerBindingCACycfc",
+            "moduleName": "MUXSDKBitmovin",
+            "overriding": true,
+            "implicit": true,
+            "objc_name": "init",
+            "declAttributes": [
+              "Dynamic",
+              "ObjC",
+              "Override"
+            ],
+            "init_kind": "Designated"
+          }
+        ],
+        "declKind": "Class",
+        "usr": "c:@M@MUXSDKBitmovin@objc(cs)MUXSDKPlayerBinding",
+        "mangledName": "$s14MUXSDKBitmovin19MUXSDKPlayerBindingC",
+        "moduleName": "MUXSDKBitmovin",
+        "declAttributes": [
+          "AccessControl",
+          "ObjC"
+        ],
+        "superclassUsr": "c:objc(cs)NSObject",
+        "hasMissingDesignatedInitializers": true,
+        "superclassNames": [
+          "ObjectiveC.NSObject"
+        ],
+        "conformances": [
+          {
+            "kind": "Conformance",
+            "name": "Equatable",
+            "printedName": "Equatable",
+            "usr": "s:SQ",
+            "mangledName": "$sSQ"
+          },
+          {
+            "kind": "Conformance",
+            "name": "Hashable",
+            "printedName": "Hashable",
+            "usr": "s:SH",
+            "mangledName": "$sSH"
+          },
+          {
+            "kind": "Conformance",
+            "name": "CVarArg",
+            "printedName": "CVarArg",
+            "usr": "s:s7CVarArgP",
+            "mangledName": "$ss7CVarArgP"
+          },
+          {
+            "kind": "Conformance",
+            "name": "_KeyValueCodingAndObservingPublishing",
+            "printedName": "_KeyValueCodingAndObservingPublishing",
+            "usr": "s:10Foundation37_KeyValueCodingAndObservingPublishingP",
+            "mangledName": "$s10Foundation37_KeyValueCodingAndObservingPublishingP"
+          },
+          {
+            "kind": "Conformance",
+            "name": "_KeyValueCodingAndObserving",
+            "printedName": "_KeyValueCodingAndObserving",
+            "usr": "s:10Foundation27_KeyValueCodingAndObservingP",
+            "mangledName": "$s10Foundation27_KeyValueCodingAndObservingP"
+          },
+          {
+            "kind": "Conformance",
+            "name": "CustomStringConvertible",
+            "printedName": "CustomStringConvertible",
+            "usr": "s:s23CustomStringConvertibleP",
+            "mangledName": "$ss23CustomStringConvertibleP"
+          },
+          {
+            "kind": "Conformance",
+            "name": "CustomDebugStringConvertible",
+            "printedName": "CustomDebugStringConvertible",
+            "usr": "s:s28CustomDebugStringConvertibleP",
+            "mangledName": "$ss28CustomDebugStringConvertibleP"
+          }
+        ]
+      },
+      {
+        "kind": "Import",
+        "name": "Foundation",
+        "printedName": "Foundation",
+        "declKind": "Import",
+        "moduleName": "MUXSDKBitmovin",
+        "declAttributes": [
+          "RawDocComment"
+        ]
+      },
+      {
+        "kind": "Import",
+        "name": "MuxCore",
+        "printedName": "MuxCore",
+        "declKind": "Import",
+        "moduleName": "MUXSDKBitmovin"
+      },
+      {
+        "kind": "Import",
+        "name": "Foundation",
+        "printedName": "Foundation",
+        "declKind": "Import",
+        "moduleName": "MUXSDKBitmovin",
+        "declAttributes": [
+          "RawDocComment"
+        ]
+      },
+      {
+        "kind": "Import",
+        "name": "BitmovinPlayer",
+        "printedName": "BitmovinPlayer",
+        "declKind": "Import",
+        "moduleName": "MUXSDKBitmovin"
+      },
+      {
+        "kind": "Import",
+        "name": "MuxCore",
+        "printedName": "MuxCore",
+        "declKind": "Import",
+        "moduleName": "MUXSDKBitmovin"
+      },
+      {
+        "kind": "TypeDecl",
+        "name": "MUXSDKStats",
+        "printedName": "MUXSDKStats",
+        "children": [
+          {
+            "kind": "Function",
+            "name": "monitorPlayer",
+            "printedName": "monitorPlayer(player:playerName:customerData:automaticErrorTracking:beaconCollectionDomain:)",
+            "children": [
+              {
+                "kind": "TypeNominal",
+                "name": "Void",
+                "printedName": "()"
+              },
+              {
+                "kind": "TypeNominal",
+                "name": "PlayerView",
+                "printedName": "BitmovinPlayer.PlayerView",
+                "usr": "c:objc(cs)BMPPlayerView"
+              },
+              {
+                "kind": "TypeNominal",
+                "name": "String",
+                "printedName": "Swift.String",
+                "usr": "s:SS"
+              },
+              {
+                "kind": "TypeNominal",
+                "name": "MUXSDKCustomerData",
+                "printedName": "MuxCore.MUXSDKCustomerData",
+                "usr": "c:objc(cs)MUXSDKCustomerData"
+              },
+              {
+                "kind": "TypeNominal",
+                "name": "Bool",
+                "printedName": "Swift.Bool",
+                "hasDefaultArg": true,
+                "usr": "s:Sb"
+              },
+              {
+                "kind": "TypeNominal",
+                "name": "Optional",
+                "printedName": "Swift.String?",
+                "children": [
+                  {
+                    "kind": "TypeNominal",
+                    "name": "String",
+                    "printedName": "Swift.String",
+                    "usr": "s:SS"
+                  }
+                ],
+                "hasDefaultArg": true,
+                "usr": "s:Sq"
+              }
+            ],
+            "declKind": "Func",
+            "usr": "c:@M@MUXSDKBitmovin@objc(cs)MUXSDKStats(cm)monitorPlayerWithPlayer:playerName:customerData:automaticErrorTracking:beaconCollectionDomain:",
+            "mangledName": "$s14MUXSDKBitmovin11MUXSDKStatsC13monitorPlayer6player0E4Name12customerData22automaticErrorTracking22beaconCollectionDomainySo13BMPPlayerViewC_SSSo014MUXSDKCustomerH0CSbSSSgtFZ",
+            "moduleName": "MUXSDKBitmovin",
+            "static": true,
+            "objc_name": "monitorPlayerWithPlayer:playerName:customerData:automaticErrorTracking:beaconCollectionDomain:",
+            "declAttributes": [
+              "Final",
+              "AccessControl",
+              "ObjC",
+              "RawDocComment"
+            ],
+            "funcSelfKind": "NonMutating"
+          },
+          {
+            "kind": "Constructor",
+            "name": "init",
+            "printedName": "init()",
+            "children": [
+              {
+                "kind": "TypeNominal",
+                "name": "MUXSDKStats",
+                "printedName": "MUXSDKBitmovin.MUXSDKStats",
+                "usr": "c:@M@MUXSDKBitmovin@objc(cs)MUXSDKStats"
+              }
+            ],
+            "declKind": "Constructor",
+            "usr": "c:@M@MUXSDKBitmovin@objc(cs)MUXSDKStats(im)init",
+            "mangledName": "$s14MUXSDKBitmovin11MUXSDKStatsCACycfc",
+            "moduleName": "MUXSDKBitmovin",
+            "overriding": true,
+            "implicit": true,
+            "objc_name": "init",
+            "declAttributes": [
+              "Dynamic",
+              "ObjC",
+              "Override"
+            ],
+            "init_kind": "Designated"
+          }
+        ],
+        "declKind": "Class",
+        "usr": "c:@M@MUXSDKBitmovin@objc(cs)MUXSDKStats",
+        "mangledName": "$s14MUXSDKBitmovin11MUXSDKStatsC",
+        "moduleName": "MUXSDKBitmovin",
+        "declAttributes": [
+          "AccessControl",
+          "ObjC"
+        ],
+        "superclassUsr": "c:objc(cs)NSObject",
+        "inheritsConvenienceInitializers": true,
+        "superclassNames": [
+          "ObjectiveC.NSObject"
+        ],
+        "conformances": [
+          {
+            "kind": "Conformance",
+            "name": "Equatable",
+            "printedName": "Equatable",
+            "usr": "s:SQ",
+            "mangledName": "$sSQ"
+          },
+          {
+            "kind": "Conformance",
+            "name": "Hashable",
+            "printedName": "Hashable",
+            "usr": "s:SH",
+            "mangledName": "$sSH"
+          },
+          {
+            "kind": "Conformance",
+            "name": "CVarArg",
+            "printedName": "CVarArg",
+            "usr": "s:s7CVarArgP",
+            "mangledName": "$ss7CVarArgP"
+          },
+          {
+            "kind": "Conformance",
+            "name": "_KeyValueCodingAndObservingPublishing",
+            "printedName": "_KeyValueCodingAndObservingPublishing",
+            "usr": "s:10Foundation37_KeyValueCodingAndObservingPublishingP",
+            "mangledName": "$s10Foundation37_KeyValueCodingAndObservingPublishingP"
+          },
+          {
+            "kind": "Conformance",
+            "name": "_KeyValueCodingAndObserving",
+            "printedName": "_KeyValueCodingAndObserving",
+            "usr": "s:10Foundation27_KeyValueCodingAndObservingP",
+            "mangledName": "$s10Foundation27_KeyValueCodingAndObservingP"
+          },
+          {
+            "kind": "Conformance",
+            "name": "CustomStringConvertible",
+            "printedName": "CustomStringConvertible",
+            "usr": "s:s23CustomStringConvertibleP",
+            "mangledName": "$ss23CustomStringConvertibleP"
+          },
+          {
+            "kind": "Conformance",
+            "name": "CustomDebugStringConvertible",
+            "printedName": "CustomDebugStringConvertible",
+            "usr": "s:s28CustomDebugStringConvertibleP",
+            "mangledName": "$ss28CustomDebugStringConvertibleP"
+          }
+        ]
+      },
+      {
+        "kind": "Import",
+        "name": "Foundation",
+        "printedName": "Foundation",
+        "declKind": "Import",
+        "moduleName": "MUXSDKBitmovin",
+        "declAttributes": [
+          "RawDocComment"
+        ]
+      },
+      {
+        "kind": "Import",
+        "name": "MuxCore",
+        "printedName": "MuxCore",
+        "declKind": "Import",
+        "moduleName": "MUXSDKBitmovin"
+      },
+      {
+        "kind": "Import",
+        "name": "Foundation",
+        "printedName": "Foundation",
+        "declKind": "Import",
+        "moduleName": "MUXSDKBitmovin",
+        "declAttributes": [
+          "RawDocComment"
+        ]
+      },
+      {
+        "kind": "Import",
+        "name": "MuxCore",
+        "printedName": "MuxCore",
+        "declKind": "Import",
+        "moduleName": "MUXSDKBitmovin"
+      },
+      {
+        "kind": "Import",
+        "name": "Foundation",
+        "printedName": "Foundation",
+        "declKind": "Import",
+        "moduleName": "MUXSDKBitmovin",
+        "declAttributes": [
+          "RawDocComment"
+        ]
+      },
+      {
+        "kind": "Import",
+        "name": "MuxCore",
+        "printedName": "MuxCore",
+        "declKind": "Import",
+        "moduleName": "MUXSDKBitmovin"
+      }
+    ],
+    "json_format_version": 8
+  },
+  "ConstValues": [
+    {
+      "filePath": "\/Users\/stefanorussello\/Documents\/Projects\/StreamAMG\/mux-stats-sdk-bitmovin-ios-duplicate\/MUXSDKBitmovin\/MUXSDKBitmovin\/MUXSDKPlayerBinding.swift",
+      "kind": "StringLiteral",
+      "offset": 217,
+      "length": 19,
+      "value": "\"MUXSDKBitmovin.MUXSDKPlayerBinding\""
+    },
+    {
+      "filePath": "\/Users\/stefanorussello\/Documents\/Projects\/StreamAMG\/mux-stats-sdk-bitmovin-ios-duplicate\/MUXSDKBitmovin\/MUXSDKBitmovin\/MUXSDKStats.swift",
+      "kind": "StringLiteral",
+      "offset": 305,
+      "length": 16,
+      "value": "\"BitmovinPlayer\""
+    },
+    {
+      "filePath": "\/Users\/stefanorussello\/Documents\/Projects\/StreamAMG\/mux-stats-sdk-bitmovin-ios-duplicate\/MUXSDKBitmovin\/MUXSDKBitmovin\/MUXSDKStats.swift",
+      "kind": "BooleanLiteral",
+      "offset": 1716,
+      "length": 4,
+      "value": "true"
+    },
+    {
+      "filePath": "\/Users\/stefanorussello\/Documents\/Projects\/StreamAMG\/mux-stats-sdk-bitmovin-ios-duplicate\/MUXSDKBitmovin\/MUXSDKBitmovin\/MUXSDKCustomerDataStore.swift",
+      "kind": "Dictionary",
+      "offset": 281,
+      "length": 3,
+      "value": "[]"
+    },
+    {
+      "filePath": "\/Users\/stefanorussello\/Documents\/Projects\/StreamAMG\/mux-stats-sdk-bitmovin-ios-duplicate\/MUXSDKBitmovin\/MUXSDKBitmovin\/MUXSDKPlayerBindingManager.swift",
+      "kind": "Dictionary",
+      "offset": 283,
+      "length": 3,
+      "value": "[]"
+    }
+  ]
+}

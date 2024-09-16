@@ -12,7 +12,7 @@ let package = Package(
         // Products define the executables and libraries a package produces, making them visible to other packages.
         .library(
             name: "PlaybackSDK",
-            targets: ["PlaybackSDK"]
+            targets: ["PlaybackSDK", "Mux-Stats-Bitmovin"]
         ),
     ],
     
@@ -25,7 +25,11 @@ let package = Package(
             url: "https://github.com/bitmovin/player-ios.git",
             .exact("3.56.1")
         ),
-
+        .package(
+            name: "MuxCore",
+            url: "https://github.com/muxinc/stats-sdk-objc.git",
+            from: "5.1.0"
+        ),
         // other dependencies
         .package(url: "https://github.com/apple/swift-docc-plugin", from: "1.0.0")
         
@@ -37,9 +41,15 @@ let package = Package(
             name: "PlaybackSDK",
             dependencies: [
                 .product(name: "BitmovinPlayer", package: "BitmovinPlayer"),
+                .product(name: "MuxCore", package: "MuxCore"),
+                .target(name: "Mux-Stats-Bitmovin")
             ],
             resources: [
                 .process("PrivacyInfo.xcprivacy")]
+        ),
+        .binaryTarget(
+            name: "Mux-Stats-Bitmovin",
+            path: "./Sources/MUXSDKBitmovin.xcframework"
         ),
         .testTarget(
             name: "PlaybackSDKTests",

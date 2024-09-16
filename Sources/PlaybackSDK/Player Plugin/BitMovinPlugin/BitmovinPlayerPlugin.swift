@@ -7,6 +7,8 @@
 #if !os(macOS)
 import BitmovinPlayer
 import SwiftUI
+import MuxCore
+import MUXSDKBitmovin
 
 public class BitmovinPlayerPlugin: VideoPlayerPlugin {
 
@@ -16,6 +18,8 @@ public class BitmovinPlayerPlugin: VideoPlayerPlugin {
     // Required properties
     public let name: String
     public let version: String
+    
+    let environmentKey = "5lm0oqcj9ghkpnddlnfvkfmgk"
     
     public init() {
         let playerConfig = PlayerConfig()
@@ -27,6 +31,46 @@ public class BitmovinPlayerPlugin: VideoPlayerPlugin {
         self.playerConfig = playerConfig
         self.name = "BitmovinPlayerPlugin"
         self.version = "1.0.1"
+    }
+    
+    private func setupMux() {
+        let playerData = MUXSDKCustomerPlayerData(environmentKey: self.environmentKey)
+        playerData?.playerName = self.name
+        
+        let videoData = MUXSDKCustomerVideoData()
+        videoData.videoTitle = "Title Video Bitmovin"
+        videoData.videoId = "sintel"
+        
+        let viewData = MUXSDKCustomerViewData()
+        viewData.viewSessionId = "my session id"
+        
+        let customData = MUXSDKCustomData()
+        customData.customData1 = "Bitmovin test"
+        customData.customData2 = "Custom Data 2"
+        
+        let viewerData = MUXSDKCustomerViewerData()
+        viewerData.viewerApplicationName = "MUX Bitmovin DemoApp"
+        
+        let customerData = MUXSDKCustomerData(
+            customerPlayerData: playerData,
+            videoData: videoData,
+            viewData: viewData,
+            customData: customData,
+            viewerData: viewerData
+        )
+        
+        guard let playerView = self.player, let data = customerData else {
+            return
+        }
+        
+        if let player = self.player {
+            let playerview = BitmovinPlayerCore.PlayerView(player: player, frame: CGRectZero)
+            MUXSDKStats.monitorPlayer(
+                player: playerview,
+                playerName: self.name,
+                customerData: data
+            )
+        }
     }
     
     // MARK: VideoPlayerPlugin protocol implementation

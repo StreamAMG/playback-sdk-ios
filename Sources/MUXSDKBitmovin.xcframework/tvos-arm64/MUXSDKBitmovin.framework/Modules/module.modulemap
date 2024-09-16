@@ -1,0 +1,4 @@
+framework module MUXSDKBitmovin {
+  header "MUXSDKBitmovin-Swift.h"
+  requires objc
+}
