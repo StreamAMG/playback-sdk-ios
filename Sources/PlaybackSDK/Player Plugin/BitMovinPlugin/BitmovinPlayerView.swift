@@ -1,5 +1,5 @@
 //
-//  BitMovinPlayerView.swift
+//  BitmovinPlayerView.swift
 //
 //
 //  Created by Franco Driansetti on 19/02/2024.
@@ -8,41 +8,39 @@
 import SwiftUI
 import BitmovinPlayer
 import MediaPlayer
+import Combine
 
-public struct BitMovinPlayerView: View {
+public struct BitmovinPlayerView: View {
     // These targets are used by the MPRemoteCommandCenter,
     // to remove the command event handlers from memory.
     @State private var playEventTarget: Any?
     @State private var pauseEventTarget: Any?
 
     private let player: Player
-    private let playerViewConfig = PlayerViewConfig()
-    private let hlsURLString: String
-
-    private var sourceConfig: SourceConfig? {
-        guard let hlsURL = URL(string: hlsURLString) else {
-            return nil
-        }
-        let sConfig = SourceConfig(url: hlsURL, type: .hls)
-
-        return sConfig
-    }
+    private var playerViewConfig = PlayerViewConfig()
+    private var sources: [Source] = []
+    private var playlistConfig: PlaylistConfig?
 
     /// Initializes the view with the player passed from outside.
     ///
     /// This version of the initializer does not modify the `player`'s configuration, so any additional configuration steps 
     /// like setting `userInterfaceConfig` should be performed externally.
     ///
-    /// - parameter hlsURLString: Full URL of the HLS video stream that will be loaded by the player as the video source
+    /// - parameter videoDetails: Full videos details containing name, description, thumbnail, duration as well as URL of the HLS video stream that will be loaded by the player as the video source
     /// - parameter player: Instance of the player that was created and configured outside of this view.
-    /// - parameter title: Video source title that will be set in playback metadata for the "now playing" source
-    public init(hlsURLString: String, player: Player, title: String) {
-
-        self.hlsURLString = hlsURLString
+    public init(videoDetails: [PlaybackResponseModel], player: Player) {
 
         self.player = player
+        
+        sources = createPlaylist(from: videoDetails)
+        
+        let playlistOptions = PlaylistOptions(preloadAllSources: false)
+        
+        playlistConfig = PlaylistConfig(sources: sources, options: playlistOptions)
+        
+        playerViewConfig = PlayerViewConfig()
 
-        setup(title: title)
+        setup(title: videoDetails.first?.name ?? "")
     }
 
     /// Initializes the view with an instance of player created inside of it, upon initialization.
@@ -52,12 +50,11 @@ public struct BitMovinPlayerView: View {
     /// - Note: If the player config had `userInterfaceConfig` already modified before passing into this `init`,
     /// those changes will take no effect sicne they will get overwritten here.
     ///
-    /// - parameter hlsURLString: Full URL of the HLS video stream that will be loaded by the player as the video source
+    /// - parameter hlsURLString: Full videos details containing name, description, thumbnail, duration as well as URL of the HLS video stream that will be loaded by the player as the video source
     /// - parameter playerConfig: Configuration that will be passed into the player upon creation, with an additional update in this initializer.
-    /// - parameter title: Video source title that will be set in playback metadata for the "now playing" source
-    public init(hlsURLString: String, playerConfig: PlayerConfig, title: String) {
+    public init(videoDetails: [PlaybackResponseModel], playerConfig: PlayerConfig) {
         
-        self.hlsURLString = hlsURLString
+//        self.hlsURLArrayString = [hlsURLString]
         
         let uiConfig = BitmovinUserInterfaceConfig()
         uiConfig.hideFirstFrame = true
@@ -67,8 +64,16 @@ public struct BitMovinPlayerView: View {
         self.player = PlayerFactory.createPlayer(
             playerConfig: playerConfig
         )
+        
+        sources = createPlaylist(from: videoDetails)
+        
+        let playlistOptions = PlaylistOptions(preloadAllSources: false)
+        
+        playlistConfig = PlaylistConfig(sources: sources, options: playlistOptions)
+        
+        playerViewConfig = PlayerViewConfig()
 
-        setup(title: title)
+        setup(title: videoDetails.first?.name ?? "")
     }
 
     public var body: some View {
@@ -85,15 +90,47 @@ public struct BitMovinPlayerView: View {
             .onReceive(player.events.on(SourceEvent.self)) { (event: SourceEvent) in
                 dump(event, name: "[Source Event]", maxDepth: 1)
             }
+            .onReceive(Publishers.MergeMany(sources.map { source in
+                source.events.on(SourceEvent.self).map { event in (event, source) }
+            })) { (event: SourceEvent, source: Source) in
+                let sourceIdentifier = source.sourceConfig.title ?? source.sourceConfig.url.absoluteString
+                dump(event, name: "[Source Event] - \(sourceIdentifier)", maxDepth: 1)
+            }
         }
         .onAppear {
-            if let sourceConfig = self.sourceConfig {
-                player.load(sourceConfig: sourceConfig)
+            if let playlistConfig = playlistConfig {
+                player.load(playlistConfig: playlistConfig)
             }
         }
         .onDisappear {
             removeRemoteTransportControlsAndAudioSession()
         }
+    }
+    
+    func createPlaylist(from videoDetails: [PlaybackResponseModel]) -> [Source] {
+        var sources: [Source] = []
+        for details in videoDetails {
+            
+            if let videoSource = createSource(from: details) {
+                sources.append(videoSource)
+            }
+        }
+        
+        return sources
+    }
+    
+    func createSource(from details: PlaybackResponseModel) -> Source? {
+        
+        guard let hlsURLString = details.media?.hls, let hlsURL = URL(string: hlsURLString) else {
+            return nil
+        }
+        
+        let sourceConfig = SourceConfig(url: hlsURL, type: .hls)
+        sourceConfig.title = details.name
+        sourceConfig.posterSource = details.coverImg?._360
+        sourceConfig.sourceDescription = details.description
+
+        return SourceFactory.createSource(from: sourceConfig)
     }
 
     func setupRemoteTransportControls() {

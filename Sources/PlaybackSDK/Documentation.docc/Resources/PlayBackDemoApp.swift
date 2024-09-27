@@ -2,9 +2,9 @@ import SwiftUI
 import PlaybackSDK
 
 @main
-struct PlayBackDemoApp: App {
+struct PlaybackDemoApp: App {
 
-    let sdkManager = PlayBackSDKManager()
+    let sdkManager = PlaybackSDKManager()
     let apiKey = "API_KEY"
     var body: some Scene {
         WindowGroup {
@@ -14,7 +14,7 @@ struct PlayBackDemoApp: App {
 
     init() {
         // Initialize the Playback SDK with the provided API key and base URL
-        PlayBackSDKManager.shared.initialize(apiKey: apiKey) { result in
+        PlaybackSDKManager.shared.initialize(apiKey: apiKey) { result in
             switch result {
             case .success(let license):
                 // Obtained license upon successful initialization

@@ -23,10 +23,10 @@ public class BitmovinPlayerPlugin: VideoPlayerPlugin {
         playerConfig.playbackConfig.isAutoplayEnabled = true
         playerConfig.playbackConfig.isBackgroundPlaybackEnabled = true
         
-        playerConfig.key = PlayBackSDKManager.shared.bitmovinLicense
+        playerConfig.key = PlaybackSDKManager.shared.bitmovinLicense
         self.playerConfig = playerConfig
         self.name = "BitmovinPlayerPlugin"
-        self.version = "1.0.1"
+        self.version = "1.0.1" // TODO: Get the version from Bundle
     }
     
     // MARK: VideoPlayerPlugin protocol implementation
@@ -39,7 +39,7 @@ public class BitmovinPlayerPlugin: VideoPlayerPlugin {
         playerConfig.styleConfig.userInterfaceConfig = uiConfig
     }
     
-    public func playerView(hlsURLString: String, title: String = "") -> AnyView {
+    public func playerView(videoDetails: [PlaybackResponseModel]) -> AnyView {
 
         // Create player based on player and analytics configurations
         let player = PlayerFactory.createPlayer(
@@ -49,10 +49,9 @@ public class BitmovinPlayerPlugin: VideoPlayerPlugin {
         self.player = player
 
         return AnyView(
-            BitMovinPlayerView(
-                hlsURLString: hlsURLString,
-                player: player,
-                title: title
+            BitmovinPlayerView(
+                videoDetails: videoDetails,
+                player: player
             )
         )
     }

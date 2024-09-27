@@ -1,5 +1,5 @@
 //
-//  PlayBackSDKManager.swift
+//  PlaybackSDKManager.swift
 //
 //
 //  Created by Franco Driansetti on 20/02/2024.
@@ -68,13 +68,14 @@ public enum PlaybackErrorReason: Equatable {
 /**
  Define the errors that can occur during API interactions
  */
-public enum PlayBackAPIError: Error {
+public enum PlaybackAPIError: Error {
     
     case invalidResponsePlaybackData
     case invalidPlaybackDataURL
     case invalidPlayerInformationURL
     case initializationError
     case loadHLSStreamError
+    case unknown
 
     case networkError(Error)
     case apiError(statusCode: Int, message: String, reason: PlaybackErrorReason)
@@ -82,15 +83,15 @@ public enum PlayBackAPIError: Error {
 
 
 /// Singleton responsible for initializing the SDK and managing player information
-public class PlayBackSDKManager {
+public class PlaybackSDKManager {
     
     //MARK: Piblic Properties
-    /// Singleton instance of the `PlayBackSDKManager`.
-    public static let shared = PlayBackSDKManager()
+    /// Singleton instance of the `PlaybackSDKManager`.
+    public static let shared = PlaybackSDKManager()
     
     // MARK: Private properties
     private var playerInfoAPI: PlayerInformationAPI?
-    private var playBackAPI: PlayBackAPI?
+    private var playbackAPI: PlaybackAPI?
     private var userAgentHeader: String?
     private var cancellables = Set<AnyCancellable>()
 
@@ -102,7 +103,7 @@ public class PlayBackSDKManager {
     
     // MARK: Public fuctions
     
-    /// Initializes the `PlayBackSDKManager`.
+    /// Initializes the `PlaybackSDKManager`.
     public init() {}
     
     /// Initializes the SDK with the provided API key.
@@ -127,8 +128,8 @@ public class PlayBackSDKManager {
         amgAPIKey = apiKey
         userAgentHeader = userAgent
         playerInfoAPI = PlayerInformationAPIService(apiKey: apiKey)
-        let playBackAPIService = PlayBackAPIService(apiKey: apiKey)
-        self.playBackAPI = playBackAPIService
+        let playbackAPIService = PlaybackAPIService(apiKey: apiKey)
+        self.playbackAPI = playbackAPIService
         /// Fetching Bitmovin license
         fetchPlayerInfo(completion: completion)
     }
@@ -149,17 +150,42 @@ public class PlayBackSDKManager {
     public func loadPlayer(
         entryID: String,
         authorizationToken: String? = nil,
-        mediaTitle: String? = nil,
-        onError: ((PlayBackAPIError) -> Void)?
+        onError: ((PlaybackAPIError) -> Void)?
     ) -> some View {
 
         PlaybackUIView(
-            entryId: entryID,
+            entryId: [entryID],
             authorizationToken: authorizationToken,
-            mediaTitle: mediaTitle,
             onError: onError
         )
         .id(entryID)
+    }
+    
+    /**
+     Loads a video player with the specified entry ID and authorization token.
+     
+     - Parameters:
+     - entryIDs: A list of the videos to be loaded.
+     - authorizationToken: The token used for authorization to access the video content.
+     
+     - Returns: A view representing the video player configured with the provided entry ID and authorization token.
+     
+     Example usage:
+     ```swift
+     let playerView = loadPlayer(entryIDs: ["exampleEntryID1", "exampleEntryID2"], authorizationToken: "exampleToken")
+     */
+    public func loadPlaylist(
+        entryIDs: [String],
+        authorizationToken: String? = nil,
+        onErrors: (([PlaybackAPIError]) -> Void)?
+    ) -> some View {
+
+        PlaybackUIView(
+            entryId: entryIDs,
+            authorizationToken: authorizationToken,
+            onErrors: onErrors
+        )
+        .id(entryIDs.first)
     }
     
     // MARK: Private fuctions
@@ -203,20 +229,69 @@ public class PlayBackSDKManager {
             .store(in: &cancellables)
     }
     
+    internal func loadAllHLSStream(forEntryIds listEntryId: [String], andAuthorizationToken: String?, completion: @escaping (Result<([PlaybackResponseModel], [PlaybackAPIError]), PlaybackAPIError>) -> Void) {
+        
+        var videoDetails: [PlaybackResponseModel] = []
+        var playbackErrors: [PlaybackAPIError] = []
+        
+        guard let playbackAPIExist = playbackAPI else {
+            completion(.failure(PlaybackAPIError.initializationError))
+            return
+        }
+        
+        let publishers = listEntryId.compactMap { entryId in
+            return playbackAPIExist.getVideoDetails(forEntryId: entryId, andAuthorizationToken: andAuthorizationToken, userAgent: userAgentHeader)
+        }
+
+        _ = Publishers.MergeMany(publishers)
+            .sink(receiveCompletion: { result in
+                switch result {
+                case .failure(let error):
+                    print("Error getting details")
+                    if let apiError = error as? PlaybackAPIError {
+                        playbackErrors.append(apiError)
+                    } else {
+                        playbackErrors.append(.networkError(error))
+                    }
+                case .finished:
+                    print("Video details fetched successfully.")
+                    completion(.success((videoDetails, playbackErrors)))
+//                    break
+                }
+            }, receiveValue: { details in
+                // Print the received video details
+                print("Received video details...")
+                switch details {
+                case .failure(let error):
+                    print("Error getting video details \(error)")
+                    if let apiError = error as? PlaybackAPIError {
+                        playbackErrors.append(apiError)
+                    } else {
+                        playbackErrors.append(.networkError(error))
+                    }
+                case .success(let response):
+                    print("Video details fetched successfully \(response)")
+                    videoDetails.append(response)
+                }
+            })
+            .store(in: &cancellables)
+    }
+    
     /// Loads an HLS stream for the given entry ID.
     /// - Parameters:
     ///   - entryId: The ID of the video entry.
     ///   - authorizationToken: Authorization token for accessing the video entry.
     ///   - completion: A closure to be called after loading the HLS stream.
     ///                 It receives a result containing the HLS stream URL or an error.
-    internal func loadHLSStream(forEntryId entryId: String, andAuthorizationToken: String?, completion: @escaping (Result<URL, PlayBackAPIError>) -> Void) {
-        guard let playBackAPIExist = playBackAPI else {
-            completion(.failure(PlayBackAPIError.initializationError))
+    internal func loadHLSStream(forEntryId entryId: String, andAuthorizationToken: String?, completion: @escaping (Result<PlaybackResponseModel, PlaybackAPIError>) -> Void) {
+        
+        guard let playbackAPIExist = playbackAPI else {
+            completion(.failure(PlaybackAPIError.initializationError))
             return
         }
         
         // Call the /entry endpoint for the given entry ID
-        playBackAPIExist.getVideoDetails(
+        playbackAPIExist.getVideoDetails(
             forEntryId: entryId,
             andAuthorizationToken: andAuthorizationToken,
             userAgent: userAgentHeader
@@ -224,7 +299,7 @@ public class PlayBackSDKManager {
             .sink(receiveCompletion: { result in
                 switch result {
                 case .failure(let error):
-                    if let playbackAPIError = error as? PlayBackAPIError {
+                    if let playbackAPIError = error as? PlaybackAPIError {
                         completion(.failure(playbackAPIError))
                     } else {
                         completion(.failure(.networkError(error)))
@@ -233,19 +308,20 @@ public class PlayBackSDKManager {
                     print("Video details fetched successfully.")
                     break
                 }
-            }, receiveValue: { videoDetails in
+            }, receiveValue: { result in
                 // Print the received video details
-                print("Received video details: \(videoDetails)")
-                
-                // Extract the HLS stream URL from video details
-                guard let hlsURLString = videoDetails.media?.hls,
-                      let hlsURL = URL(string: hlsURLString) else {
-                    completion(.failure(PlayBackAPIError.loadHLSStreamError))
-                    return
+                print("Received video details: \(result)")
+                switch result {
+                case .failure(let error):
+                    if let playbackAPIError = error as? PlaybackAPIError {
+                        completion(.failure(playbackAPIError))
+                    } else {
+                        completion(.failure(.networkError(error)))
+                    }
+                case .success(let details):
+                    // Call the completion handler with the HLS stream URL
+                    completion(.success(details))
                 }
-                
-                // Call the completion handler with the HLS stream URL
-                completion(.success(hlsURL))
             })
             .store(in: &cancellables)
     }

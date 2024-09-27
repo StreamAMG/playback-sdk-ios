@@ -2,11 +2,11 @@
 
 PlaybackSDK/
 
-├── PlayBackAPI/
+├── PlaybackAPI/
 
-│   ├── PlayBackAPI.h
+│   ├── PlaybackAPI.h
 
-│   ├── PlayBackAPIService.h
+│   ├── PlaybackAPIService.h
 
 │   └── PlaybackResponseModel.h
 
@@ -38,4 +38,4 @@ PlaybackSDK/
 
     └── BitMovinPlayerView.h
 
-PlayBackSDKManager.h
+PlaybackSDKManager.h

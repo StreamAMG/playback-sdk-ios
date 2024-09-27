@@ -78,7 +78,7 @@ To load the player UI in your application, use the `loadPlayer` method of the `P
 Example:
 
 ```swift
-PlayBackSDKManager.shared.loadPlayer(entryID: entryId, authorizationToken: authorizationToken) { error in
+PlaybackSDKManager.shared.loadPlayer(entryID: entryId, authorizationToken: authorizationToken) { error in
     // Handle player UI error 
 } 
 ```
@@ -88,7 +88,7 @@ To play on-demand and live videos that require authorization, at some point befo
 ```swift
 "\(baseURL)/sso/start?token=\(authorizationToken)"
 ```
-Then the same token should be passed into the `loadPlayer(entryID:, authorizationToken:)` method of `PlayBackSDkManager`.
+Then the same token should be passed into the `loadPlayer(entryID:, authorizationToken:)` method of `PlaybackSDkManager`.
 For the free videos that user should be able to watch without logging in, starting the session is not required and `authorizationToken` can be set to an empty string.  
 
 > [!NOTE]
@@ -100,7 +100,7 @@ Sometimes a custom `user-agent` header is automatically set for the requests on 
 Example:
 
 ```swift
-PlayBackSDKManager.shared.initialize(
+PlaybackSDKManager.shared.initialize(
     apiKey: apiKey,
     baseURL: baseURL,
     userAgent: customUserAgent

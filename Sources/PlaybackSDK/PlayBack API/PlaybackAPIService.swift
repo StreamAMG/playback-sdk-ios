@@ -1,5 +1,5 @@
 //
-//  PlayBackAPIService.swift
+//  PlaybackAPIService.swift
 //
 //
 //  Created by Franco Driansetti on 19/02/2024.
@@ -11,8 +11,8 @@ import Combine
 /**
  A service class responsible for handling playback API requests.
  */
-internal class PlayBackAPIService: PlayBackAPI {
-    
+internal class PlaybackAPIService: PlaybackAPI {
+
     /// The API key required for authentication.
     private let apiKey: String
 
@@ -31,15 +31,15 @@ internal class PlayBackAPIService: PlayBackAPI {
      - Parameters:
         - entryId: The unique identifier of the video entry.
         - andAuthorizationToken: Optional authorization token, can be nil for free videos.
-     - Returns: A publisher emitting the response model or an error.
+     - Returns: A publisher emitting a result with a response model with an error or a critical error.
      */
     func getVideoDetails(
         forEntryId entryId: String,
         andAuthorizationToken: String?,
         userAgent: String?
-    ) -> AnyPublisher<PlaybackResponseModel, Error> {
-        guard let url = URL(string: "\(PlayBackSDKManager.shared.baseURL)/entry/\(entryId)") else {
-            return Fail(error: PlayBackAPIError.invalidPlaybackDataURL).eraseToAnyPublisher()
+    ) -> AnyPublisher<Result<PlaybackResponseModel, Error>, Error> {
+        guard let url = URL(string: "\(PlaybackSDKManager.shared.baseURL)/entry/\(entryId)") else {
+            return Fail(error: PlaybackAPIError.invalidPlaybackDataURL).eraseToAnyPublisher()
         }
 
         var request = URLRequest(url: url)
@@ -59,34 +59,36 @@ internal class PlayBackAPIService: PlayBackAPI {
         return URLSession.shared.dataTaskPublisher(for: request)
             .tryMap { data, response in
                 guard let httpResponse = response as? HTTPURLResponse else {
-                    throw PlayBackAPIError.invalidResponsePlaybackData
+                    return .failure(PlaybackAPIError.invalidResponsePlaybackData)
                 }
                 
                 switch httpResponse.statusCode {
                 case 200...299:
-                    return data
+                    if let response = try? JSONDecoder().decode(PlaybackResponseModel.self, from: data) {
+                        return .success(response)
+                    } else {
+                        return .failure(PlaybackAPIError.invalidResponsePlaybackData)
+                    }
                 default:
                     let decoder = JSONDecoder()
                     if let errorResponse = try? decoder.decode(PlaybackResponseModel.self, from: data) {       
                         let errorReason = errorResponse.reason ?? "Unknown authentication error reason"
-                        throw PlayBackAPIError.apiError(statusCode: httpResponse.statusCode, message: errorResponse.message ?? "Unknown authentication error message", reason: PlaybackErrorReason(fromString: errorReason))
+                        return .failure(PlaybackAPIError.apiError(statusCode: httpResponse.statusCode, message: errorResponse.message ?? "Unknown authentication error message", reason: PlaybackErrorReason(fromString: errorReason)))
                     } else {
                         let errorReason = "Unknown authentication error reason"
-                        throw PlayBackAPIError.apiError(statusCode: httpResponse.statusCode, message: "Unknown authentication error", reason: PlaybackErrorReason(fromString: errorReason))
+                        return .failure(PlaybackAPIError.apiError(statusCode: httpResponse.statusCode, message: "Unknown authentication error", reason: PlaybackErrorReason(fromString: errorReason)))
                     }
                 }
             }
-            .decode(type: PlaybackResponseModel.self, decoder: JSONDecoder())
             .mapError { error in
-                if let apiError = error as? PlayBackAPIError {
+                if let apiError = error as? PlaybackAPIError {
                     return apiError
                 } else {
-                    return PlayBackAPIError.networkError(error)
+                    return PlaybackAPIError.networkError(error)
                 }
             }
             .eraseToAnyPublisher()
     }
-
 }
 
 

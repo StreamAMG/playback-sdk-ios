@@ -1,6 +1,6 @@
 import Foundation
 
-PlayBackSDKManager.shared.initialize(apiKey: settingsManager.apiKey, baseURL: settingsManager.baseURL) { result in
+PlaybackSDKManager.shared.initialize(apiKey: settingsManager.apiKey, baseURL: settingsManager.baseURL) { result in
     switch result {
     case .success(let license):
         print("SDK initialized with license: \(license)")

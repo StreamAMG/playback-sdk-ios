@@ -1,5 +1,5 @@
 //
-//  PlayBackSDKManagerTests.swift.swift
+//  PlaybackSDKManagerTests.swift.swift
 //
 //
 //  Created by Franco Driansetti on 29/02/2024.
@@ -9,16 +9,16 @@ import XCTest
 import Combine
 @testable import PlaybackSDK
 
-class PlayBackSDKManagerTests: XCTestCase {
+class PlaybackSDKManagerTests: XCTestCase {
 
     var cancellables = Set<AnyCancellable>()
-    var manager: PlayBackSDKManager!
+    var manager: PlaybackSDKManager!
     var apiKey: String!
     var entryID: String!
 
     override func setUpWithError() throws {
         try super.setUpWithError()
-        manager = PlayBackSDKManager()
+        manager = PlaybackSDKManager()
         apiKey = TestConfig.testAPIKey
         XCTAssertNotNil(apiKey, "API key should be provided via environment variable")
         entryID = TestConfig.testEntryID
