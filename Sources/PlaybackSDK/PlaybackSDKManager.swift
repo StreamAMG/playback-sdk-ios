@@ -247,19 +247,19 @@ public class PlaybackSDKManager {
             .sink(receiveCompletion: { result in
                 switch result {
                 case .failure(let error):
-                    print("Error getting details")
+                    print("Error API call getting details")
                     if let apiError = error as? PlaybackAPIError {
                         playbackErrors.append(apiError)
                     } else {
                         playbackErrors.append(.networkError(error))
                     }
                 case .finished:
-                    print("Video details fetched successfully.")
+                    print("All video details fetched successfully.")
                     completion(.success((videoDetails, playbackErrors)))
 //                    break
                 }
             }, receiveValue: { details in
-                // Print the received video details
+                // Print the received single video details
                 print("Received video details...")
                 switch details {
                 case .failure(let error):
@@ -270,7 +270,7 @@ public class PlaybackSDKManager {
                         playbackErrors.append(.networkError(error))
                     }
                 case .success(let response):
-                    print("Video details fetched successfully \(response)")
+                    print("Single video details fetched successfully \(response)")
                     videoDetails.append(response)
                 }
             })
@@ -299,6 +299,7 @@ public class PlaybackSDKManager {
             .sink(receiveCompletion: { result in
                 switch result {
                 case .failure(let error):
+                    // API call failure
                     if let playbackAPIError = error as? PlaybackAPIError {
                         completion(.failure(playbackAPIError))
                     } else {
@@ -309,10 +310,11 @@ public class PlaybackSDKManager {
                     break
                 }
             }, receiveValue: { result in
-                // Print the received video details
+                // Print the received single video details
                 print("Received video details: \(result)")
                 switch result {
                 case .failure(let error):
+                    // Getting video details error
                     if let playbackAPIError = error as? PlaybackAPIError {
                         completion(.failure(playbackAPIError))
                     } else {

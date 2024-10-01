@@ -19,7 +19,22 @@ public struct BitmovinPlayerView: View {
     private let player: Player
     private var playerViewConfig = PlayerViewConfig()
     private var sources: [Source] = []
-    private var playlistConfig: PlaylistConfig?
+    
+    private var playlistConfig: PlaylistConfig? {
+        if sources.isEmpty || sources.count == 1 {
+            return nil
+        }
+        let playlistOptions = PlaylistOptions(preloadAllSources: false)
+        return PlaylistConfig(sources: sources, options: playlistOptions)
+    }
+    
+    private var sourceConfig: SourceConfig? {
+        if sources.isEmpty || sources.count > 1 {
+            return nil
+        }
+        let sConfig = sources.first!.sourceConfig
+        return sConfig
+    }
 
     /// Initializes the view with the player passed from outside.
     ///
@@ -32,15 +47,11 @@ public struct BitmovinPlayerView: View {
 
         self.player = player
         
+        playerViewConfig = PlayerViewConfig()
+        
         sources = createPlaylist(from: videoDetails)
         
-        let playlistOptions = PlaylistOptions(preloadAllSources: false)
-        
-        playlistConfig = PlaylistConfig(sources: sources, options: playlistOptions)
-        
-        playerViewConfig = PlayerViewConfig()
-
-        setup(title: videoDetails.first?.name ?? "")
+        setupRemoteCommandCenter(title: videoDetails.first?.name ?? "")
     }
 
     /// Initializes the view with an instance of player created inside of it, upon initialization.
@@ -54,8 +65,6 @@ public struct BitmovinPlayerView: View {
     /// - parameter playerConfig: Configuration that will be passed into the player upon creation, with an additional update in this initializer.
     public init(videoDetails: [PlaybackResponseModel], playerConfig: PlayerConfig) {
         
-//        self.hlsURLArrayString = [hlsURLString]
-        
         let uiConfig = BitmovinUserInterfaceConfig()
         uiConfig.hideFirstFrame = true
         playerConfig.styleConfig.userInterfaceConfig = uiConfig
@@ -67,13 +76,7 @@ public struct BitmovinPlayerView: View {
         
         sources = createPlaylist(from: videoDetails)
         
-        let playlistOptions = PlaylistOptions(preloadAllSources: false)
-        
-        playlistConfig = PlaylistConfig(sources: sources, options: playlistOptions)
-        
-        playerViewConfig = PlayerViewConfig()
-
-        setup(title: videoDetails.first?.name ?? "")
+        setupRemoteCommandCenter(title: videoDetails.first?.name ?? "")
     }
 
     public var body: some View {
@@ -96,10 +99,16 @@ public struct BitmovinPlayerView: View {
                 let sourceIdentifier = source.sourceConfig.title ?? source.sourceConfig.url.absoluteString
                 dump(event, name: "[Source Event] - \(sourceIdentifier)", maxDepth: 1)
             }
+            // Disable player touch in case video or playlist not been loaded
+            .allowsHitTesting(self.sourceConfig != nil || self.playlistConfig != nil)
         }
         .onAppear {
-            if let playlistConfig = playlistConfig {
+            if let playlistConfig = self.playlistConfig {
+                // Multiple videos with playlist available so load player with playlistConfig
                 player.load(playlistConfig: playlistConfig)
+            } else if let sourceConfig = self.sourceConfig {
+                // Single video available so load player with sourceConfig
+                player.load(sourceConfig: sourceConfig)
             }
         }
         .onDisappear {
@@ -202,7 +211,7 @@ public struct BitmovinPlayerView: View {
         }
     }
 
-    private func setup(title: String) {
+    private func setupRemoteCommandCenter(title: String) {
 
         // Setup remote control commands to be able to control playback from Control Center
         setupRemoteTransportControls()
