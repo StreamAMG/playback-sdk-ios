@@ -27,7 +27,10 @@ internal struct PlaybackUIView: View {
     
     /// The fetched video details of the entryIDs
     @State private var videoDetails: [PlaybackResponseModel]?
+    /// Array of errors for fetching playlist details
     @State private var playlistErrors: [PlaybackAPIError]?
+    /// Error of failed API call for loading video details
+    @State private var failureError: PlaybackAPIError?
     
     /// Closure to handle errors during a single HLS stream loading.
     private var onError: ((PlaybackAPIError) -> Void)?
@@ -76,6 +79,9 @@ internal struct PlaybackUIView: View {
                         ErrorUIView(errorMessage: "No plugin selected")
                             .background(Color.white)
                     }
+                } else if let locDesc = self.failureError?.localizedDescription {
+                    ErrorUIView(errorMessage: locDesc)
+                        .background(Color.white)
                 } else {
                     ErrorUIView(errorMessage: "Invalid Video Details")
                         .background(Color.white)
@@ -108,6 +114,8 @@ internal struct PlaybackUIView: View {
                 // Trow error to the app
                 onError?(error)
                 onErrors?([error])
+                self.failureError = error
+                self.hasFetchedVideoDetails = true
                 print("Error loading videos details: \(error)")
             }
         }

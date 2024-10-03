@@ -81,11 +81,33 @@ public enum PlaybackAPIError: Error {
     case apiError(statusCode: Int, message: String, reason: PlaybackErrorReason)
 }
 
+extension PlaybackAPIError: LocalizedError {
+    public var errorDescription: String? {
+        switch self {
+        case .invalidResponsePlaybackData:
+            return NSLocalizedString("Invalid Response Playback data", comment: "")
+        case .invalidPlaybackDataURL:
+            return NSLocalizedString("Invalid Playback data URL", comment: "")
+        case .invalidPlayerInformationURL:
+            return NSLocalizedString("Invalid Player Information URL", comment: "")
+        case .initializationError:
+            return NSLocalizedString("Initialization error", comment: "")
+        case .loadHLSStreamError:
+            return NSLocalizedString("Load HLS Stream error", comment: "")
+        case .unknown:
+            return NSLocalizedString("Unknown", comment: "")
+        case .networkError(let error):
+            return NSLocalizedString("Network error \(error.localizedDescription)", comment: "")
+        case .apiError(statusCode: let statusCode, message: let message, reason: let reason):
+            return NSLocalizedString("API error: [\(statusCode)] \(message)", comment: "")
+        }
+    }
+}
 
 /// Singleton responsible for initializing the SDK and managing player information
 public class PlaybackSDKManager {
     
-    //MARK: Piblic Properties
+    //MARK: Public Properties
     /// Singleton instance of the `PlaybackSDKManager`.
     public static let shared = PlaybackSDKManager()
     
@@ -242,36 +264,38 @@ public class PlaybackSDKManager {
         let publishers = listEntryId.compactMap { entryId in
             return playbackAPIExist.getVideoDetails(forEntryId: entryId, andAuthorizationToken: andAuthorizationToken, userAgent: userAgentHeader)
         }
-
-        _ = Publishers.MergeMany(publishers)
+        
+        combineOrder(publishers)
             .sink(receiveCompletion: { result in
                 switch result {
                 case .failure(let error):
                     print("Error API call getting details")
                     if let apiError = error as? PlaybackAPIError {
-                        playbackErrors.append(apiError)
+                        completion(.failure(apiError))
                     } else {
-                        playbackErrors.append(.networkError(error))
+                        completion(.failure(.networkError(error)))
                     }
                 case .finished:
                     print("All video details fetched successfully.")
                     completion(.success((videoDetails, playbackErrors)))
-//                    break
                 }
             }, receiveValue: { details in
-                // Print the received single video details
-                print("Received video details...")
-                switch details {
-                case .failure(let error):
-                    print("Error getting video details \(error)")
-                    if let apiError = error as? PlaybackAPIError {
-                        playbackErrors.append(apiError)
-                    } else {
-                        playbackErrors.append(.networkError(error))
+                // Received all sorted video details in an array of Result
+                print("Received all sorted video details...")
+                
+                for result in details {
+                    switch result {
+                    case .failure(let error):
+                        print("Error getting video details \(error)")
+                        if let apiError = error as? PlaybackAPIError {
+                            playbackErrors.append(apiError)
+                        } else {
+                            playbackErrors.append(.networkError(error))
+                        }
+                    case .success(let response):
+                        print("Single video details fetched successfully \(response)")
+                        videoDetails.append(response)
                     }
-                case .success(let response):
-                    print("Single video details fetched successfully \(response)")
-                    videoDetails.append(response)
                 }
             })
             .store(in: &cancellables)
@@ -326,6 +350,15 @@ public class PlaybackSDKManager {
                 }
             })
             .store(in: &cancellables)
+    }
+    
+    func combineOrder<Pub>(_ pubs: [Pub]) -> AnyPublisher<[Pub.Output], Pub.Failure> where Pub: Publisher {
+        guard !pubs.isEmpty else { return Empty().eraseToAnyPublisher() }
+        return pubs.dropFirst().reduce(pubs[0].map { [$0] }.eraseToAnyPublisher()) { partial, next in
+            partial.combineLatest(next)
+                .map { $0 + [$1] }
+                .eraseToAnyPublisher()
+        }
     }
 }
 
