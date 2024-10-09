@@ -63,6 +63,52 @@ public class BitmovinPlayerPlugin: VideoPlayerPlugin {
     public func pause() {
         player?.pause()
     }
+    
+    public func next() {
+        if let index = player?.playlist.sources.firstIndex(where: { $0.isActive }) {
+            if index < (player?.playlist.sources.count ?? 0) - 1, let nextSource = player?.playlist.sources[(index) + 1] {
+                player?.playlist.seek(source: nextSource, time: 0)
+            }
+        }
+    }
+    
+    public func previous() {
+        if let index = player?.playlist.sources.firstIndex(where: { $0.isActive }) {
+            if index > 0, let prevSource = player?.playlist.sources[(index) - 1] {
+                player?.playlist.seek(source: prevSource, time: 0)
+            }
+        }
+    }
+    
+    public func last() {
+        if let lastSource = player?.playlist.sources.last {
+            player?.playlist.seek(source: lastSource, time: 0)
+        }
+    }
+    
+    public func first() {
+        if let firstSource = player?.playlist.sources.first {
+            player?.playlist.seek(source: firstSource, time: 0)
+        }
+    }
+    
+    public func seek(to entryId: String) {
+        if let index = player?.playlist.sources.firstIndex(where: { $0.metadata?["entryId"] as? String == entryId }) {
+            if let source = player?.playlist.sources[index] {
+                player?.playlist.seek(source: source, time: 0)
+                player?.play()
+            }
+        }
+    }
+    
+    public func activeEntryId() -> String? {
+        if let index = player?.playlist.sources.firstIndex(where: { $0.isActive }) {
+            if let entryId = player?.playlist.sources[index].metadata?["entryId"] as? String {
+                return entryId
+            }
+        }
+        return nil
+    }
 
     public func unload() {
         player?.unload()

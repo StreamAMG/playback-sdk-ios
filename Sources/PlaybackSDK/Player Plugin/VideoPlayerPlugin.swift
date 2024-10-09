@@ -23,7 +23,19 @@ public protocol VideoPlayerPlugin: AnyObject {
     
     func play()
     
-    func pause() 
+    func pause()
+    
+    func next()
+    
+    func previous()
+    
+    func last()
+    
+    func first()
+    
+    func seek(to entryId: String)
+    
+    func activeEntryId() -> String?
     
     func removePlayer() 
 }

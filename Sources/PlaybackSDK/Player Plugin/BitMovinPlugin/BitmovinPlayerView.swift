@@ -138,7 +138,14 @@ public struct BitmovinPlayerView: View {
         sourceConfig.title = details.name
         sourceConfig.posterSource = details.coverImg?._360
         sourceConfig.sourceDescription = details.description
-
+        let regex = try! NSRegularExpression(pattern: "/entryId/(.+?)/")
+        let range = NSRange(location: 0, length: hlsURLString.count)
+        if let match = regex.firstMatch(in: hlsURLString, options: [], range: range) {
+            if let swiftRange = Range(match.range(at: 1), in: hlsURLString) {
+                let entryId = hlsURLString[swiftRange]
+                sourceConfig.metadata["entryId"] = String(entryId)
+            }
+        }
         return SourceFactory.createSource(from: sourceConfig)
     }
 
