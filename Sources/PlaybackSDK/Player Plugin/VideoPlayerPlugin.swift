@@ -7,24 +7,38 @@
 #if !os(macOS)
 import AVFoundation
 import SwiftUI
+import Combine
 
 // Protocol for defining a video player plugin
 public protocol VideoPlayerPlugin: AnyObject {
     
     var name: String { get }
     var version: String { get }
+    var event: AnyPublisher<Any, Never> { get }
     
     func setup(config: VideoPlayerConfig)
     
     // TODO: add event
     /// func handleEvent(event: BitmovinPlayerCore.PlayerEvent)
     
-    func playerView(hlsURLString: String, title: String) -> AnyView
+    func playerView(videoDetails: [PlaybackResponseModel]) -> AnyView
     
     func play()
     
-    func pause() 
+    func pause()
     
-    func removePlayer() 
+    func next()
+    
+    func previous()
+    
+    func last()
+    
+    func first()
+    
+    func seek(to entryId: String) -> Bool
+    
+    func activeEntryId() -> String?
+    
+    func removePlayer()
 }
 #endif

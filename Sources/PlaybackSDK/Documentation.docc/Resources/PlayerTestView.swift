@@ -9,7 +9,7 @@ struct PlayerTestView: View {
     var body: some View {
         VStack {
             // Load player with the playback SDK
-            PlayBackSDKManager.shared.loadPlayer(entryID: entryID, authorizationToken: authorizationToken) { error in
+            PlaybackSDKManager.shared.loadPlayer(entryID: entryID, authorizationToken: authorizationToken) { error in
                 handlePlaybackError(error)
             }
             .onDisappear {

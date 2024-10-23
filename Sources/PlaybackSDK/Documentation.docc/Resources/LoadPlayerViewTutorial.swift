@@ -1,6 +1,6 @@
 import Foundation
 
-PlayBackSDKManager.shared.loadPlayer(entryID: settingsManager.entryId, authorizationToken: settingsManager.authorizationToken, onError: { error in
+PlaybackSDKManager.shared.loadPlayer(entryID: settingsManager.entryId, authorizationToken: settingsManager.authorizationToken, onError: { error in
     // Handle the error here
     switch error {
     case .apiError(let statusCode, _):

@@ -3,9 +3,9 @@ import PlaybackSDK
 import Alamofire
 
 @main
-struct PlayBackDemoApp: App {
+struct PlaybackDemoApp: App {
 
-    let sdkManager = PlayBackSDKManager()
+    let sdkManager = PlaybackSDKManager()
     let apiKey = "API_KEY"
     var body: some Scene {
         WindowGroup {
@@ -18,7 +18,7 @@ struct PlayBackDemoApp: App {
         let userAgent = AF.session.configuration.httpAdditionalHeaders?["User-Agent"]
 
         // Initialize the Playback SDK with the provided API key and custom user-agent
-        PlayBackSDKManager.shared.initialize(apiKey: apiKey, userAgent: userAgent) { result in
+        PlaybackSDKManager.shared.initialize(apiKey: apiKey, userAgent: userAgent) { result in
             switch result {
             case .success(let license):
                 // Obtained license upon successful initialization

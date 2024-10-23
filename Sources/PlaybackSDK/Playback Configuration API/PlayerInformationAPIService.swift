@@ -17,8 +17,8 @@ internal class PlayerInformationAPIService: PlayerInformationAPI {
     }
     
     func getPlayerInformation(userAgent: String?) -> AnyPublisher<PlayerInformationResponseModel, Error> {
-        guard let url = URL(string: "\(PlayBackSDKManager.shared.baseURL)/player") else {
-            return Fail(error: PlayBackAPIError.invalidPlayerInformationURL).eraseToAnyPublisher()
+        guard let url = URL(string: "\(PlaybackSDKManager.shared.baseURL)/player") else {
+            return Fail(error: PlaybackAPIError.invalidPlayerInformationURL).eraseToAnyPublisher()
         }
         
         var request = URLRequest(url: url)
@@ -32,10 +32,10 @@ internal class PlayerInformationAPIService: PlayerInformationAPI {
             .map { $0.data }
             .decode(type: PlayerInformationResponseModel.self, decoder: JSONDecoder())
             .mapError { error in
-                if let apiError = error as? PlayBackAPIError {
+                if let apiError = error as? PlaybackAPIError {
                     return apiError
                 } else {
-                    return PlayBackAPIError.networkError(error)
+                    return PlaybackAPIError.networkError(error)
                 }
             }
             .eraseToAnyPublisher()

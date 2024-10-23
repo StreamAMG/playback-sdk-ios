@@ -4,7 +4,7 @@
     }
     
     @Chapter(name: "Getting Started") {
-        In this chapter, we'll start by setting up the PlaybackSDK from the initialisation to load the PlayBack Player Plugin. 
+        In this chapter, we'll start by setting up the PlaybackSDK from the initialisation to load the Playback Player Plugin. 
 
         @Image(source: "ios-marketing.png", alt: "Getting Started with PlaybackSDK")
 
@@ -26,7 +26,7 @@
             Browse and search the PlaybackSDK documentation.
 
             - [GitHub Repository](https://github.com/StreamAMG/playback-sdk-ios/tree/main)
-            - [Stoplight PlayBack API](https://streamamg.stoplight.io)
+            - [Stoplight Playback API](https://streamamg.stoplight.io)
         }
     }
 }
