@@ -87,18 +87,6 @@ public struct BitmovinPlayerView: View {
                 player: player,
                 playerViewConfig: playerViewConfig
             )
-            .onReceive(player.events.on(PlayerEvent.self)) { (event: PlayerEvent) in
-                dump(event, name: "[Player Event]", maxDepth: 1)
-            }
-            .onReceive(player.events.on(SourceEvent.self)) { (event: SourceEvent) in
-                dump(event, name: "[Source Event]", maxDepth: 1)
-            }
-            .onReceive(Publishers.MergeMany(sources.map { source in
-                source.events.on(SourceEvent.self).map { event in (event, source) }
-            })) { (event: SourceEvent, source: Source) in
-                let sourceIdentifier = source.sourceConfig.title ?? source.sourceConfig.url.absoluteString
-                dump(event, name: "[Source Event] - \(sourceIdentifier)", maxDepth: 1)
-            }
             // Disable player touch in case video or playlist not been loaded
             .allowsHitTesting(self.sourceConfig != nil || self.playlistConfig != nil)
         }

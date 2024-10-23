@@ -7,12 +7,14 @@
 #if !os(macOS)
 import AVFoundation
 import SwiftUI
+import Combine
 
 // Protocol for defining a video player plugin
 public protocol VideoPlayerPlugin: AnyObject {
     
     var name: String { get }
     var version: String { get }
+    var event: AnyPublisher<Any, Never> { get }
     
     func setup(config: VideoPlayerConfig)
     
@@ -33,10 +35,10 @@ public protocol VideoPlayerPlugin: AnyObject {
     
     func first()
     
-    func seek(to entryId: String)
+    func seek(to entryId: String) -> Bool
     
     func activeEntryId() -> String?
     
-    func removePlayer() 
+    func removePlayer()
 }
 #endif
