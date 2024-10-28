@@ -37,7 +37,7 @@ public class BitmovinPlayerPlugin: VideoPlayerPlugin, ObservableObject {
         playerConfig.key = PlaybackSDKManager.shared.bitmovinLicense
         self.playerConfig = playerConfig
         self.name = "BitmovinPlayerPlugin"
-        self.version = "1.0.1" // TODO: Get the version from Bundle
+        self.version = "1.3.0" // TODO: Get the version from Bundle
         
         self.event = subject.eraseToAnyPublisher()
     }
