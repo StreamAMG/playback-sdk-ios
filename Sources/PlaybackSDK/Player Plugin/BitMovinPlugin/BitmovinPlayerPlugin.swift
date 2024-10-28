@@ -111,8 +111,9 @@ public class BitmovinPlayerPlugin: VideoPlayerPlugin, ObservableObject {
     public func next() {
         if let sources = player?.playlist.sources {
             if let index = sources.firstIndex(where: { $0.isActive }) {
-                if index < (sources.count ?? 0) - 1 {
-                    let nextSource = sources[(index) + 1]
+                let nextIndex = index + 1
+                if nextIndex < (sources.count ?? 0) {
+                    let nextSource = sources[nextIndex]
                     player?.playlist.seek(source: nextSource, time: 0)
                 }
             }
