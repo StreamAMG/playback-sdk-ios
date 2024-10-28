@@ -15,6 +15,7 @@ class PlaybackSDKManagerTests: XCTestCase {
     var manager: PlaybackSDKManager!
     var apiKey: String!
     var entryID: String!
+    var playlistEntryID: [String]!
 
     override func setUpWithError() throws {
         try super.setUpWithError()
@@ -23,6 +24,7 @@ class PlaybackSDKManagerTests: XCTestCase {
         XCTAssertNotNil(apiKey, "API key should be provided via environment variable")
         entryID = TestConfig.testEntryID
         XCTAssertNotNil(entryID, "Entry ID should be provided via environment variable")
+        playlistEntryID = TestConfig.testPlaylistEntryID
     }
 
     override func tearDownWithError() throws {
@@ -68,6 +70,61 @@ class PlaybackSDKManagerTests: XCTestCase {
 
         waitForExpectations(timeout: 5, handler: nil)
     }
+    
+    func testLoadAllHLSStreams() {
+        let initializationExpectation = expectation(description: "SDK initialization")
+        manager.initialize(apiKey: apiKey) { result in
+            switch result {
+            case .success:
+                initializationExpectation.fulfill()
+            case .failure(let error):
+                XCTFail("SDK initialization failed with error: \(error.localizedDescription)")
+            }
+        }
+        waitForExpectations(timeout: 5, handler: nil)
+        
+        let videoDetailsExpectation = expectation(description: "Video details loading expectation")
+        manager.loadAllHLSStream(forEntryIds: playlistEntryID, andAuthorizationToken: nil) { result in
+            switch result {
+            case .success(let videoDetails):
+                XCTAssertNotNil(videoDetails.0, "Video details should not be nil")
+                XCTAssertTrue(videoDetails.1.isEmpty, "Playlist errors should be void")
+                videoDetailsExpectation.fulfill()
+            case .failure(let error):
+                XCTFail("Loading Playlist video details failed with error: \(error.localizedDescription)")
+            }
+        }
+        waitForExpectations(timeout: 5, handler: nil)
+    }
+    
+    func testLoadAllHLSStreamsWithError() {
+        let initializationExpectation = expectation(description: "SDK initialization")
+        manager.initialize(apiKey: apiKey) { result in
+            switch result {
+            case .success:
+                initializationExpectation.fulfill()
+            case .failure(let error):
+                XCTFail("SDK initialization failed with error: \(error.localizedDescription)")
+            }
+        }
+        waitForExpectations(timeout: 5, handler: nil)
+        
+        let videoDetailsExpectation = expectation(description: "Video details loading expectation")
+        var playlistEntryIDwithError: [String] = playlistEntryID
+        // Adding a fake entryId to check that the error callback works
+        playlistEntryIDwithError.append("0_xxxxxxxx")
+        manager.loadAllHLSStream(forEntryIds: playlistEntryIDwithError, andAuthorizationToken: nil) { result in
+            switch result {
+            case .success(let videoDetails):
+                XCTAssertNotNil(videoDetails.0, "Video details should not be nil")
+                XCTAssertTrue(videoDetails.1.isEmpty == false, "Playlist errors should be not empty")
+                videoDetailsExpectation.fulfill()
+            case .failure(let error):
+                XCTFail("Loading Playlist video details failed with error: \(error.localizedDescription)")
+            }
+        }
+        waitForExpectations(timeout: 5, handler: nil)
+    }
 
     func testLoadHLSStream() {
         let initializationExpectation = expectation(description: "SDK initialization")
@@ -84,8 +141,8 @@ class PlaybackSDKManagerTests: XCTestCase {
         let hlsExpectation = expectation(description: "HLS stream loading expectation")
         manager.loadHLSStream(forEntryId: entryID, andAuthorizationToken: nil) { result in
             switch result {
-            case .success(let hlsURL):
-                XCTAssertNotNil(hlsURL, "HLS stream URL should not be nil")
+            case .success(let videoDetail):
+                XCTAssertNotNil(videoDetail.media?.hls, "HLS stream URL should not be nil")
                 hlsExpectation.fulfill()
             case .failure(let error):
                 XCTFail("Loading HLS stream failed with error: \(error.localizedDescription)")
@@ -126,7 +183,7 @@ class PlaybackSDKManagerTests: XCTestCase {
         let hlsExpectation = expectation(description: "Empty entry id loading expectation")
         manager.loadHLSStream(forEntryId: "", andAuthorizationToken: nil) { result in
             switch result {
-            case .success(let hlsURL):
+            case .success(_):
                 XCTFail("Empty entry id provided but got HLS stream")
             case .failure(let error):
                 switch error {
@@ -144,6 +201,12 @@ class PlaybackSDKManagerTests: XCTestCase {
     
     func testLoadPlayer() {
         let playerView = manager.loadPlayer(entryID: "exampleEntryID", authorizationToken: "exampleToken", onError: { _ in })
+        // Assert that playerView is not nil or do further UI testing if possible
+        XCTAssertNotNil(playerView)
+    }
+    
+    func testLoadPlaylist() {
+        let playerView = manager.loadPlaylist(entryIDs: playlistEntryID, authorizationToken: nil, onErrors: { _ in })
         // Assert that playerView is not nil or do further UI testing if possible
         XCTAssertNotNil(playerView)
     }
