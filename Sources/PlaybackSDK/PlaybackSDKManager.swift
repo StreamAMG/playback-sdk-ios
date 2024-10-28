@@ -345,7 +345,7 @@ public class PlaybackSDKManager {
                         completion(.failure(.networkError(error)))
                     }
                 case .success(let details):
-                    // Call the completion handler with the HLS stream URL
+                    // Call the completion handler with the video details
                     completion(.success(details))
                 }
             })
