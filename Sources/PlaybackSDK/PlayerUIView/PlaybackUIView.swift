@@ -45,7 +45,7 @@ internal struct PlaybackUIView: View {
      - authorizationToken: Optional authorization token if required to fetch the video details.
      */
     internal init(entryId: [String], authorizationToken: String?, onErrors: (([PlaybackAPIError]) -> Void)?) {
-        self.entryId = entryId
+        self.entryIds = entryId
         self.authorizationToken = authorizationToken
         self.onErrors = onErrors
     }
@@ -58,7 +58,7 @@ internal struct PlaybackUIView: View {
      - authorizationToken: Optional authorization token if required to fetch the video details.
      */
     internal init(entryId: [String], authorizationToken: String?, onError: ((PlaybackAPIError) -> Void)?) {
-        self.entryId = entryId
+        self.entryIds = entryId
         self.authorizationToken = authorizationToken
         self.onError = onError
     }
@@ -98,7 +98,7 @@ internal struct PlaybackUIView: View {
     private func loadHLSStream() {
         
         //TO-DO Fetch all HLS urls from the entryID array
-        PlaybackSDKManager.shared.loadAllHLSStream(forEntryIds: entryId, andAuthorizationToken: authorizationToken) { result in
+        PlaybackSDKManager.shared.loadAllHLSStream(forEntryIds: entryIds, andAuthorizationToken: authorizationToken) { result in
             switch result {
             case .success(let videoDetails):
                 DispatchQueue.main.async {

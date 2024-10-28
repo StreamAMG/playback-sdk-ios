@@ -27,9 +27,9 @@ public protocol VideoPlayerPlugin: AnyObject {
     
     func pause()
     
-    func next()
+    func playNext()
     
-    func previous()
+    func playPrevious()
     
     func last()
     
