@@ -14,7 +14,7 @@ import SwiftUI
 internal struct PlaybackUIView: View {
     
     /// The entry ID or a list of the videos to be played.
-    private var entryId: [String]
+    private var entryIds: [String]
     
     /// Optional authorization token if required to fetch the video details.
     private var authorizationToken: String?
