@@ -22,6 +22,13 @@ struct PlaybackDemoApp: App {
 
                 // Register the video player plugin
                 let bitmovinPlugin = BitmovinPlayerPlugin()
+                
+                // Setting up player plugin
+                var config = VideoPlayerConfig()
+                config.playbackConfig.autoplayEnabled = true // Toggle autoplay
+                config.playbackConfig.backgroundPlaybackEnabled = true // Toggle background playback
+                bitmovinPlugin.setup(config: config)
+                
                 VideoPlayerPluginManager.shared.registerPlugin(bitmovinPlugin)
 
             case .failure(let error):

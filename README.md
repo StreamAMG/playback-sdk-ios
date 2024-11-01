@@ -62,7 +62,14 @@ Example:
 
         switch result {
         case .success(let license):
-            val customPlugin = BitmovinVideoPlayerPlugin()
+            let customPlugin = BitmovinPlayerPlugin()
+            
+            // Setting up player plugin
+            var config = VideoPlayerConfig()
+            config.playbackConfig.autoplayEnabled = true // Toggle autoplay
+            config.playbackConfig.backgroundPlaybackEnabled = true // Toggle background playback
+            customPlugin.setup(config: config)
+            
             VideoPlayerPluginManager.shared.registerPlugin(customPlugin)
         case .failure(let error):
             // Handle error

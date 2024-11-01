@@ -16,7 +16,7 @@
         @Steps {
             
             @Step {
-                Initialize the Playback SDK by providing your API key and register the default player plugin. 
+                Initialize the Playback SDK by providing your API key, setup and register the default player plugin.
                 **Make sure this step is done when the app starts.**
                 
                 
