@@ -16,6 +16,9 @@ internal struct PlaybackUIView: View {
     /// The entry ID or a list of the videos to be played.
     private var entryIds: [String]
     
+    /// The entryID to play at the beginning
+    private var entryIDToPlay: String?
+    
     /// Optional authorization token if required to fetch the video details.
     private var authorizationToken: String?
     
@@ -44,8 +47,9 @@ internal struct PlaybackUIView: View {
      - entryId: A list of entry ID of the video to be played.
      - authorizationToken: Optional authorization token if required to fetch the video details.
      */
-    internal init(entryId: [String], authorizationToken: String?, onErrors: (([PlaybackAPIError]) -> Void)?) {
-        self.entryIds = entryId
+    internal init(entryIds: [String], entryIDToPlay: String?, authorizationToken: String?, onErrors: (([PlaybackAPIError]) -> Void)?) {
+        self.entryIds = entryIds
+        self.entryIDToPlay = entryIDToPlay ?? entryIds.first
         self.authorizationToken = authorizationToken
         self.onErrors = onErrors
     }
@@ -54,11 +58,11 @@ internal struct PlaybackUIView: View {
      Initializes the `PlaybackUIView` with the provided list of entry ID and authorization token.
      
      - Parameters:
-     - entryId: A list of entry ID of the video to be played.
+     - entryId: An entry ID of the video to be played.
      - authorizationToken: Optional authorization token if required to fetch the video details.
      */
-    internal init(entryId: [String], authorizationToken: String?, onError: ((PlaybackAPIError) -> Void)?) {
-        self.entryIds = entryId
+    internal init(entryId: String, authorizationToken: String?, onError: ((PlaybackAPIError) -> Void)?) {
+        self.entryIds = [entryId]
         self.authorizationToken = authorizationToken
         self.onError = onError
     }
@@ -74,7 +78,7 @@ internal struct PlaybackUIView: View {
             } else {
                 if let videoDetails = videoDetails {
                     if let plugin = pluginManager.selectedPlugin {
-                        plugin.playerView(videoDetails: videoDetails)
+                        plugin.playerView(videoDetails: videoDetails, entryIDToPlay: entryIDToPlay, authorizationToken: authorizationToken)
                     } else {
                         ErrorUIView(errorMessage: "No plugin selected")
                             .background(Color.white)

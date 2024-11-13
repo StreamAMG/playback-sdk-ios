@@ -19,6 +19,8 @@ public struct BitmovinPlayerView: View {
     private let player: Player
     private var playerViewConfig = PlayerViewConfig()
     private var sources: [Source] = []
+    private var entryIDToPlay: String?
+    private var authorizationToken: String?
     
     private var playlistConfig: PlaylistConfig? {
         if sources.isEmpty || sources.count == 1 {
@@ -43,9 +45,11 @@ public struct BitmovinPlayerView: View {
     ///
     /// - parameter videoDetails: Full videos details containing name, description, thumbnail, duration as well as URL of the HLS video stream that will be loaded by the player as the video source
     /// - parameter player: Instance of the player that was created and configured outside of this view.
-    public init(videoDetails: [PlaybackResponseModel], player: Player) {
+    public init(videoDetails: [PlaybackResponseModel], entryIDToPlay: String?, authorizationToken: String?, player: Player) {
 
         self.player = player
+        self.authorizationToken = authorizationToken
+        self.entryIDToPlay = entryIDToPlay
         
         playerViewConfig = PlayerViewConfig()
         
@@ -63,7 +67,7 @@ public struct BitmovinPlayerView: View {
     ///
     /// - parameter hlsURLString: Full videos details containing name, description, thumbnail, duration as well as URL of the HLS video stream that will be loaded by the player as the video source
     /// - parameter playerConfig: Configuration that will be passed into the player upon creation, with an additional update in this initializer.
-    public init(videoDetails: [PlaybackResponseModel], playerConfig: PlayerConfig) {
+    public init(videoDetails: [PlaybackResponseModel], entryIDToPlay: String?, authorizationToken: String?, playerConfig: PlayerConfig) {
         
         let uiConfig = BitmovinUserInterfaceConfig()
         uiConfig.hideFirstFrame = true
@@ -73,6 +77,8 @@ public struct BitmovinPlayerView: View {
         self.player = PlayerFactory.createPlayer(
             playerConfig: playerConfig
         )
+        self.authorizationToken = authorizationToken
+        self.entryIDToPlay = entryIDToPlay
         
         sources = createPlaylist(from: videoDetails)
         
@@ -94,6 +100,12 @@ public struct BitmovinPlayerView: View {
             if let playlistConfig = self.playlistConfig {
                 // Multiple videos with playlist available so load player with playlistConfig
                 player.load(playlistConfig: playlistConfig)
+                if let entryIDToPlay = self.entryIDToPlay {
+                    if let index = player.playlist.sources.firstIndex(where: { $0.sourceConfig.metadata["entryId"] as? String == entryIDToPlay }) {
+                        player.playlist.seek(source: sources[index], time: .zero)
+                        player.seek(time: .zero)
+                    }
+                }
             } else if let sourceConfig = self.sourceConfig {
                 // Single video available so load player with sourceConfig
                 player.load(sourceConfig: sourceConfig)
@@ -108,33 +120,12 @@ public struct BitmovinPlayerView: View {
         var sources: [Source] = []
         for details in videoDetails {
             
-            if let videoSource = createSource(from: details) {
+            if let videoSource = PlaybackSDKManager.shared.createSource(from: details, authorizationToken: self.authorizationToken) {
                 sources.append(videoSource)
             }
         }
         
         return sources
-    }
-    
-    func createSource(from details: PlaybackResponseModel) -> Source? {
-        
-        guard let hlsURLString = details.media?.hls, let hlsURL = URL(string: hlsURLString) else {
-            return nil
-        }
-        
-        let sourceConfig = SourceConfig(url: hlsURL, type: .hls)
-        sourceConfig.title = details.name
-        sourceConfig.posterSource = details.coverImg?._360
-        sourceConfig.sourceDescription = details.description
-        let regex = try! NSRegularExpression(pattern: "/entryId/(.+?)/")
-        let range = NSRange(location: 0, length: hlsURLString.count)
-        if let match = regex.firstMatch(in: hlsURLString, options: [], range: range) {
-            if let swiftRange = Range(match.range(at: 1), in: hlsURLString) {
-                let entryId = hlsURLString[swiftRange]
-                sourceConfig.metadata["entryId"] = String(entryId)
-            }
-        }
-        return SourceFactory.createSource(from: sourceConfig)
     }
 
     func setupRemoteTransportControls() {

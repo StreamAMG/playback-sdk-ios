@@ -8,6 +8,7 @@
 import Foundation
 import Combine
 import SwiftUI
+import BitmovinPlayer
 
 // Errors.swift
 
@@ -176,7 +177,7 @@ public class PlaybackSDKManager {
     ) -> some View {
 
         PlaybackUIView(
-            entryId: [entryID],
+            entryId: entryID,
             authorizationToken: authorizationToken,
             onError: onError
         )
@@ -198,12 +199,14 @@ public class PlaybackSDKManager {
      */
     public func loadPlaylist(
         entryIDs: [String],
+        entryIDToPlay: String? = nil,
         authorizationToken: String? = nil,
         onErrors: (([PlaybackAPIError]) -> Void)?
     ) -> some View {
 
         PlaybackUIView(
-            entryId: entryIDs,
+            entryIds: entryIDs,
+            entryIDToPlay: entryIDToPlay,
             authorizationToken: authorizationToken,
             onErrors: onErrors
         )
@@ -359,6 +362,32 @@ public class PlaybackSDKManager {
                 .map { $0 + [$1] }
                 .eraseToAnyPublisher()
         }
+    }
+    
+    func createSource(from details: PlaybackResponseModel, authorizationToken: String?) -> Source? {
+        
+        guard let hlsURLString = details.media?.hls, let hlsURL = URL(string: hlsURLString) else {
+            return nil
+        }
+        
+        let sourceConfig = SourceConfig(url: hlsURL, type: .hls)
+        // Avoiding to fill all the details (title, thumbnail and description) for now
+        // Because when the initial video is not the first one and we have to seek the first source
+        // Bitmovin SDK has a bug/glitch that show the title/thumbnail of the first video for a short time before changing to the new one
+//        sourceConfig.title = details.name
+//        sourceConfig.posterSource = details.coverImg?._360
+//        sourceConfig.sourceDescription = details.description
+        let regex = try! NSRegularExpression(pattern: "/entryId/(.+?)/")
+        let range = NSRange(location: 0, length: hlsURLString.count)
+        if let match = regex.firstMatch(in: hlsURLString, options: [], range: range) {
+            if let swiftRange = Range(match.range(at: 1), in: hlsURLString) {
+                let entryId = hlsURLString[swiftRange]
+                sourceConfig.metadata["entryId"] = String(entryId)
+                sourceConfig.metadata["details"] = details
+                sourceConfig.metadata["authorizationToken"] = authorizationToken
+            }
+        }
+        return SourceFactory.createSource(from: sourceConfig)
     }
 }
 
