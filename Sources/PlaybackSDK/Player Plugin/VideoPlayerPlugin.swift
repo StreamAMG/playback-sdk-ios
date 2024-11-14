@@ -21,7 +21,7 @@ public protocol VideoPlayerPlugin: AnyObject {
     // TODO: add event
     /// func handleEvent(event: BitmovinPlayerCore.PlayerEvent)
     
-    func playerView(videoDetails: [PlaybackResponseModel]) -> AnyView
+    func playerView(videoDetails: [PlaybackResponseModel], entryIDToPlay: String?, authorizationToken: String?) -> AnyView
     
     func play()
     
@@ -35,7 +35,7 @@ public protocol VideoPlayerPlugin: AnyObject {
     
     func first()
     
-    func seek(to entryId: String) -> Bool
+    func seek(to entryId: String, completion: @escaping (Bool) -> Void)
     
     func activeEntryId() -> String?
     
