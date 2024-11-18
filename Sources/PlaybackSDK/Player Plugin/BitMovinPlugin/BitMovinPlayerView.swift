@@ -58,10 +58,13 @@ public struct BitMovinPlayerView: View {
     public init(hlsURLString: String, playerConfig: PlayerConfig, title: String) {
         
         self.hlsURLString = hlsURLString
-        
         let uiConfig = BitmovinUserInterfaceConfig()
         uiConfig.hideFirstFrame = true
         playerConfig.styleConfig.userInterfaceConfig = uiConfig
+        
+        let defaultMetadata = DefaultMetadata(cdnProvider: "PlaybackSDK")
+
+        let analytics: BitmovinPlayerAnalytics.AnalyticsPlayerConfig
         
         // Create player based on player and analytics configurations
         self.player = PlayerFactory.createPlayer(
