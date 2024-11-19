@@ -62,10 +62,6 @@ public struct BitMovinPlayerView: View {
         uiConfig.hideFirstFrame = true
         playerConfig.styleConfig.userInterfaceConfig = uiConfig
         
-        let defaultMetadata = DefaultMetadata(cdnProvider: "PlaybackSDK")
-
-        let analytics: BitmovinPlayerAnalytics.AnalyticsPlayerConfig
-        
         // Create player based on player and analytics configurations
         self.player = PlayerFactory.createPlayer(
             playerConfig: playerConfig
