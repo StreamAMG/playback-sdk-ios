@@ -23,7 +23,7 @@ internal struct PlaybackUIView: View {
     private var authorizationToken: String?
     
     /// Optional user ID to be tracked in analytics
-    private var userId: String?
+    private var viewerId: String?
     
     /// Observed object to manage the video player plugins.
     @ObservedObject private var pluginManager = VideoPlayerPluginManager.shared
@@ -43,12 +43,12 @@ internal struct PlaybackUIView: View {
      - entryId: The entry ID of the video to be played.
      - authorizationToken: Optional authorization token if required to fetch the video details.
      */
-    internal init(entryId: String, authorizationToken: String?, mediaTitle: String?, userId: String?, onError: ((PlayBackAPIError) -> Void)?) {
+    internal init(entryId: String, authorizationToken: String?, mediaTitle: String?, viewerId: String?, onError: ((PlayBackAPIError) -> Void)?) {
         self.entryId = entryId
         self.authorizationToken = authorizationToken
         self.onError = onError
         self.mediaTitle = mediaTitle
-        self.userId = userId
+        self.viewerId = viewerId
     }
     
     /// The body of the view.
@@ -62,7 +62,7 @@ internal struct PlaybackUIView: View {
             } else {
                 if let videoURL = videoURL {
                     if let plugin = pluginManager.selectedPlugin {
-                        plugin.playerView(hlsURLString: videoURL.absoluteString, title: self.mediaTitle ?? "", userId: self.userId)
+                        plugin.playerView(hlsURLString: videoURL.absoluteString, title: self.mediaTitle ?? "", viewerId: self.viewerId)
                     } else {
                         ErrorUIView(errorMessage: "No plugin selected")
                             .background(Color.white)
