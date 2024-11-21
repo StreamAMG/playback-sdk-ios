@@ -21,6 +21,7 @@ public struct PlaybackResponseModel: Decodable {
     public let playFrom: Int?
     public let adverts: [Advert]?
     public let coverImg: CoverImages?
+    public var entryId: String?
     
     public struct Media: Decodable {
         public let hls: String?

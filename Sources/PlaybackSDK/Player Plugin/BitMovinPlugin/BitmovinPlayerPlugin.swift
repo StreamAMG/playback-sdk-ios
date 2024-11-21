@@ -153,7 +153,7 @@ public class BitmovinPlayerPlugin: VideoPlayerPlugin, ObservableObject {
     
     public func seek(to entryId: String, completion: @escaping (Bool) -> Void) {
         if let sources = player?.playlist.sources {
-            if let index = sources.firstIndex(where: { $0.metadata?["entryId"] as? String == entryId }) {
+            if let index = sources.firstIndex(where: { $0.sourceConfig.metadata["entryId"] as? String == entryId }) {
                 seekSource(to: sources[index]) { success in
                     completion(success)
                 }
@@ -167,12 +167,26 @@ public class BitmovinPlayerPlugin: VideoPlayerPlugin, ObservableObject {
     
     private func seekSource(to source: Source, completion: ( (Bool) -> (Void))? = nil) {
         if let sources = player?.playlist.sources {
-            if let index = sources.firstIndex(where: { $0 === source }) {
+            if let index = sources.firstIndex(where: { $0.sourceConfig.metadata["entryId"] as? String == source.sourceConfig.metadata["entryId"] as? String }) {
                 updateSource(for: sources[index]) { updatedSource in
                     if let updatedSource = updatedSource {
                         self.player?.playlist.remove(sourceAt: index)
                         self.player?.playlist.add(source: updatedSource, at: index)
-                        self.player?.playlist.seek(source: updatedSource, time: 0)
+                        
+                        if let sources = self.player?.playlist.sources {
+                            DispatchQueue.main.asyncAfter(deadline: .now()) { [weak self] in
+                                
+                                let playlistOptions = PlaylistOptions(preloadAllSources: false)
+                                let pConfig = PlaylistConfig(sources: sources, options: playlistOptions)
+                                
+                                self?.player?.load(playlistConfig: pConfig)
+                                self?.player?.playlist.seek(source: updatedSource, time: .zero)
+                                self?.player?.seek(time: .zero)
+                            }
+                        } else {
+                            self.player?.playlist.seek(source: updatedSource, time: .zero)
+                        }
+                        
                         completion?(true)
                     } else {
                         completion?(false)
@@ -184,8 +198,8 @@ public class BitmovinPlayerPlugin: VideoPlayerPlugin, ObservableObject {
     
     private func updateSource(for source: Source, completion: @escaping (Source?) -> Void) {
         
-        let entryId = source.metadata?["entryId"] as? String
-        let authorizationToken = source.metadata?["authorizationToken"] as? String
+        let entryId = source.sourceConfig.metadata["entryId"] as? String
+        let authorizationToken = source.sourceConfig.metadata["authorizationToken"] as? String
         
         if let entryId = entryId {
             PlaybackSDKManager.shared.loadHLSStream(forEntryId: entryId, andAuthorizationToken: authorizationToken) { result in
@@ -204,7 +218,7 @@ public class BitmovinPlayerPlugin: VideoPlayerPlugin, ObservableObject {
     public func activeEntryId() -> String? {
         if let sources = player?.playlist.sources {
             if let index = sources.firstIndex(where: { $0.isActive }) {
-                if let entryId = sources[index].metadata?["entryId"] as? String {
+                if let entryId = sources[index].sourceConfig.metadata["entryId"] as? String {
                     return entryId
                 }
             }

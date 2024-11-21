@@ -64,7 +64,8 @@ internal class PlaybackAPIService: PlaybackAPI {
                 
                 switch httpResponse.statusCode {
                 case 200...299:
-                    if let response = try? JSONDecoder().decode(PlaybackResponseModel.self, from: data) {
+                    if var response = try? JSONDecoder().decode(PlaybackResponseModel.self, from: data) {
+                        response.entryId = entryId
                         return .success(response)
                     } else {
                         return .failure(PlaybackAPIError.invalidResponsePlaybackData)
