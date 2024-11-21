@@ -90,6 +90,26 @@ PlaybackSDKManager.shared.loadPlayer(entryID: entryId, authorizationToken: autho
 } 
 ```
 
+# Loading a Playlist
+
+To load a sequential list of videos into the player UI, use the `loadPlaylist` method of the `PlaybackSDKManager` singleton object. This method is a Composable function that you can use to load and render the player UI.
+`entryIDs`: an array of Strings containing the unique identifiers of all the videos in the playlist.
+`entryIDToPlay`: specifies the unique video identifier that will be played first in the playlist. Optional parameter
+
+Example:
+
+```swift
+PlaybackSDKManager.shared.loadPlayer(entryIDs: listEntryId, entryIDToPlay: "0_xxxxxxxx", authorizationToken: authorizationToken) { errors in
+    // Handle player UI playlist errors
+} 
+```
+
+## Control playlist
+xxx
+
+## Playlist events
+xxx
+
 # Playing Access-Controlled Content
 To play on-demand and live videos that require authorization, at some point before loading the player your app must call CloudPay to start session, passing the authorization token:
 ```swift

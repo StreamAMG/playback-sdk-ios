@@ -41,6 +41,26 @@
                 @Code(name: "PlayerTestView.swift", file: PlayerTestView.swift)
             }
             @Step {
+                Load the player passing a playlist using the Playback SDK and handle any playlist errors.
+                
+                In this step, the code utilizes the **loadPlaylist** function provided by the Playback SDK to initialize and load the video player. The function takes an array of entry ID, the starting entry ID to play and an authorization token as parameters. Additionally, it includes a closure to handle any potential playlist errors that may occur during the loading process.
+                The **handlePlaybackErrors** function is called within the closure to handle the playlist errors.
+                It's an array of PlaybackError and for every error it switches on the type of error received and provides appropriate error handling based on the type of error encountered.
+                The code also includes a placeholder comment to indicate where the removal of the player could be implemented in the **onDisappear** modifier.
+                If you want to allow users to access free content or if you're implementing a guest mode, you can pass an empty string or **nil** value as the **authorizationToken** when calling the **loadPlaylist** function. This will bypass the need for authentication, enabling unrestricted access to the specified contents.
+                
+                @Code(name: "PlayerTestPlaylistView.swift", file: PlayerTestPlaylistView.swift)
+            }
+            @Step {
+                Playlist controls and events
+                
+                Declaring the **VideoPlayerPluginManager** singleton instance as **@StateObject** variable like in the example, allow you to access to the playlist controls as well as the playlist events
+                In the **onReceive** modifier, you can listen to the player events such as the **PlaylistTransitionEvent** that gives you information regarding the transition between a video to another
+                Through the **pluginManager.selectedPlugin** is possible to interact with playlist controls like in the example and get to know the current video that is playing with **activeEntryId** function.
+                
+                @Code(name: "PlayerTestPlaylistControlsAndEventsView.swift", file: PlayerTestPlaylistControlsAndEventsView.swift, previousFile: PlayerTestPlaylistView.swift)
+            }
+            @Step {
                 Handle the playback errors from Playback SDK.
 
                 This step describes enum for error handling. Above is the error enum returned by the SDK, where the apiError also has the reason code and message for the API error. The playback API is returning the reason code in the response. For the list of the error codes and reasons, please refer to [Get Video Playback Data | Playback](https://streamamg.stoplight.io/docs/playback-documentation-portal/ec642e6dcbb13-get-video-playback-data)
