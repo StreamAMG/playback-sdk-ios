@@ -151,7 +151,7 @@ public class PlayBackSDKManager {
         entryID: String,
         authorizationToken: String? = nil,
         mediaTitle: String? = nil,
-        viewerId: String? = nil,
+        analyticsViewerId: String? = nil,
         onError: ((PlayBackAPIError) -> Void)?
     ) -> some View {
 
@@ -159,7 +159,7 @@ public class PlayBackSDKManager {
             entryId: entryID,
             authorizationToken: authorizationToken,
             mediaTitle: mediaTitle,
-            viewerId: viewerId,
+            analyticsViewerId: analyticsViewerId,
             onError: onError
         )
         .id(entryID)
