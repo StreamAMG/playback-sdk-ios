@@ -139,17 +139,19 @@ public class PlayBackSDKManager {
      - Parameters:
      - entryID: The unique identifier of the video entry to be loaded.
      - authorizationToken: The token used for authorization to access the video content.
+     - analyticsViewerId: User identifier to be tracked in analytics
      
      - Returns: A view representing the video player configured with the provided entry ID and authorization token.
      
      Example usage:
      ```swift
-     let playerView = loadPlayer(entryID: "exampleEntryID", authorizationToken: "exampleToken")
+     let playerView = loadPlayer(entryID: "exampleEntryID", authorizationToken: "exampleToken", analyticsViewerId: "1234abcd")
      */
     public func loadPlayer(
         entryID: String,
         authorizationToken: String? = nil,
         mediaTitle: String? = nil,
+        analyticsViewerId: String? = nil,
         onError: ((PlayBackAPIError) -> Void)?
     ) -> some View {
 
@@ -157,6 +159,7 @@ public class PlayBackSDKManager {
             entryId: entryID,
             authorizationToken: authorizationToken,
             mediaTitle: mediaTitle,
+            analyticsViewerId: analyticsViewerId,
             onError: onError
         )
         .id(entryID)

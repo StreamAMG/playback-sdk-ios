@@ -19,7 +19,7 @@ public protocol VideoPlayerPlugin: AnyObject {
     // TODO: add event
     /// func handleEvent(event: BitmovinPlayerCore.PlayerEvent)
     
-    func playerView(hlsURLString: String, title: String) -> AnyView
+    func playerView(hlsURLString: String, title: String, analyticsViewerId: String?) -> AnyView
     
     func play()
     
