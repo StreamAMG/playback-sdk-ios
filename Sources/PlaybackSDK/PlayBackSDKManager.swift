@@ -95,6 +95,7 @@ public class PlayBackSDKManager {
     private var cancellables = Set<AnyCancellable>()
 
     // MARK: Internal properties
+    internal var analytics: Mux?
     /// Bitmovin license key.
     internal var bitmovinLicense: String?
     internal var amgAPIKey: String?
@@ -199,6 +200,7 @@ public class PlayBackSDKManager {
                 
                 // Set the received Bitmovin license
                 self.bitmovinLicense = playerInfo.player.bitmovin.license
+                self.analytics = playerInfo.player.bitmovin.integrations.mux
                 
                 // Call the completion handler with success
                 completion(.success(playerInfo.player.bitmovin.license))
