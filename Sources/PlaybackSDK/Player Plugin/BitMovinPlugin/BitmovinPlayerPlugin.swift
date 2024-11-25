@@ -40,7 +40,7 @@ public class BitmovinPlayerPlugin: VideoPlayerPlugin {
     }
     
     private func createAnalyticsConfig(analyticsViewerId: String? = nil) -> AnalyticsPlayerConfig {
-        guard let licenseKey = PlayBackSDKManager.shared.bitmovinLicense else {
+        guard let licenseKey = PlayBackSDKManager.shared.analytics?.envKey else {
             return .disabled
         }
         let defaultMetadata = DefaultMetadata(cdnProvider: "PlaybackSDK", customUserId: analyticsViewerId)
