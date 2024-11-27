@@ -43,20 +43,19 @@
             @Step {
                 Load the player passing a playlist using the Playback SDK and handle any playlist errors.
                 
-                In this step, the code utilizes the **loadPlaylist** function provided by the Playback SDK to initialize and load the video player. The function takes an array of entry ID, the starting entry ID to play and an authorization token as parameters. Additionally, it includes a closure to handle any potential playlist errors that may occur during the loading process.
-                The **handlePlaybackErrors** function is called within the closure to handle the playlist errors.
-                It's an array of PlaybackError and for every error it switches on the type of error received and provides appropriate error handling based on the type of error encountered.
-                The code also includes a placeholder comment to indicate where the removal of the player could be implemented in the **onDisappear** modifier.
-                If you want to allow users to access free content or if you're implementing a guest mode, you can pass an empty string or **nil** value as the **authorizationToken** when calling the **loadPlaylist** function. This will bypass the need for authentication, enabling unrestricted access to the specified contents.
+                To load a playlist and handle errors, use the **loadPlaylist** function provided by the Playback SDK to initialize and load the video player. This function takes an array of entry IDs, the starting entry ID, and an authorization token as parameters. Additionally, it includes a closure to handle any potential playlist errors that may occur during the loading process.
+                The **handlePlaybackErrors** function is called within the closure to handle the playlist errors. It iterates through an array of **PlaybackError** objects and, for each error, switches on the error type to provide appropriate error handling.
+                The code also includes a placeholder comment to indicate where the removal of the player can be implemented in the **onDisappear** modifier.
+                f you want to allow users to access free content or implement a guest mode, you can pass an empty string or **nil** value as the **authorizationToken** when calling the **loadPlaylist** function. This will bypass the need for authentication, enabling unrestricted access to the specified content.
                 
                 @Code(name: "PlayerTestPlaylistView.swift", file: PlayerTestPlaylistView.swift)
             }
             @Step {
                 Playlist controls and events
                 
-                Declaring the **VideoPlayerPluginManager** singleton instance as **@StateObject** variable like in the example, allow you to access to the playlist controls as well as the playlist events
-                In the **onReceive** modifier, you can listen to the player events such as the **PlaylistTransitionEvent** that gives you information regarding the transition between a video to another
-                Through the **pluginManager.selectedPlugin** is possible to interact with playlist controls like in the example and get to know the current video that is playing with **activeEntryId** function.
+                To control playlist playback and events, declare a **VideoPlayerPluginManager** singleton instance as a **@StateObject** variable. This allows you to access playlist controls and listen to player events.
+                In the **onReceive** modifier, you can listen to player events such as the **PlaylistTransitionEvent**, which provides information about transitions between videos.
+                Through the **pluginManager.selectedPlugin**, you can interact with playlist controls and retrieve the current video ID using the **activeEntryId** function. 
                 
                 @Code(name: "PlayerTestPlaylistControlsAndEventsView.swift", file: PlayerTestPlaylistControlsAndEventsView.swift, previousFile: PlayerTestPlaylistView.swift)
             }
