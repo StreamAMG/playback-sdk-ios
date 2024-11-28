@@ -30,11 +30,11 @@ struct PlayerTestPlaylistControlsAndEventsView: View {
             
             Button {
                 // You can use the following playlist controls
-                pluginManager.selectedPlugin?.first() // Play the first video
+                pluginManager.selectedPlugin?.playFirst() // Play the first video
                 pluginManager.selectedPlugin?.playPrevious() // Play the previous video
                 pluginManager.selectedPlugin?.playNext() // Play the next video
-                pluginManager.selectedPlugin?.last() // Play the last video
-                pluginManager.selectedPlugin?.seek(to: entryIdToSeek) { success in // Seek to a specific video
+                pluginManager.selectedPlugin?.playLast() // Play the last video
+                pluginManager.selectedPlugin?.seek(entryIdToSeek) { success in // Seek a specific video
                     if (!success) {
                         let errorMessage = "Unable to seek to \(entryIdToSeek)"
                     }

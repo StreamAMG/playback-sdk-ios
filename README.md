@@ -109,11 +109,11 @@ To control playlist playback, declare a VideoPlayerPluginManager singleton insta
 
 Here are some of the key functions you can utilize:
 
-`first()`: Plays the first video in the playlist.
+`playFirst()`: Plays the first video in the playlist.
 `playPrevious()`: Plays the previous video in the playlist.
 `playNext()`: Plays the next video in the playlist.
-`last()`: Plays the last video in the playlist.
-`seek(to: entryIdToSeek)`: Seek to a specific video Id
+`playLast()`: Plays the last video in the playlist.
+`seek(entryIdToSeek)`: Seek a specific video Id
 `activeEntryId()`: Returns the unique identifier of the currently playing video.
 
 By effectively leveraging these functions, you can create dynamic and interactive video player experiences.
@@ -124,11 +124,11 @@ Example:
 @StateObject private var pluginManager = VideoPlayerPluginManager.shared
 ...
 // You can use the following playlist controls
-pluginManager.selectedPlugin?.first() // Play the first video
+pluginManager.selectedPlugin?.playFirst() // Play the first video
 pluginManager.selectedPlugin?.playPrevious() // Play the previous video
 pluginManager.selectedPlugin?.playNext() // Play the next video
-pluginManager.selectedPlugin?.last() // Play the last video
-pluginManager.selectedPlugin?.seek(to: entryIdToSeek) { success in // Seek to a specific video
+pluginManager.selectedPlugin?.playLast() // Play the last video
+pluginManager.selectedPlugin?.seek(entryIdToSeek) { success in // Seek a specific video
     if (!success) {
         let errorMessage = "Unable to seek to \(entryIdToSeek)"
     }
