@@ -163,6 +163,7 @@ public class PlaybackSDKManager {
      - Parameters:
      - entryID: The unique identifier of the video entry to be loaded.
      - authorizationToken: The token used for authorization to access the video content.
+     - onError: Return potential playback errors that may occur during the loading process.
      
      - Returns: A view representing the video player configured with the provided entry ID and authorization token.
      
@@ -189,7 +190,9 @@ public class PlaybackSDKManager {
      
      - Parameters:
      - entryIDs: A list of the videos to be loaded.
+     - entryIDToPlay: The first video Id to be played. If not provided, the first video in the entryIDs array will be played.
      - authorizationToken: The token used for authorization to access the video content.
+     - onErrors: Return a list of potential playback errors that may occur during the loading process for single entryId.
      
      - Returns: A view representing the video player configured with the provided entry ID and authorization token.
      
@@ -210,7 +213,7 @@ public class PlaybackSDKManager {
             authorizationToken: authorizationToken,
             onErrors: onErrors
         )
-        .id(entryIDs.first)
+//        .id(entryIDs.first)
     }
     
     // MARK: Private fuctions

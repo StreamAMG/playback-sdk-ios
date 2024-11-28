@@ -103,7 +103,7 @@ public struct BitmovinPlayerView: View {
                 if let entryIDToPlay = self.entryIDToPlay {
                     if let index = player.playlist.sources.firstIndex(where: { $0.sourceConfig.metadata["entryId"] as? String == entryIDToPlay }) {
                         player.playlist.seek(source: sources[index], time: .zero)
-                        player.seek(time: .zero)
+                        player.seek(time: .zero) // Player seek to avoid black screen
                     }
                 }
             } else if let sourceConfig = self.sourceConfig {

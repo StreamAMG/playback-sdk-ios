@@ -15,7 +15,7 @@ public class BitmovinPlayerPlugin: VideoPlayerPlugin, ObservableObject {
     private weak var player: Player? {
         didSet {
             if self.player != nil {
-                listenPlayerEvents()
+                listenToPlayerEvents()
             }
         }
     }
@@ -85,7 +85,7 @@ public class BitmovinPlayerPlugin: VideoPlayerPlugin, ObservableObject {
         )
     }
     
-    public func listenPlayerEvents() {
+    private func listenToPlayerEvents() {
         
         // Player Events
         player?.events
@@ -139,19 +139,19 @@ public class BitmovinPlayerPlugin: VideoPlayerPlugin, ObservableObject {
         }
     }
     
-    public func last() {
+    public func playLast() {
         if let lastSource = player?.playlist.sources.last {
             seekSource(to: lastSource)
         }
     }
     
-    public func first() {
+    public func playFirst() {
         if let firstSource = player?.playlist.sources.first {
             seekSource(to: firstSource)
         }
     }
     
-    public func seek(to entryId: String, completion: @escaping (Bool) -> Void) {
+    public func seek(_ entryId: String, completion: @escaping (Bool) -> Void) {
         if let sources = player?.playlist.sources {
             if let index = sources.firstIndex(where: { $0.sourceConfig.metadata["entryId"] as? String == entryId }) {
                 seekSource(to: sources[index]) { success in
@@ -173,15 +173,22 @@ public class BitmovinPlayerPlugin: VideoPlayerPlugin, ObservableObject {
                         self.player?.playlist.remove(sourceAt: index)
                         self.player?.playlist.add(source: updatedSource, at: index)
                         
-                        if let sources = self.player?.playlist.sources {
-                            DispatchQueue.main.asyncAfter(deadline: .now()) { [weak self] in
-                                
-                                let playlistOptions = PlaylistOptions(preloadAllSources: false)
-                                let pConfig = PlaylistConfig(sources: sources, options: playlistOptions)
-                                
-                                self?.player?.load(playlistConfig: pConfig)
-                                self?.player?.playlist.seek(source: updatedSource, time: .zero)
-                                self?.player?.seek(time: .zero)
+                        // Due to a Bitmovin playlist issue, if the current video is live, we need to reload the playlist in order to change the media
+                        let refreshPlaylist = self.player?.isLive ?? false
+                        
+                        if refreshPlaylist {
+                            if let sources = self.player?.playlist.sources {
+                                DispatchQueue.main.asyncAfter(deadline: .now()) { [weak self] in
+                                    self?.player?.pause()
+                                    self?.player?.unload()
+                                    
+                                    let playlistOptions = PlaylistOptions(preloadAllSources: false)
+                                    let pConfig = PlaylistConfig(sources: sources, options: playlistOptions)
+                                    
+                                    self?.player?.load(playlistConfig: pConfig)
+                                    self?.player?.playlist.seek(source: updatedSource, time: .zero)
+                                    self?.player?.seek(time: .zero) // Player seek to avoid black screen
+                                }
                             }
                         } else {
                             self.player?.playlist.seek(source: updatedSource, time: .zero)
@@ -225,6 +232,26 @@ public class BitmovinPlayerPlugin: VideoPlayerPlugin, ObservableObject {
         }
 
         return nil
+    }
+    
+    private func activeSource() -> Source? {
+        if let sources = player?.playlist.sources {
+            if let index = sources.firstIndex(where: { $0.isActive }) {
+                return sources[index]
+            }
+        }
+        
+        return nil
+    }
+    
+    private func isLiveSource(source: Source) -> Bool {
+        if source.sourceConfig.type == .hls && source.sourceConfig.url.absoluteString.contains("/live/") {
+            return true
+        } else if source.sourceConfig.type == .dash {
+            return true
+        }
+        
+        return false
     }
 
     public func unload() {

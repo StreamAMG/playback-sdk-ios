@@ -31,11 +31,11 @@ public protocol VideoPlayerPlugin: AnyObject {
     
     func playPrevious()
     
-    func last()
+    func playLast()
     
-    func first()
+    func playFirst()
     
-    func seek(to entryId: String, completion: @escaping (Bool) -> Void)
+    func seek(_ entryId: String, completion: @escaping (Bool) -> Void)
     
     func activeEntryId() -> String?
     
