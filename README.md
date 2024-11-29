@@ -85,7 +85,10 @@ To load the player UI in your application, use the `loadPlayer` method of the `P
 Example:
 
 ```swift
-PlaybackSDKManager.shared.loadPlayer(entryID: entryId, authorizationToken: authorizationToken) { error in
+PlaybackSDKManager.shared.loadPlayer(
+    entryID: entryId,
+    authorizationToken: authorizationToken
+) { error in
     // Handle player UI error 
 } 
 ```
@@ -99,7 +102,11 @@ To load a sequential list of videos into the player UI, use the `loadPlaylist` m
 Example:
 
 ```swift
-PlaybackSDKManager.shared.loadPlayer(entryIDs: listEntryId, entryIDToPlay: "0_xxxxxxxx", authorizationToken: authorizationToken) { errors in
+PlaybackSDKManager.shared.loadPlayer(
+    entryIDs: listEntryId,
+    entryIDToPlay: "0_xxxxxxxx",
+    authorizationToken: authorizationToken
+) { errors in
     // Handle player UI playlist errors
 } 
 ```
@@ -145,16 +152,20 @@ Example:
 ```swift
 @StateObject private var pluginManager = VideoPlayerPluginManager.shared
 ...
-PlaybackSDKManager.shared.loadPlaylist(entryIDs: entryIDs, entryIDToPlay: entryIDToPlay, authorizationToken: authorizationToken) { errors in
+PlaybackSDKManager.shared.loadPlaylist(
+    entryIDs: entryIDs,
+    entryIDToPlay: entryIDToPlay,
+    authorizationToken: authorizationToken
+) { errors in
         ...
-    }
-    .onReceive(pluginManager.selectedPlugin!.event) { event in
-        if let event = event as? PlaylistTransitionEvent { // Playlist Event
-            if let from = event.from.metadata?["entryId"], let to = event.to.metadata?["entryId"] {
-                print("Playlist event changed from \(from) to \(to)")
-            }
+}
+.onReceive(pluginManager.selectedPlugin!.event) { event in
+    if let event = event as? PlaylistTransitionEvent { // Playlist Event
+        if let from = event.from.metadata?["entryId"], let to = event.to.metadata?["entryId"] {
+            print("Playlist event changed from \(from) to \(to)")
         }
     }
+}
 ```
 
 # Playing Access-Controlled Content
