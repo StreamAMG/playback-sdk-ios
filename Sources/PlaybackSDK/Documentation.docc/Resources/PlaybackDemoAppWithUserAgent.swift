@@ -1,5 +1,6 @@
 import SwiftUI
 import PlaybackSDK
+import Alamofire
 
 @main
 struct PlaybackDemoApp: App {
@@ -13,8 +14,11 @@ struct PlaybackDemoApp: App {
     }
 
     init() {
-        // Initialize the Playback SDK with the provided API key and base URL
-        PlaybackSDKManager.shared.initialize(apiKey: apiKey) { result in
+        // Get the user-agent set by Alamofire
+        let userAgent = AF.session.configuration.httpAdditionalHeaders?["User-Agent"]
+
+        // Initialize the Playback SDK with the provided API key and custom user-agent
+        PlaybackSDKManager.shared.initialize(apiKey: apiKey, userAgent: userAgent) { result in
             switch result {
             case .success(let license):
                 // Obtained license upon successful initialization
@@ -22,6 +26,13 @@ struct PlaybackDemoApp: App {
 
                 // Register the video player plugin
                 let bitmovinPlugin = BitmovinPlayerPlugin()
+                
+                // Setting up player plugin
+                var config = VideoPlayerConfig()
+                config.playbackConfig.autoplayEnabled = true // Toggle autoplay
+                config.playbackConfig.backgroundPlaybackEnabled = true // Toggle background playback
+                bitmovinPlugin.setup(config: config)
+                
                 VideoPlayerPluginManager.shared.registerPlugin(bitmovinPlugin)
 
             case .failure(let error):
@@ -32,4 +43,3 @@ struct PlaybackDemoApp: App {
         }
     }
 }
-

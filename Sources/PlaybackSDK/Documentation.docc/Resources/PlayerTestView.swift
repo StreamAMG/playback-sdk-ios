@@ -20,7 +20,7 @@ struct PlayerTestView: View {
         .padding()
     }
     
-    private func handlePlaybackError(_ error: PlaybackError) {
+    private func handlePlaybackError(_ error: PlaybackAPIError) {
         switch error {
         case .apiError(let statusCode, let errorMessage, let reason):
             print("\(errorMessage) Status Code \(statusCode)")
