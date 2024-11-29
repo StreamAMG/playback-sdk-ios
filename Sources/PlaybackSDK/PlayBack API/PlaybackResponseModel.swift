@@ -8,44 +8,44 @@
 import Foundation
 
 // Struct representing the response model for playback data, conforming to the Decodable protocol.
-public struct PlaybackResponseModel: Decodable {
+internal struct PlaybackResponseModel: Decodable {
     
-    public let message: String?
-    public let reason: String?
-    public let id: String?
-    public let name: String?
-    public let description: String?
-    public let thumbnail: URL?
-    public let duration: String?
-    public let media: Media?
-    public let playFrom: Int?
-    public let adverts: [Advert]?
-    public let coverImg: CoverImages?
-    public var entryId: String?
+    let message: String?
+    let reason: String?
+    let id: String?
+    let name: String?
+    let description: String?
+    let thumbnail: URL?
+    let duration: String?
+    let media: Media?
+    let playFrom: Int?
+    let adverts: [Advert]?
+    let coverImg: CoverImages?
+    var entryId: String?
     
-    public struct Media: Decodable {
-        public let hls: String?
-        public let mpegdash: String?
-        public let applehttp: String?
+    struct Media: Decodable {
+        let hls: String?
+        let mpegdash: String?
+        let applehttp: String?
     }
     
-    public struct Advert: Decodable {
-        public let adType: String?
-        public let id: String?
-        public let position: String?
-        public let persistent: Bool?
-        public let discardAfterPlayback: Bool?
-        public let url: URL?
-        public let preloadOffset: Int?
-        public let skippableAfter: Int?
+    struct Advert: Decodable {
+        let adType: String?
+        let id: String?
+        let position: String?
+        let persistent: Bool?
+        let discardAfterPlayback: Bool?
+        let url: URL?
+        let preloadOffset: Int?
+        let skippableAfter: Int?
     }
     
-    public struct CoverImages: Decodable {
-        public let _360: URL?
-        public let _720: URL?
-        public let _1080: URL?
+    struct CoverImages: Decodable {
+        let _360: URL?
+        let _720: URL?
+        let _1080: URL?
         
-        public enum CodingKeys: String, CodingKey {
+        enum CodingKeys: String, CodingKey {
             case _360 = "360"
             case _720 = "720"
             case _1080 = "1080"
@@ -55,7 +55,7 @@ public struct PlaybackResponseModel: Decodable {
          
          - Parameter decoder: The decoder to read data from.
          */
-        public init(from decoder: Decoder) throws {
+        init(from decoder: Decoder) throws {
             let container = try decoder.container(keyedBy: CodingKeys.self)
             _360 = try container.decodeIfPresent(String.self, forKey: ._360).flatMap { URL(string: $0) }
             _720 = try container.decodeIfPresent(String.self, forKey: ._720).flatMap { URL(string: $0) }
