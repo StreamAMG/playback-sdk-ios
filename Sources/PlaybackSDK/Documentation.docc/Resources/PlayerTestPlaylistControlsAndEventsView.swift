@@ -36,7 +36,7 @@ struct PlayerTestPlaylistControlsAndEventsView: View {
                 pluginManager.selectedPlugin?.playLast() // Play the last video
                 pluginManager.selectedPlugin?.seek(entryIdToSeek) { success in // Seek a specific video
                     if (!success) {
-                        let errorMessage = "Unable to seek to \(entryIdToSeek)"
+                        let errorMessage = "Unable to seek video Id \(entryIdToSeek)"
                     }
                 }
                 pluginManager.selectedPlugin?.activeEntryId() // Get the active video Id

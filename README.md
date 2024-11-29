@@ -102,7 +102,7 @@ To load a sequential list of videos into the player UI, use the `loadPlaylist` m
 Example:
 
 ```swift
-PlaybackSDKManager.shared.loadPlayer(
+PlaybackSDKManager.shared.loadPlaylist(
     entryIDs: listEntryId,
     entryIDToPlay: "0_xxxxxxxx",
     authorizationToken: authorizationToken
@@ -137,7 +137,7 @@ pluginManager.selectedPlugin?.playNext() // Play the next video
 pluginManager.selectedPlugin?.playLast() // Play the last video
 pluginManager.selectedPlugin?.seek(entryIdToSeek) { success in // Seek a specific video
     if (!success) {
-        let errorMessage = "Unable to seek to \(entryIdToSeek)"
+        let errorMessage = "Unable to seek video Id \(entryIdToSeek)"
     }
 }
 pluginManager.selectedPlugin?.activeEntryId() // Get the active video Id
