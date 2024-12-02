@@ -22,6 +22,9 @@ internal struct PlaybackUIView: View {
     /// Optional authorization token if required to fetch the video details.
     private var authorizationToken: String?
     
+    /// Optional user ID to be tracked in analytics
+    private var analyticsViewerId: String?
+    
     /// Observed object to manage the video player plugins.
     @ObservedObject private var pluginManager = VideoPlayerPluginManager.shared
     
@@ -47,12 +50,15 @@ internal struct PlaybackUIView: View {
         - entryIds: A list of entry ID of the video to be played.
         - entryIDToPlay: (Optional) The first video Id to be played. If not provided, the first video in the entryIDs array will be played.
         - authorizationToken: (Optional) Authorization token if required to fetch the video details.
+        - analyticsViewerId: User identifier to be tracked in analytics
         - onErrors: Return a list of potential playback errors that may occur during the loading process for single entryId.
      */
-    internal init(entryIds: [String], entryIDToPlay: String?, authorizationToken: String?, onErrors: (([PlaybackAPIError]) -> Void)?) {
+
+    internal init(entryIds: [String], entryIDToPlay: String?, authorizationToken: String?, analyticsViewerId: String?, onErrors: (([PlaybackAPIError]) -> Void)?) {
         self.entryIds = entryIds
         self.entryIDToPlay = entryIDToPlay ?? entryIds.first
         self.authorizationToken = authorizationToken
+        self.analyticsViewerId = analyticsViewerId
         self.onErrors = onErrors
     }
     
@@ -62,11 +68,13 @@ internal struct PlaybackUIView: View {
      - Parameters:
         - entryId: An entry ID of the video to be played.
         - authorizationToken: Optional authorization token if required to fetch the video details.
+        - analyticsViewerId: User identifier to be tracked in analytics
         - onError: Return potential playback errors that may occur during the loading process.
      */
-    internal init(entryId: String, authorizationToken: String?, onError: ((PlaybackAPIError) -> Void)?) {
+    internal init(entryId: String, authorizationToken: String?, analyticsViewerId: String?, onError: ((PlaybackAPIError) -> Void)?) {
         self.entryIds = [entryId]
         self.authorizationToken = authorizationToken
+        self.analyticsViewerId = analyticsViewerId
         self.onError = onError
     }
     
@@ -81,7 +89,7 @@ internal struct PlaybackUIView: View {
             } else {
                 if let videoDetails = videoDetails {
                     if let plugin = pluginManager.selectedPlugin {
-                        plugin.playerView(videoDetails: videoDetails, entryIDToPlay: entryIDToPlay, authorizationToken: authorizationToken)
+                        plugin.playerView(videoDetails: videoDetails, entryIDToPlay: entryIDToPlay, authorizationToken: authorizationToken, analyticsViewerId: self.analyticsViewerId)
                     } else {
                         ErrorUIView(errorMessage: "No plugin selected")
                             .background(Color.white)

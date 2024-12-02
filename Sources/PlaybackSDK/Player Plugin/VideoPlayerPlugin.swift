@@ -18,7 +18,7 @@ public protocol VideoPlayerPlugin: AnyObject {
     
     func setup(config: VideoPlayerConfig)
     
-    func playerView(videoDetails: [PlaybackVideoDetails], entryIDToPlay: String?, authorizationToken: String?) -> AnyView
+    func playerView(videoDetails: [PlaybackVideoDetails], entryIDToPlay: String?, authorizationToken: String?, analyticsViewerId: String?) -> AnyView
     
     func play()
     

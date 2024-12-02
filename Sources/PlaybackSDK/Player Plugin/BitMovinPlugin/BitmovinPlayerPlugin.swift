@@ -54,14 +54,26 @@ public class BitmovinPlayerPlugin: VideoPlayerPlugin, ObservableObject {
         playerConfig.styleConfig.userInterfaceConfig = uiConfig
     }
     
-    public func playerView(videoDetails: [PlaybackVideoDetails], entryIDToPlay: String?, authorizationToken: String?) -> AnyView {
+    private func createAnalyticsConfig(analyticsViewerId: String? = nil) -> AnalyticsPlayerConfig {
+        guard let licenseKey = PlaybackSDKManager.shared.analytics?.envKey else {
+            return .disabled
+        }
+        let defaultMetadata = DefaultMetadata(cdnProvider: "PlaybackSDK", customUserId: analyticsViewerId)
+        let analytics: BitmovinPlayerAnalytics.AnalyticsPlayerConfig = licenseKey != nil
+            ? .enabled(analyticsConfig: AnalyticsConfig(licenseKey: licenseKey), defaultMetadata: defaultMetadata)
+            : .disabled
+        return analytics
+    }
+    
+    public func playerView(videoDetails: [PlaybackVideoDetails], entryIDToPlay: String?, authorizationToken: String?, analyticsViewerId: String?) -> AnyView {
         self.authorizationToken = authorizationToken
         self.entryIDToPlay = entryIDToPlay
         // Create player based on player and analytics configurations
         // Check if player already loaded in order to avoid multiple pending player in memory
         if self.player == nil {
             let player = PlayerFactory.createPlayer(
-                playerConfig: playerConfig
+                playerConfig: playerConfig,
+                analytics: self.createAnalyticsConfig(analyticsViewerId: analyticsViewerId)
             )
             self.player = player
             
