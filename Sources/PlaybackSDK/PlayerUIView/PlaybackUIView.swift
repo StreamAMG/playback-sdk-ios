@@ -29,7 +29,7 @@ internal struct PlaybackUIView: View {
     @State private var hasFetchedVideoDetails = false
     
     /// The fetched video details of the entryIDs
-    @State private var videoDetails: [PlaybackResponseModel]?
+    @State private var videoDetails: [PlaybackVideoDetails]?
     /// Array of errors for fetching playlist details
     @State private var playlistErrors: [PlaybackAPIError]?
     /// Error of failed API call for loading video details
@@ -44,8 +44,10 @@ internal struct PlaybackUIView: View {
      Initializes the `PlaybackUIView` with the provided list of entry ID and authorization token.
      
      - Parameters:
-     - entryId: A list of entry ID of the video to be played.
-     - authorizationToken: Optional authorization token if required to fetch the video details.
+        - entryIds: A list of entry ID of the video to be played.
+        - entryIDToPlay: (Optional) The first video Id to be played. If not provided, the first video in the entryIDs array will be played.
+        - authorizationToken: (Optional) Authorization token if required to fetch the video details.
+        - onErrors: Return a list of potential playback errors that may occur during the loading process for single entryId.
      */
     internal init(entryIds: [String], entryIDToPlay: String?, authorizationToken: String?, onErrors: (([PlaybackAPIError]) -> Void)?) {
         self.entryIds = entryIds
@@ -58,8 +60,9 @@ internal struct PlaybackUIView: View {
      Initializes the `PlaybackUIView` with the provided list of entry ID and authorization token.
      
      - Parameters:
-     - entryId: An entry ID of the video to be played.
-     - authorizationToken: Optional authorization token if required to fetch the video details.
+        - entryId: An entry ID of the video to be played.
+        - authorizationToken: Optional authorization token if required to fetch the video details.
+        - onError: Return potential playback errors that may occur during the loading process.
      */
     internal init(entryId: String, authorizationToken: String?, onError: ((PlaybackAPIError) -> Void)?) {
         self.entryIds = [entryId]
@@ -101,12 +104,16 @@ internal struct PlaybackUIView: View {
      */
     private func loadHLSStream() {
         
-        //TO-DO Fetch all HLS urls from the entryID array
         PlaybackSDKManager.shared.loadAllHLSStream(forEntryIds: entryIds, andAuthorizationToken: authorizationToken) { result in
             switch result {
             case .success(let videoDetails):
                 DispatchQueue.main.async {
-                    self.videoDetails = videoDetails.0
+                    self.videoDetails = []
+                    for details in videoDetails.0 {
+                        if let videoDetails = details.toVideoDetails() {
+                            self.videoDetails?.append(videoDetails)
+                        }
+                    }
                     self.playlistErrors = videoDetails.1
                     self.hasFetchedVideoDetails = true
                     if (!(self.playlistErrors?.isEmpty ?? false)) {

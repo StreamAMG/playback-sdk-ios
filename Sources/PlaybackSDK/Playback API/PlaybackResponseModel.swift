@@ -64,4 +64,15 @@ internal struct PlaybackResponseModel: Decodable {
     }
     
 }
+
+extension PlaybackResponseModel {
+    func toVideoDetails() -> PlaybackVideoDetails? {
+        if let entryId = self.entryId {
+            let videoDetails = PlaybackVideoDetails(videoId: entryId, url: self.media?.hls, title: self.name, thumbnail: self.coverImg?._360?.absoluteString, description: self.description)
+            return videoDetails
+        }
+        return nil
+    }
+}
+
 #endif

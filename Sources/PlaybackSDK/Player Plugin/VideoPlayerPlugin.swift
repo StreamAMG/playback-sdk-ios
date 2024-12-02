@@ -18,10 +18,7 @@ public protocol VideoPlayerPlugin: AnyObject {
     
     func setup(config: VideoPlayerConfig)
     
-    // TODO: add event
-    /// func handleEvent(event: BitmovinPlayerCore.PlayerEvent)
-    
-    func playerView(videoDetails: [PlaybackResponseModel], entryIDToPlay: String?, authorizationToken: String?) -> AnyView
+    func playerView(videoDetails: [PlaybackVideoDetails], entryIDToPlay: String?, authorizationToken: String?) -> AnyView
     
     func play()
     

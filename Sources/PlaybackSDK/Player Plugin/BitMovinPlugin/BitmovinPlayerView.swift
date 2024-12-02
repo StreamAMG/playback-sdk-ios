@@ -38,14 +38,19 @@ public struct BitmovinPlayerView: View {
         return sConfig
     }
 
-    /// Initializes the view with the player passed from outside.
-    ///
-    /// This version of the initializer does not modify the `player`'s configuration, so any additional configuration steps 
-    /// like setting `userInterfaceConfig` should be performed externally.
-    ///
-    /// - parameter videoDetails: Full videos details containing name, description, thumbnail, duration as well as URL of the HLS video stream that will be loaded by the player as the video source
-    /// - parameter player: Instance of the player that was created and configured outside of this view.
-    public init(videoDetails: [PlaybackResponseModel], entryIDToPlay: String?, authorizationToken: String?, player: Player) {
+    /**
+    Initializes the view with the player passed from outside.
+     
+    This version of the initializer does not modify the `player`'s configuration, so any additional configuration steps
+    like setting `userInterfaceConfig` should be performed externally.
+     
+     - Parameters:
+        - videoDetails: Full videos details containing title, description, thumbnail, duration as well as URL of the HLS video stream that will be loaded by the player as the video source
+        - entryIDToPlay: (Optional) The first video Id to be played. If not provided, the first video in the entryIDs array will be played.
+        - authorizationToken: (Optional) The token used for authorization to access the video content.
+        - player: Instance of the player that was created and configured outside of this view.
+    */
+    public init(videoDetails: [PlaybackVideoDetails], entryIDToPlay: String?, authorizationToken: String?, player: Player) {
 
         self.player = player
         self.authorizationToken = authorizationToken
@@ -55,19 +60,24 @@ public struct BitmovinPlayerView: View {
         
         sources = createPlaylist(from: videoDetails)
         
-        setupRemoteCommandCenter(title: videoDetails.first?.name ?? "")
+        setupRemoteCommandCenter(title: videoDetails.first?.title ?? "")
     }
 
-    /// Initializes the view with an instance of player created inside of it, upon initialization.
-    ///
-    /// In this version of the initializer, a `userInterfaceConfig` is being added to the `playerConfig`'s style configuration.
-    ///
-    /// - Note: If the player config had `userInterfaceConfig` already modified before passing into this `init`,
-    /// those changes will take no effect sicne they will get overwritten here.
-    ///
-    /// - parameter hlsURLString: Full videos details containing name, description, thumbnail, duration as well as URL of the HLS video stream that will be loaded by the player as the video source
-    /// - parameter playerConfig: Configuration that will be passed into the player upon creation, with an additional update in this initializer.
-    public init(videoDetails: [PlaybackResponseModel], entryIDToPlay: String?, authorizationToken: String?, playerConfig: PlayerConfig) {
+    /**
+    Initializes the view with an instance of player created inside of it, upon initialization.
+    
+    In this version of the initializer, a `userInterfaceConfig` is being added to the `playerConfig`'s style configuration.
+    
+    - Note: If the player config had `userInterfaceConfig` already modified before passing into this `init`,
+    those changes will take no effect since they will get overwritten here.
+    
+    - Parameters:
+     - videoDetails: Full videos details containing title, description, thumbnail, duration as well as URL of the HLS video stream that will be loaded by the player as the video source
+     - entryIDToPlay: (Optional) The first video Id to be played. If not provided, the first video in the entryIDs array will be played.
+     - authorizationToken: (Optional) The token used for authorization to access the video content.
+     - playerConfig: Configuration that will be passed into the player upon creation, with an additional update in this initializer.
+    */
+    public init(videoDetails: [PlaybackVideoDetails], entryIDToPlay: String?, authorizationToken: String?, playerConfig: PlayerConfig) {
         
         let uiConfig = BitmovinUserInterfaceConfig()
         uiConfig.hideFirstFrame = true
@@ -82,7 +92,7 @@ public struct BitmovinPlayerView: View {
         
         sources = createPlaylist(from: videoDetails)
         
-        setupRemoteCommandCenter(title: videoDetails.first?.name ?? "")
+        setupRemoteCommandCenter(title: videoDetails.first?.title ?? "")
     }
 
     public var body: some View {
@@ -116,7 +126,7 @@ public struct BitmovinPlayerView: View {
         }
     }
     
-    func createPlaylist(from videoDetails: [PlaybackResponseModel]) -> [Source] {
+    func createPlaylist(from videoDetails: [PlaybackVideoDetails]) -> [Source] {
         var sources: [Source] = []
         for details in videoDetails {
             

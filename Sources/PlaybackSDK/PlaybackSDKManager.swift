@@ -129,15 +129,16 @@ public class PlaybackSDKManager {
     /// Initializes the `PlaybackSDKManager`.
     public init() {}
     
-    /// Initializes the SDK with the provided API key.
-    /// This fuction must be called in the AppDelegate
-    ///
-    /// - Parameters:
-    ///   - apiKey: The API key for initializing the SDK.
-    ///   - baseURL: The base URL for API endpoints. Defaults to `nil`.
-    ///   - userAgent: Custom `User-Agent` header to use with playback requests. Can be used if there was a custom header set to start session request. Defaults to `nil`
-    ///   - completion: A closure to be called after initialization.
-    ///                 It receives a result indicating success or failure.
+    /**
+    Initializes the SDK with the provided API key.
+    This fuction must be called in the AppDelegate
+     
+    - Parameters:
+     - apiKey: The API key for initializing the SDK.
+     - baseURL: The base URL for API endpoints. Defaults to `nil`.
+     - userAgent: Custom `User-Agent` header to use with playback requests. Can be used if there was a custom header set to start session request. Defaults to `nil`
+     - completion: A closure to be called after initialization. It receives a result indicating success or failure.
+    */
     public func initialize(apiKey: String, baseURL: String? = nil, userAgent: String? = nil, completion: @escaping (Result<String, Error>) -> Void) {
         guard !apiKey.isEmpty else {
             completion(.failure(SDKError.initializationError))
@@ -161,15 +162,16 @@ public class PlaybackSDKManager {
      Loads a video player with the specified entry ID and authorization token.
      
      - Parameters:
-     - entryID: The unique identifier of the video entry to be loaded.
-     - authorizationToken: The token used for authorization to access the video content.
-     - onError: Return potential playback errors that may occur during the loading process.
+        - entryID: The unique identifier of the video entry to be loaded.
+        - authorizationToken: The token used for authorization to access the video content.
+        - onError: Return potential playback errors that may occur during the loading process.
      
      - Returns: A view representing the video player configured with the provided entry ID and authorization token.
      
      Example usage:
      ```swift
      let playerView = loadPlayer(entryID: "exampleEntryID", authorizationToken: "exampleToken")
+     ```
      */
     public func loadPlayer(
         entryID: String,
@@ -189,16 +191,17 @@ public class PlaybackSDKManager {
      Loads a video player with the specified entry ID and authorization token.
      
      - Parameters:
-     - entryIDs: A list of the videos to be loaded.
-     - entryIDToPlay: The first video Id to be played. If not provided, the first video in the entryIDs array will be played.
-     - authorizationToken: The token used for authorization to access the video content.
-     - onErrors: Return a list of potential playback errors that may occur during the loading process for single entryId.
+        - entryIDs: A list of the videos to be loaded.
+        - entryIDToPlay: The first video Id to be played. If not provided, the first video in the entryIDs array will be played.
+        - authorizationToken: The token used for authorization to access the video content.
+        - onErrors: Return a list of potential playback errors that may occur during the loading process for single entryId.
      
      - Returns: A view representing the video player configured with the provided entry ID and authorization token.
      
      Example usage:
      ```swift
      let playerView = loadPlayer(entryIDs: ["exampleEntryID1", "exampleEntryID2"], authorizationToken: "exampleToken")
+     ```
      */
     public func loadPlaylist(
         entryIDs: [String],
@@ -367,40 +370,44 @@ public class PlaybackSDKManager {
         }
     }
     
-    func createSource(from details: PlaybackResponseModel, authorizationToken: String?) -> Source? {
-        
-        guard let hlsURLString = details.media?.hls, let hlsURL = URL(string: hlsURLString) else {
+    func createSource(from details: PlaybackVideoDetails, authorizationToken: String?) -> Source? {
+            
+        guard let hlsURLString = details.url, let hlsURL = URL(string: hlsURLString) else {
             return nil
         }
         
         let sourceConfig = SourceConfig(url: hlsURL, type: .hls)
+        
         // Avoiding to fill all the details (title, thumbnail and description) for now
         // Because when the initial video is not the first one and we have to seek the first source
         // Bitmovin SDK has a bug/glitch that show the title/thumbnail of the first video for a short time before changing to the new one
-//        sourceConfig.title = details.name
-//        sourceConfig.posterSource = details.coverImg?._360
+//        sourceConfig.title = details.title
+//        if let thumb = details.thumbnail, let thumbUrl = URL(string: thumb) {
+//            sourceConfig.posterSource = thumbUrl
+//        }
 //        sourceConfig.sourceDescription = details.description
         
-        if details.entryId?.isEmpty == false {
-            sourceConfig.metadata["entryId"] = details.entryId
+        if details.videoId.isEmpty == false {
+            sourceConfig.metadata["entryId"] = details.videoId
         } else {
-            // Recover entryId from hls url (not working for live url)
+            // If entryId is null, get the entryId from HLS url (not working for live url)
             let regex = try! NSRegularExpression(pattern: "/entryId/(.+?)/")
             let range = NSRange(location: 0, length: hlsURLString.count)
             if let match = regex.firstMatch(in: hlsURLString, options: [], range: range) {
                 if let swiftRange = Range(match.range(at: 1), in: hlsURLString) {
-                    let entryId = hlsURLString[swiftRange]
-                    sourceConfig.metadata["entryId"] = String(entryId)
-                    
+                    let entryIdFromUrl = hlsURLString[swiftRange]
+                    sourceConfig.metadata["entryId"] = String(entryIdFromUrl)
                 }
             }
         }
         
+        // Adding extra details
         sourceConfig.metadata["details"] = details
         sourceConfig.metadata["authorizationToken"] = authorizationToken
         
         return SourceFactory.createSource(from: sourceConfig)
     }
+    
 }
 
 

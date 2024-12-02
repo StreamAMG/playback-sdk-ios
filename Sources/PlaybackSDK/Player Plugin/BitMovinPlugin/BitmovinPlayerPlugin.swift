@@ -54,7 +54,7 @@ public class BitmovinPlayerPlugin: VideoPlayerPlugin, ObservableObject {
         playerConfig.styleConfig.userInterfaceConfig = uiConfig
     }
     
-    public func playerView(videoDetails: [PlaybackResponseModel], entryIDToPlay: String?, authorizationToken: String?) -> AnyView {
+    public func playerView(videoDetails: [PlaybackVideoDetails], entryIDToPlay: String?, authorizationToken: String?) -> AnyView {
         self.authorizationToken = authorizationToken
         self.entryIDToPlay = entryIDToPlay
         // Create player based on player and analytics configurations
@@ -211,9 +211,13 @@ public class BitmovinPlayerPlugin: VideoPlayerPlugin, ObservableObject {
         if let entryId = entryId {
             PlaybackSDKManager.shared.loadHLSStream(forEntryId: entryId, andAuthorizationToken: authorizationToken) { result in
                 switch result {
-                case .success(let videoDetails):
-                    let newSource = PlaybackSDKManager.shared.createSource(from: videoDetails, authorizationToken: authorizationToken)
-                    completion(newSource)
+                case .success(let response):
+                    if let videoDetails = response.toVideoDetails() {
+                        let newSource = PlaybackSDKManager.shared.createSource(from: videoDetails, authorizationToken: authorizationToken)
+                        completion(newSource)
+                    } else {
+                        completion(nil)
+                    }
                 case .failure:
                     break
                     completion(nil)
