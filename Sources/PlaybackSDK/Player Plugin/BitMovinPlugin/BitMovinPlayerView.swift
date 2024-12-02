@@ -58,7 +58,6 @@ public struct BitMovinPlayerView: View {
     public init(hlsURLString: String, playerConfig: PlayerConfig, title: String) {
         
         self.hlsURLString = hlsURLString
-        
         let uiConfig = BitmovinUserInterfaceConfig()
         uiConfig.hideFirstFrame = true
         playerConfig.styleConfig.userInterfaceConfig = uiConfig
