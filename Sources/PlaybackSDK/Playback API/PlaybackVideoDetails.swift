@@ -8,7 +8,7 @@
 #if !os(macOS)
 import Foundation
 
-public class PlaybackVideoDetails {
+public struct PlaybackVideoDetails {
     
     public var videoId: String
     public var url: String?
