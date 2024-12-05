@@ -9,8 +9,9 @@ import Foundation
 
 // Struct representing the response model for playback data, conforming to the Decodable protocol.
 internal struct PlaybackResponseModel: Decodable {
+    
     let message: String?
-    let reason: String? 
+    let reason: String?
     let id: String?
     let name: String?
     let description: String?
@@ -20,6 +21,7 @@ internal struct PlaybackResponseModel: Decodable {
     let playFrom: Int?
     let adverts: [Advert]?
     let coverImg: CoverImages?
+    var entryId: String?
     
     struct Media: Decodable {
         let hls: String?
@@ -62,4 +64,15 @@ internal struct PlaybackResponseModel: Decodable {
     }
     
 }
+
+extension PlaybackResponseModel {
+    func toVideoDetails() -> PlaybackVideoDetails? {
+        if let entryId = self.entryId {
+            let videoDetails = PlaybackVideoDetails(videoId: entryId, url: self.media?.hls, title: self.name, thumbnail: self.coverImg?._360?.absoluteString, description: self.description)
+            return videoDetails
+        }
+        return nil
+    }
+}
+
 #endif

@@ -1,41 +1,23 @@
-# Folder structure
+# Folder Structure
 
-PlaybackSDK/
-
-├── PlayBackAPI/
-
-│   ├── PlayBackAPI.h
-
-│   ├── PlayBackAPIService.h
-
-│   └── PlaybackResponseModel.h
-
-├── PlaybackConfigurationAPI/
-
-│   ├── PlayerInformationAPI.h
-
-│   ├── PlayerInformationAPIService.h
-
-│   └── PlayerInformationResponseModel.h
-
-├── PlayerPlugin/
-
-│   ├── Bitmovin/
-
-│   │   ├── BitmovinPlayerPlugin.h
-
-│   │   └── BitMovinPlayerView.h
-
-│   ├── VideoPlayerPlugin.h
-
-│   └── VideoPlayerPluginManager.h
-
-└── PlayerUIView/
-
-    ├── PlaybackUIView.h
-
-    ├── UtilsUIView.h
-
-    └── BitMovinPlayerView.h
-
-PlayBackSDKManager.h
+PlaybackSDK
+├── Playback API
+│   ├── PlaybackAPI.swift
+│   ├── PlaybackAPIService.swift
+│   ├── PlaybackResponseModel.swift
+│   └── PlaybackVideoDetails.swift
+├── Playback Configuration API
+│   ├── PlayerInformationAPI.swift
+│   ├── PlayerInformationAPIService.swift
+│   └── PlayerInformationResponseModel.swift
+├── PlaybackSDKManager.swift
+├── Player Plugin
+│   ├── BitMovinPlugin
+│   │   ├── BitmovinPlayerPlugin.swift
+│   │   └── BitmovinPlayerView.swift
+│   ├── VideoPlayerConfig.swift
+│   ├── VideoPlayerPlugin.swift
+│   └── VideoPlayerPluginManager.swift
+└── PlayerUIView
+    ├── PlaybackUIView.swift
+    └── UtilsUIView.swift

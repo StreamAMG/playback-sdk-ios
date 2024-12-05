@@ -9,7 +9,7 @@ struct PlayerTestView: View {
     var body: some View {
         VStack {
             // Load player with the playback SDK
-            PlayBackSDKManager.shared.loadPlayer(entryID: entryID, authorizationToken: authorizationToken) { error in
+            PlaybackSDKManager.shared.loadPlayer(entryID: entryID, authorizationToken: authorizationToken) { error in
                 handlePlaybackError(error)
             }
             .onDisappear {
@@ -20,7 +20,7 @@ struct PlayerTestView: View {
         .padding()
     }
     
-    private func handlePlaybackError(_ error: PlaybackError) {
+    private func handlePlaybackError(_ error: PlaybackAPIError) {
         switch error {
         case .apiError(let statusCode, let errorMessage, let reason):
             print("\(errorMessage) Status Code \(statusCode)")

@@ -13,11 +13,11 @@ import SwiftUI
  */
 internal struct PlaybackUIView: View {
     
-    /// The entry ID of the video to be played.
-    private var entryId: String
+    /// The entry ID or a list of the videos to be played.
+    private var entryIds: [String]
     
-    /// The title of the video to be played.
-    private var mediaTitle: String?
+    /// The entryID to play at the beginning
+    private var entryIDToPlay: String?
     
     /// Optional authorization token if required to fetch the video details.
     private var authorizationToken: String?
@@ -31,24 +31,51 @@ internal struct PlaybackUIView: View {
     /// State variable to track whether video details have been fetched or not.
     @State private var hasFetchedVideoDetails = false
     
-    /// State variable to store the HLS stream URL.
-    @State private var videoURL: URL?
+    /// The fetched video details of the entryIDs
+    @State private var videoDetails: [PlaybackVideoDetails]?
+    /// Array of errors for fetching playlist details
+    @State private var playlistErrors: [PlaybackAPIError]?
+    /// Error of failed API call for loading video details
+    @State private var failureError: PlaybackAPIError?
     
-    /// Closure to handle errors during HLS stream loading.
-    private var onError: ((PlayBackAPIError) -> Void)?
+    /// Closure to handle errors during a single HLS stream loading.
+    private var onError: ((PlaybackAPIError) -> Void)?
+    /// Closure to handle multiple errors during Playlist stream loading.
+    private var onErrors: (([PlaybackAPIError]) -> Void)?
+    
     /**
-     Initializes the `PlaybackUIView` with the provided entry ID and authorization token.
+     Initializes the `PlaybackUIView` with the provided list of entry ID and authorization token.
      
      - Parameters:
-     - entryId: The entry ID of the video to be played.
-     - authorizationToken: Optional authorization token if required to fetch the video details.
+        - entryIds: A list of entry ID of the video to be played.
+        - entryIDToPlay: (Optional) The first video Id to be played. If not provided, the first video in the entryIDs array will be played.
+        - authorizationToken: (Optional) Authorization token if required to fetch the video details.
+        - analyticsViewerId: User identifier to be tracked in analytics
+        - onErrors: Return a list of potential playback errors that may occur during the loading process for single entryId.
      */
-    internal init(entryId: String, authorizationToken: String?, mediaTitle: String?, analyticsViewerId: String?, onError: ((PlayBackAPIError) -> Void)?) {
-        self.entryId = entryId
+
+    internal init(entryIds: [String], entryIDToPlay: String?, authorizationToken: String?, analyticsViewerId: String?, onErrors: (([PlaybackAPIError]) -> Void)?) {
+        self.entryIds = entryIds
+        self.entryIDToPlay = entryIDToPlay ?? entryIds.first
         self.authorizationToken = authorizationToken
-        self.onError = onError
-        self.mediaTitle = mediaTitle
         self.analyticsViewerId = analyticsViewerId
+        self.onErrors = onErrors
+    }
+    
+    /**
+     Initializes the `PlaybackUIView` with the provided list of entry ID and authorization token.
+     
+     - Parameters:
+        - entryId: An entry ID of the video to be played.
+        - authorizationToken: Optional authorization token if required to fetch the video details.
+        - analyticsViewerId: User identifier to be tracked in analytics
+        - onError: Return potential playback errors that may occur during the loading process.
+     */
+    internal init(entryId: String, authorizationToken: String?, analyticsViewerId: String?, onError: ((PlaybackAPIError) -> Void)?) {
+        self.entryIds = [entryId]
+        self.authorizationToken = authorizationToken
+        self.analyticsViewerId = analyticsViewerId
+        self.onError = onError
     }
     
     /// The body of the view.
@@ -60,17 +87,18 @@ internal struct PlaybackUIView: View {
                         loadHLSStream()
                     }
             } else {
-                if let videoURL = videoURL {
+                if let videoDetails = videoDetails {
                     if let plugin = pluginManager.selectedPlugin {
-                        plugin.playerView(hlsURLString: videoURL.absoluteString,
-                                          title: self.mediaTitle ?? "",
-                                          analyticsViewerId: self.analyticsViewerId)
+                        plugin.playerView(videoDetails: videoDetails, entryIDToPlay: entryIDToPlay, authorizationToken: authorizationToken, analyticsViewerId: self.analyticsViewerId)
                     } else {
                         ErrorUIView(errorMessage: "No plugin selected")
                             .background(Color.white)
                     }
+                } else if let locDesc = self.failureError?.localizedDescription {
+                    ErrorUIView(errorMessage: locDesc)
+                        .background(Color.white)
                 } else {
-                    ErrorUIView(errorMessage: "Invalid Video URL")
+                    ErrorUIView(errorMessage: "Invalid Video Details")
                         .background(Color.white)
                 }
             }
@@ -80,21 +108,34 @@ internal struct PlaybackUIView: View {
     /**
      Loads the HLS stream for the provided entry ID and authorization token.
      
-     This method asynchronously fetches the HLS stream URL using the `PlayBackSDKManager` and updates the `videoURL` state variable accordingly.
+     This method asynchronously fetches the HLS stream URL using the `PlaybackSDKManager` and updates the `videoURL` state variable accordingly.
      */
     private func loadHLSStream() {
-        PlayBackSDKManager.shared.loadHLSStream(forEntryId: entryId, andAuthorizationToken: authorizationToken) { result in
+        
+        PlaybackSDKManager.shared.loadAllHLSStream(forEntryIds: entryIds, andAuthorizationToken: authorizationToken) { result in
             switch result {
-            case .success(let hlsURL):
-                print("HLS URL: \(hlsURL)")
+            case .success(let videoDetails):
                 DispatchQueue.main.async {
-                    self.videoURL = hlsURL
+                    self.videoDetails = []
+                    for details in videoDetails.0 {
+                        if let videoDetails = details.toVideoDetails() {
+                            self.videoDetails?.append(videoDetails)
+                        }
+                    }
+                    self.playlistErrors = videoDetails.1
                     self.hasFetchedVideoDetails = true
+                    if (!(self.playlistErrors?.isEmpty ?? false)) {
+                        onError?(self.playlistErrors?.last ?? .unknown)
+                        onErrors?(self.playlistErrors ?? [])
+                    }
                 }
             case .failure(let error):
                 // Trow error to the app
                 onError?(error)
-                print("Error loading HLS stream: \(error)")
+                onErrors?([error])
+                self.failureError = error
+                self.hasFetchedVideoDetails = true
+                print("Error loading videos details: \(error)")
             }
         }
     }

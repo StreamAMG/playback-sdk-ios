@@ -1,5 +1,5 @@
 //
-//  BitMovinPlayerView.swift
+//  BitmovinPlayerView.swift
 //
 //
 //  Created by Franco Driansetti on 19/02/2024.
@@ -8,56 +8,77 @@
 import SwiftUI
 import BitmovinPlayer
 import MediaPlayer
+import Combine
 
-public struct BitMovinPlayerView: View {
+public struct BitmovinPlayerView: View {
     // These targets are used by the MPRemoteCommandCenter,
     // to remove the command event handlers from memory.
     @State private var playEventTarget: Any?
     @State private var pauseEventTarget: Any?
 
     private let player: Player
-    private let playerViewConfig = PlayerViewConfig()
-    private let hlsURLString: String
-
-    private var sourceConfig: SourceConfig? {
-        guard let hlsURL = URL(string: hlsURLString) else {
+    private var playerViewConfig = PlayerViewConfig()
+    private var sources: [Source] = []
+    private var entryIDToPlay: String?
+    private var authorizationToken: String?
+    
+    private var playlistConfig: PlaylistConfig? {
+        if sources.isEmpty || sources.count == 1 {
             return nil
         }
-        let sConfig = SourceConfig(url: hlsURL, type: .hls)
-
+        let playlistOptions = PlaylistOptions(preloadAllSources: false)
+        return PlaylistConfig(sources: sources, options: playlistOptions)
+    }
+    
+    private var sourceConfig: SourceConfig? {
+        if sources.isEmpty || sources.count > 1 {
+            return nil
+        }
+        let sConfig = sources.first!.sourceConfig
         return sConfig
     }
 
-    /// Initializes the view with the player passed from outside.
-    ///
-    /// This version of the initializer does not modify the `player`'s configuration, so any additional configuration steps 
-    /// like setting `userInterfaceConfig` should be performed externally.
-    ///
-    /// - parameter hlsURLString: Full URL of the HLS video stream that will be loaded by the player as the video source
-    /// - parameter player: Instance of the player that was created and configured outside of this view.
-    /// - parameter title: Video source title that will be set in playback metadata for the "now playing" source
-    public init(hlsURLString: String, player: Player, title: String) {
-
-        self.hlsURLString = hlsURLString
+    /**
+    Initializes the view with the player passed from outside.
+     
+    This version of the initializer does not modify the `player`'s configuration, so any additional configuration steps
+    like setting `userInterfaceConfig` should be performed externally.
+     
+     - Parameters:
+        - videoDetails: Full videos details containing title, description, thumbnail, duration as well as URL of the HLS video stream that will be loaded by the player as the video source
+        - entryIDToPlay: (Optional) The first video Id to be played. If not provided, the first video in the entryIDs array will be played.
+        - authorizationToken: (Optional) The token used for authorization to access the video content.
+        - player: Instance of the player that was created and configured outside of this view.
+    */
+    public init(videoDetails: [PlaybackVideoDetails], entryIDToPlay: String?, authorizationToken: String?, player: Player) {
 
         self.player = player
-
-        setup(title: title)
+        self.authorizationToken = authorizationToken
+        self.entryIDToPlay = entryIDToPlay
+        
+        playerViewConfig = PlayerViewConfig()
+        
+        sources = createPlaylist(from: videoDetails)
+        
+        setupRemoteCommandCenter(title: videoDetails.first?.title ?? "")
     }
 
-    /// Initializes the view with an instance of player created inside of it, upon initialization.
-    ///
-    /// In this version of the initializer, a `userInterfaceConfig` is being added to the `playerConfig`'s style configuration.
-    ///
-    /// - Note: If the player config had `userInterfaceConfig` already modified before passing into this `init`,
-    /// those changes will take no effect sicne they will get overwritten here.
-    ///
-    /// - parameter hlsURLString: Full URL of the HLS video stream that will be loaded by the player as the video source
-    /// - parameter playerConfig: Configuration that will be passed into the player upon creation, with an additional update in this initializer.
-    /// - parameter title: Video source title that will be set in playback metadata for the "now playing" source
-    public init(hlsURLString: String, playerConfig: PlayerConfig, title: String) {
+    /**
+    Initializes the view with an instance of player created inside of it, upon initialization.
+    
+    In this version of the initializer, a `userInterfaceConfig` is being added to the `playerConfig`'s style configuration.
+    
+    - Note: If the player config had `userInterfaceConfig` already modified before passing into this `init`,
+    those changes will take no effect since they will get overwritten here.
+    
+    - Parameters:
+     - videoDetails: Full videos details containing title, description, thumbnail, duration as well as URL of the HLS video stream that will be loaded by the player as the video source
+     - entryIDToPlay: (Optional) The first video Id to be played. If not provided, the first video in the entryIDs array will be played.
+     - authorizationToken: (Optional) The token used for authorization to access the video content.
+     - playerConfig: Configuration that will be passed into the player upon creation, with an additional update in this initializer.
+    */
+    public init(videoDetails: [PlaybackVideoDetails], entryIDToPlay: String?, authorizationToken: String?, playerConfig: PlayerConfig) {
         
-        self.hlsURLString = hlsURLString
         let uiConfig = BitmovinUserInterfaceConfig()
         uiConfig.hideFirstFrame = true
         playerConfig.styleConfig.userInterfaceConfig = uiConfig
@@ -66,8 +87,12 @@ public struct BitMovinPlayerView: View {
         self.player = PlayerFactory.createPlayer(
             playerConfig: playerConfig
         )
-
-        setup(title: title)
+        self.authorizationToken = authorizationToken
+        self.entryIDToPlay = entryIDToPlay
+        
+        sources = createPlaylist(from: videoDetails)
+        
+        setupRemoteCommandCenter(title: videoDetails.first?.title ?? "")
     }
 
     public var body: some View {
@@ -78,21 +103,39 @@ public struct BitMovinPlayerView: View {
                 player: player,
                 playerViewConfig: playerViewConfig
             )
-            .onReceive(player.events.on(PlayerEvent.self)) { (event: PlayerEvent) in
-                dump(event, name: "[Player Event]", maxDepth: 1)
-            }
-            .onReceive(player.events.on(SourceEvent.self)) { (event: SourceEvent) in
-                dump(event, name: "[Source Event]", maxDepth: 1)
-            }
+            // Disable player touch in case video or playlist not been loaded
+            .allowsHitTesting(self.sourceConfig != nil || self.playlistConfig != nil)
         }
         .onAppear {
-            if let sourceConfig = self.sourceConfig {
+            if let playlistConfig = self.playlistConfig {
+                // Multiple videos with playlist available so load player with playlistConfig
+                player.load(playlistConfig: playlistConfig)
+                if let entryIDToPlay = self.entryIDToPlay {
+                    if let index = player.playlist.sources.firstIndex(where: { $0.sourceConfig.metadata["entryId"] as? String == entryIDToPlay }) {
+                        player.playlist.seek(source: sources[index], time: .zero)
+                        player.seek(time: .zero) // Player seek to avoid black screen
+                    }
+                }
+            } else if let sourceConfig = self.sourceConfig {
+                // Single video available so load player with sourceConfig
                 player.load(sourceConfig: sourceConfig)
             }
         }
         .onDisappear {
             removeRemoteTransportControlsAndAudioSession()
         }
+    }
+    
+    func createPlaylist(from videoDetails: [PlaybackVideoDetails]) -> [Source] {
+        var sources: [Source] = []
+        for details in videoDetails {
+            
+            if let videoSource = PlaybackSDKManager.shared.createSource(from: details, authorizationToken: self.authorizationToken) {
+                sources.append(videoSource)
+            }
+        }
+        
+        return sources
     }
 
     func setupRemoteTransportControls() {
@@ -164,7 +207,7 @@ public struct BitMovinPlayerView: View {
         }
     }
 
-    private func setup(title: String) {
+    private func setupRemoteCommandCenter(title: String) {
 
         // Setup remote control commands to be able to control playback from Control Center
         setupRemoteTransportControls()
