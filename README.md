@@ -62,7 +62,14 @@ Example:
 
         switch result {
         case .success(let license):
-            val customPlugin = BitmovinVideoPlayerPlugin()
+            let customPlugin = BitmovinPlayerPlugin()
+            
+            // Setting up player plugin
+            var config = VideoPlayerConfig()
+            config.playbackConfig.autoplayEnabled = true // Toggle autoplay
+            config.playbackConfig.backgroundPlaybackEnabled = true // Toggle background playback
+            customPlugin.setup(config: config)
+            
             VideoPlayerPluginManager.shared.registerPlugin(customPlugin)
         case .failure(let error):
             // Handle error
@@ -78,9 +85,87 @@ To load the player UI in your application, use the `loadPlayer` method of the `P
 Example:
 
 ```swift
-PlayBackSDKManager.shared.loadPlayer(entryID: entryId, authorizationToken: authorizationToken) { error in
+PlaybackSDKManager.shared.loadPlayer(
+    entryID: entryId,
+    authorizationToken: authorizationToken
+) { error in
     // Handle player UI error 
 } 
+```
+
+# Loading a Playlist
+
+To load a sequential list of videos into the player UI, use the `loadPlaylist` method of the `PlaybackSDKManager` singleton object. This method is a Composable function that you can use to load and render the player UI.
+`entryIDs`: An array of Strings containing the unique identifiers of all the videos in the playlist.
+`entryIDToPlay`: (Optional) Specifies the unique video identifier that will be played first in the playlist. If not provided, the first video in the `entryIDs` array will be played.
+
+Example:
+
+```swift
+PlaybackSDKManager.shared.loadPlaylist(
+    entryIDs: listEntryId,
+    entryIDToPlay: "0_xxxxxxxx",
+    authorizationToken: authorizationToken
+) { errors in
+    // Handle player UI playlist errors
+} 
+```
+
+## Controlling Playlist Playback
+To control playlist playback, declare a VideoPlayerPluginManager singleton instance as a @StateObject variable. This allows you to access various control functions and retrieve information about the current playback state.
+
+Here are some of the key functions you can utilize:
+
+`playFirst()`: Plays the first video in the playlist.
+`playPrevious()`: Plays the previous video in the playlist.
+`playNext()`: Plays the next video in the playlist.
+`playLast()`: Plays the last video in the playlist.
+`seek(entryIdToSeek)`: Seek a specific video Id
+`activeEntryId()`: Returns the unique identifier of the currently playing video.
+
+By effectively leveraging these functions, you can create dynamic and interactive video player experiences.
+
+Example:
+
+```swift
+@StateObject private var pluginManager = VideoPlayerPluginManager.shared
+...
+// You can use the following playlist controls
+pluginManager.selectedPlugin?.playFirst() // Play the first video
+pluginManager.selectedPlugin?.playPrevious() // Play the previous video
+pluginManager.selectedPlugin?.playNext() // Play the next video
+pluginManager.selectedPlugin?.playLast() // Play the last video
+pluginManager.selectedPlugin?.seek(entryIdToSeek) { success in // Seek a specific video
+    if (!success) {
+        let errorMessage = "Unable to seek video Id \(entryIdToSeek)"
+    }
+}
+pluginManager.selectedPlugin?.activeEntryId() // Get the active video Id
+```
+
+## Receiving Playlist Events
+To receive playlist events, declare a VideoPlayerPluginManager singleton instance, similar to how you did in the Controlling Playlist Playback section.
+Utilize the `onReceive` modifier to listen for player events, such as the `PlaylistTransitionEvent`. This event provides information about the transition from one video to another.
+
+Example:
+
+```swift
+@StateObject private var pluginManager = VideoPlayerPluginManager.shared
+...
+PlaybackSDKManager.shared.loadPlaylist(
+    entryIDs: entryIDs,
+    entryIDToPlay: entryIDToPlay,
+    authorizationToken: authorizationToken
+) { errors in
+        ...
+}
+.onReceive(pluginManager.selectedPlugin!.event) { event in
+    if let event = event as? PlaylistTransitionEvent { // Playlist Event
+        if let from = event.from.metadata?["entryId"], let to = event.to.metadata?["entryId"] {
+            print("Playlist event changed from \(from) to \(to)")
+        }
+    }
+}
 ```
 
 # Playing Access-Controlled Content
@@ -88,7 +173,7 @@ To play on-demand and live videos that require authorization, at some point befo
 ```swift
 "\(baseURL)/sso/start?token=\(authorizationToken)"
 ```
-Then the same token should be passed into the `loadPlayer(entryID:, authorizationToken:)` method of `PlayBackSDkManager`.
+Then the same token should be passed into the `loadPlayer(entryID:, authorizationToken:)` method of `PlaybackSDkManager`.
 For the free videos that user should be able to watch without logging in, starting the session is not required and `authorizationToken` can be set to an empty string.  
 
 > [!NOTE]
@@ -100,7 +185,7 @@ Sometimes a custom `user-agent` header is automatically set for the requests on 
 Example:
 
 ```swift
-PlayBackSDKManager.shared.initialize(
+PlaybackSDKManager.shared.initialize(
     apiKey: apiKey,
     baseURL: baseURL,
     userAgent: customUserAgent

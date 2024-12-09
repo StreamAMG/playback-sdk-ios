@@ -1,0 +1,6 @@
+#!/bin/bash
+
+# This is a convenience script to preview Swift DocC documentation to prepare for GitHub Pages publishing
+# Source: https://swiftlang.github.io/swift-docc-plugin/documentation/swiftdoccplugin/previewing-documentation
+
+swift package --disable-sandbox preview-documentation --target PlaybackSDK

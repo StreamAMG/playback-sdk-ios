@@ -16,18 +16,18 @@
         @Steps {
             
             @Step {
-                Initialize the Playback SDK by providing your API key and register the default player plugin. 
+                Initialize the Playback SDK by providing your API key, setup and register the default player plugin.
                 **Make sure this step is done when the app starts.**
                 
                 
-                @Code(name: "PlayBackDemoApp.swift", file: PlayBackDemoApp.swift) 
+                @Code(name: "PlaybackDemoApp.swift", file: PlaybackDemoApp.swift) 
             }
             @Step {
                 Add custom `user-agent` header.
                 
                 This step is only required for content that needs a token, when using Alamofire or other 3rd party frameworks that overwrite the standard `user-agent` header with their own.  
                 If the content requires starting a CloudPay session, it's important that the request to start the session has the same `user-agent` header as the video loading requests from the player. This can be achieved either by disabling the overwriting behaviour in the 3rd party networking framework you're using, or by passing a `userAgent` parameter to the `initialize` method, like in this example with Alamofire.
-                @Code(name: "PlayBackDemoAppWithUserAgent.swift", file: PlayBackDemoAppWithUserAgent.swift, previousFile: PlayBackDemoApp.swift)
+                @Code(name: "PlaybackDemoAppWithUserAgent.swift", file: PlaybackDemoAppWithUserAgent.swift, previousFile: PlaybackDemoApp.swift)
             }
             @Step {
                 Load the player using the Playback SDK and handle any playback errors.
@@ -41,10 +41,29 @@
                 @Code(name: "PlayerTestView.swift", file: PlayerTestView.swift)
             }
             @Step {
+                Load the player passing a playlist using the Playback SDK and handle any playlist errors.
+                
+                To load a playlist and handle errors, use the **loadPlaylist** function provided by the Playback SDK to initialize and load the video player. This function takes an array of entry IDs, the starting entry ID, and an authorization token as parameters. Additionally, it includes a closure to handle any potential playlist errors that may occur during the loading process.
+                The **handlePlaybackErrors** function is called within the closure to handle the playlist errors. It iterates through an array of **PlaybackError** objects and, for each error, switches on the error type to provide appropriate error handling.
+                The code also includes a placeholder comment to indicate where the removal of the player can be implemented in the **onDisappear** modifier.
+                If you want to allow users to access free content or implement a guest mode, you can pass an empty string or **nil** value as the **authorizationToken** when calling the **loadPlaylist** function. This will bypass the need for authentication, enabling unrestricted access to the specified content.
+                
+                @Code(name: "PlayerTestPlaylistView.swift", file: PlayerTestPlaylistView.swift)
+            }
+            @Step {
+                Playlist controls and events
+                
+                To control playlist playback and events, declare a **VideoPlayerPluginManager** singleton instance as a **@StateObject** variable. This allows you to access playlist controls and listen to player events.
+                In the **onReceive** modifier, you can listen to player events such as the **PlaylistTransitionEvent**, which provides information about transitions between videos.
+                Through the **pluginManager.selectedPlugin**, you can interact with playlist controls and retrieve the current video ID using the **activeEntryId** function. 
+                
+                @Code(name: "PlayerTestPlaylistControlsAndEventsView.swift", file: PlayerTestPlaylistControlsAndEventsView.swift, previousFile: PlayerTestPlaylistView.swift)
+            }
+            @Step {
                 Handle the playback errors from Playback SDK.
 
                 This step describes enum for error handling. Above is the error enum returned by the SDK, where the apiError also has the reason code and message for the API error. The playback API is returning the reason code in the response. For the list of the error codes and reasons, please refer to [Get Video Playback Data | Playback](https://streamamg.stoplight.io/docs/playback-documentation-portal/ec642e6dcbb13-get-video-playback-data)
-                @Code(name: "PlayBackAPIError.swift", file: PlayBackAPIError.swift)
+                @Code(name: "PlaybackAPIError.swift", file: PlaybackAPIError.swift)
             }
         }
     }
