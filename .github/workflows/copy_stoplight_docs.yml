@@ -16,8 +16,7 @@ jobs:
           git push origin stoplight_docs --force
       - name: Removing all files except Markdown Files
         run: |
-          find . -mindepth 1 -type f ! -name "*.md" -delete 
-          find . -mindepth 1 -type d -exec rm -rf {} +
+          find . -mindepth 1 -type f \( -not -name "*.md" -and -not -name ".gitignore" \) -delete -o -type d \( -not -name ".git" -and -not -name ".github" \) -exec rm -rf {} +
       - name: Commit Changes
         run: |
           git add .
