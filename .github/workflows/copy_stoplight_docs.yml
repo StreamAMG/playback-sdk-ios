@@ -14,9 +14,13 @@ jobs:
         run: |
           git checkout -b stoplight_docs --force
           git push origin stoplight_docs --force
+      - name: Clean Stoplight Branch
+        run: |
+          git checkout stoplight_docs
+          git rm -rf .
       - name: Copy Markdown Files
         run: |
-          cp -r ./**/*.md stoplight_docs/
+          cp -r **/*.md stoplight_docs/
       - name: Commit Changes
         run: |
           git add .
