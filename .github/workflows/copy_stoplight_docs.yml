@@ -19,6 +19,5 @@ jobs:
           find . -mindepth 1 -type f \( -not -name "*.md" -and -not -name ".gitignore" \) -delete -o -type d \( -not -name ".git" -and -not -name ".github" \) -exec rm -rf {} +
       - name: Commit Changes
         run: |
-          git add .
           git commit -m "Update Stoplight documentation"
           git push origin stoplight_docs
