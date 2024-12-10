@@ -1,0 +1,24 @@
+name: Copy Markdown to Stoplight Branch
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  copy-markdown:
+    name: Deploy Stoplight documentation
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Check for Stoplight Branch
+        run: |
+          git checkout -b stoplight_docs --force
+          git push origin stoplight_docs --force
+      - name: Copy Markdown Files
+        run: |
+          cp -r ./**/*.md stoplight_docs/
+      - name: Commit Changes
+        run: |
+          git add .
+          git commit -m "Update Stoplight documentation"
+          git push origin stoplight_docs
