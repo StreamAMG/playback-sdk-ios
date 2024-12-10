@@ -17,10 +17,13 @@ jobs:
       - name: Clean Stoplight Branch
         run: |
           git checkout stoplight_docs
-          git rm -rf .
+          rm -rf ./*
+      - name: Create Stoplight Doc Directory
+        run: |
+          mkdir -p stoplight_docs
       - name: Copy Markdown Files
         run: |
-          cp -r playback-sdk-ios/*.md stoplight_docs/
+          cp -r *.md stoplight_docs/
       - name: Commit Changes
         run: |
           git add .
