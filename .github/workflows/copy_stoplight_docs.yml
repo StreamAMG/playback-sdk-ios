@@ -14,16 +14,9 @@ jobs:
         run: |
           git checkout -b stoplight_docs --force
           git push origin stoplight_docs --force
-      - name: Clean Stoplight Branch
+      - name: Removing all files except Markdown Files
         run: |
-          git checkout stoplight_docs
-          rm -rf ./*
-      - name: Create Stoplight Doc Directory
-        run: |
-          mkdir -p stoplight_docs
-      - name: Copy Markdown Files
-        run: |
-          cp -r *.md stoplight_docs/
+          find . -mindepth 1 ! -name "*.md" -delete
       - name: Commit Changes
         run: |
           git add .
