@@ -20,7 +20,7 @@ jobs:
           git rm -rf .
       - name: Copy Markdown Files
         run: |
-          cp -r **/*.md stoplight_docs/
+          cp -r playback-sdk-ios/*.md stoplight_docs/
       - name: Commit Changes
         run: |
           git add .
