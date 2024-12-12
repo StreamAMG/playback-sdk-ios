@@ -1,0 +1,20 @@
+{
+  "exclude": [
+    ".git*",
+    ".swift*",
+    "Sources",
+    "Tests",
+    "generate*",
+    "Package*",
+    "preview*",
+    "docs"
+    ],
+  "formats": {
+    "markdown": {
+      "rootDir": "docs",
+      "include": [
+        "**/*.md"
+      ]
+    }
+  }
+}
