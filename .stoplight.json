@@ -10,26 +10,11 @@
     "docs"
     ],
   "formats": {
-    "openapi": {
-      "rootDir": "reference",
-      "include": [
-        "**"
-      ]
-    },
-    "json_schema": {
-      "rootDir": "models",
-      "include": [
-        "**"
-      ]
-    },
     "markdown": {
       "rootDir": "docs",
       "include": [
         "**/*.md"
       ]
-    },
-    "image": {
-      "rootDir": "assets/images"
     }
   }
 }
