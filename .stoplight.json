@@ -1,0 +1,32 @@
+{
+  "exclude": [
+    ".git*",
+    ".swift*",
+    "Sources",
+    "Tests",
+    "generate*",
+    "Package*",
+    "preview*",
+    "docs"
+    ],
+  "formats": {
+    "openapi": {
+      "rootDir": "reference",
+      "include": [
+        "**"
+      ]
+    },
+    "json_schema": {
+      "rootDir": "models",
+      "include": [
+        "**"
+      ]
+    },
+    "markdown": {
+      "rootDir": "./"
+    },
+    "image": {
+      "rootDir": "assets/images"
+    }
+  }
+}
