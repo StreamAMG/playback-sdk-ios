@@ -1,5 +1,6 @@
-Playback SDK
-------------
+# Playback SDK iOS
+
+---
 
 [![Swift](https://github.com/StreamAMG/playback-sdk-ios/actions/workflows/swift.yml/badge.svg)](https://github.com/StreamAMG/playback-sdk-ios/actions/workflows/swift.yml)
 
@@ -9,9 +10,9 @@ This library simplifies integrating video playback functionalities into OTT appl
 
 **Key Features:**
 
--   **Abstraction:** Hides the complexities of underlying video APIs, allowing you to focus on the core playback experience.
--   **Flexibility:** Supports different video providers and allows the creation of custom playback plugins for extended functionalities.
--   **Error Handling:** Provides mechanisms to handle potential issues during playback and notify your application.
+- **Abstraction:** Hides the complexities of underlying video APIs, allowing you to focus on the core playback experience.
+- **Flexibility:** Supports different video providers and allows the creation of custom playback plugins for extended functionalities.
+- **Error Handling:** Provides mechanisms to handle potential issues during playback and notify your application.
 
 **Supported Platforms and Version**
 
@@ -23,10 +24,9 @@ To initialize the SDK, you will need an **API key**, which can be obtained by co
 
 Once you have obtained the API key and your app has been whitelisted, you can proceed with the initialisation of the SDK in your project.
 
-
 **Installation**
 
-1.  Add the Playback SDK dependency to your project using Swift Package Manager.
+1. Add the Playback SDK dependency to your project using Swift Package Manager.
 
 Swift
 
@@ -37,7 +37,7 @@ dependencies: [
 
 ```
 
-2.  Import the `PlaybackSDK` module in your Swift files.
+2. Import the `PlaybackSDK` module in your Swift files.
 
 Swift
 
@@ -45,11 +45,12 @@ Swift
 import PlaybackSDK
 
 ```
-# PlaybackSDKManager
+
+## PlaybackSDKManager
 
 The `PlaybackSDKManager` is a singleton object designed to manage the functionalities of the playback SDK. It provides methods for initialization, loading player UI, and loading HLS streams.
 
-# Initialization
+## Initialization
 
 To initialize the playback SDK, use the `initialize` method of the `PlaybackSDKManager` singleton object. This method requires an API key for authentication. Optionally, you can specify a base URL for the playback API.
 
@@ -77,8 +78,7 @@ Example:
     }
 ```
 
-
-# Loading Player UI
+## Loading Player UI
 
 To load the player UI in your application, use the `loadPlayer` method of the `PlaybackSDKManager` singleton object. This method is a Composable function that you can use to load and render the player UI.
 
@@ -93,7 +93,7 @@ PlaybackSDKManager.shared.loadPlayer(
 } 
 ```
 
-# Loading a Playlist
+## Loading a Playlist
 
 To load a sequential list of videos into the player UI, use the `loadPlaylist` method of the `PlaybackSDKManager` singleton object. This method is a Composable function that you can use to load and render the player UI.
 `entryIDs`: An array of Strings containing the unique identifiers of all the videos in the playlist.
@@ -111,7 +111,8 @@ PlaybackSDKManager.shared.loadPlaylist(
 } 
 ```
 
-## Controlling Playlist Playback
+### Controlling Playlist Playback
+
 To control playlist playback, declare a VideoPlayerPluginManager singleton instance as a @StateObject variable. This allows you to access various control functions and retrieve information about the current playback state.
 
 Here are some of the key functions you can utilize:
@@ -143,7 +144,8 @@ pluginManager.selectedPlugin?.seek(entryIdToSeek) { success in // Seek a specifi
 pluginManager.selectedPlugin?.activeEntryId() // Get the active video Id
 ```
 
-## Receiving Playlist Events
+### Receiving Playlist Events
+
 To receive playlist events, declare a VideoPlayerPluginManager singleton instance, similar to how you did in the Controlling Playlist Playback section.
 Utilize the `onReceive` modifier to listen for player events, such as the `PlaylistTransitionEvent`. This event provides information about the transition from one video to another.
 
@@ -168,19 +170,23 @@ PlaybackSDKManager.shared.loadPlaylist(
 }
 ```
 
-# Playing Access-Controlled Content
+## Playing Access-Controlled Content
+
 To play on-demand and live videos that require authorization, at some point before loading the player your app must call CloudPay to start session, passing the authorization token:
+
 ```swift
 "\(baseURL)/sso/start?token=\(authorizationToken)"
 ```
-Then the same token should be passed into the `loadPlayer(entryID:, authorizationToken:)` method of `PlaybackSDkManager`.
-For the free videos that user should be able to watch without logging in, starting the session is not required and `authorizationToken` can be set to an empty string.  
 
-> [!NOTE]
+Then the same token should be passed into the `loadPlayer(entryID:, authorizationToken:)` method of `PlaybackSDkManager`.
+For the free videos that user should be able to watch without logging in, starting the session is not required and `authorizationToken` can be set to an empty string.
+
+> \[!NOTE]
 > If the user is authenticated, has enough access level to watch a video, the session was started and the same token was passed to the player but the videos still throw a 401 error, it might be related to these requests having different user-agent headers.
 
 ## Configure user-agent
-Sometimes a custom `user-agent` header is automatically set for the requests on iOS when creating a token and starting a session. `Alamofire` and other 3rd party networking frameworks can modify this header to include information about themselves. In such cases they should either be configured to not modify the header, or the custom header should be passed to the player as well. 
+
+Sometimes a custom `user-agent` header is automatically set for the requests on iOS when creating a token and starting a session. `Alamofire` and other 3rd party networking frameworks can modify this header to include information about themselves. In such cases they should either be configured to not modify the header, or the custom header should be passed to the player as well.
 
 Example:
 
@@ -193,9 +199,10 @@ PlaybackSDKManager.shared.initialize(
     // Handle player UI error
 }
 ```
+
 By default the SDK uses system user agent, so if your app uses native URL Session, the `userAgent` parameter most likely can be omitted.
 
-# Resources
+## Resources
 
 - **Tutorial:** [Tutorial](https://streamamg.github.io/playback-sdk-ios/tutorials/table-of-contents/#resources)
 - **Demo app:** [GitHub Repository](https://github.com/StreamAMG/playback-demo-ios)
