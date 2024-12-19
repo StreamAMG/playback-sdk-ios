@@ -234,9 +234,9 @@ Example:
     })
 ```
 
-## Playlist
+## Playlist and Analytics
 
-To load a playlist and handle errors, use the loadPlaylist function provided by the Playback SDK to initialize and load the video player. This function takes an array of entry IDs, the starting entry ID, and an authorization token as parameters. Additionally, it includes a closure to handle any potential playlist errors that may occur during the loading process. The handlePlaybackErrors function is called within the closure to handle the playlist errors. It iterates through an array of PlaybackError objects and, for each error, switches on the error type to provide appropriate error handling. The code also includes a placeholder comment to indicate where the removal of the player can be implemented in the onDisappear modifier. If you want to allow users to access free content or implement a guest mode, you can pass an empty string or nil value as the authorizationToken when calling the loadPlaylist function. This will bypass the need for authentication, enabling unrestricted access to the specified content. In case you have a logged-in user and want to track Bitmovin analytics for the current session, you can to pass the user's ID in the `analyticsViewerId` parameter.
+If you still need to track analytics with the playlist functionality, you can pass the user's ID in the `analyticsViewerId` parameter.
 
 ```swift
 private let entryIDs = ["ENTRY_ID1", "ENTRY_ID_2", "ENTRY_ID_3"]
