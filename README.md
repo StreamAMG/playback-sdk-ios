@@ -202,6 +202,39 @@ PlaybackSDKManager.shared.initialize(
 
 By default the SDK uses system user agent, so if your app uses native URL Session, the `userAgent` parameter most likely can be omitted.
 
+## Bitmovin analytics
+
+Currently SDK support tracking analytics on Bitmovin service. In case you have a logged-in user and want to track Bitmovin analytics for the current session, you need to pass the user's ID in the `analyticsViewerId` parameter.
+
+Example: 
+
+```swift
+    let entryId = "..."
+    let authorizationToken = "..."
+    let analyticsViewerId = "user id or empty string"
+    
+    /// ** Load player with the playback SDK **
+    PlayBackSDKManager.shared.loadPlayer(entryID: entryId,
+                                            authorizationToken: authorizationToken,
+                                            mediaTitle: "Background audio test",
+                                            analyticsViewerId: analyticsViewerId,
+                                            onError: {
+        error in
+        // Handle the error here
+        
+        switch error {
+        case .apiError(let statusCode, let message, let reason):
+            let errorMessage = "\(message) Status Code \(statusCode), Reason: \(reason)"
+            print(errorMessage)
+            self.errorMessage = errorMessage
+        default:
+            print("Error loading HLS stream in PlaybackUIView: \(error.localizedDescription)")
+            errorMessage = "Error code and errorrMessage not found: \(error.localizedDescription)"
+        }
+        
+    })
+```
+
 ## Resources
 
 - **Tutorial:** [Tutorial](https://streamamg.github.io/playback-sdk-ios/tutorials/table-of-contents/#resources)
