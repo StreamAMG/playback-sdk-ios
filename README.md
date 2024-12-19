@@ -204,7 +204,7 @@ By default the SDK uses system user agent, so if your app uses native URL Sessio
 
 ## Bitmovin analytics
 
-Currently SDK support tracking analytics on Bitmovin service. In case you have a logged-in user and want to track Bitmovin analytics for the current session, you need to pass the user's ID in the `analyticsViewerId` parameter.
+Currently SDK supports tracking analytics on Bitmovin service. In case you have a logged-in user and want to track Bitmovin analytics for the current session, you need to pass the user's ID in the `analyticsViewerId` parameter.
 
 Example: 
 
@@ -250,8 +250,9 @@ private let entryIDs = ["ENTRY_ID1", "ENTRY_ID_2", "ENTRY_ID_3"]
             PlaybackSDKManager.shared.loadPlaylist(entryIDs: entryIDs, 
                                                 entryIDToPlay: entryIDToPlay, 
                                                 authorizationToken: authorizationToken,
-                                                analyticsViewerId: analyticsViewerId) { errors in
-                handlePlaybackError(errors)
+                                                analyticsViewerId: analyticsViewerId) { 
+                errors in
+                    handlePlaybackError(errors)
             }
             .onDisappear {
                 // Remove the player here
