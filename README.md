@@ -202,6 +202,67 @@ PlaybackSDKManager.shared.initialize(
 
 By default the SDK uses system user agent, so if your app uses native URL Session, the `userAgent` parameter most likely can be omitted.
 
+## Bitmovin analytics
+
+Currently SDK supports tracking analytics on Bitmovin service. In case you have a logged-in user and want to track Bitmovin analytics for the current session, you need to pass the user's ID in the `analyticsViewerId` parameter.
+
+Example: 
+
+```swift
+    let entryId = "..."
+    let authorizationToken = "..."
+    let analyticsViewerId = "user id or empty string"
+    
+    /// ** Load player with the playback SDK **
+    PlayBackSDKManager.shared.loadPlayer(entryID: entryId,
+                                        authorizationToken: authorizationToken,
+                                        analyticsViewerId: analyticsViewerId,
+                                        onError: {
+    error in
+        // Handle the error here
+        
+        switch error {
+        case .apiError(let statusCode, let message, let reason):
+            let errorMessage = "\(message) Status Code \(statusCode), Reason: \(reason)"
+            print(errorMessage)
+            self.errorMessage = errorMessage
+        default:
+            print("Error loading HLS stream in PlaybackUIView: \(error.localizedDescription)")
+            errorMessage = "Error code and errorrMessage not found: \(error.localizedDescription)"
+        }
+        
+    })
+```
+
+## Playlist and Analytics
+
+If you still need to track analytics with the playlist functionality, you can pass the user's ID in the `analyticsViewerId` parameter.
+
+```swift
+private let entryIDs = ["ENTRY_ID1", "ENTRY_ID_2", "ENTRY_ID_3"]
+    private let entryIDToPlay = "ENTRY_ID_2" // Optional parameter
+    private let authorizationToken = "JWT_TOKEN"
+    let analyticsViewerId = "user id or empty string"
+    
+    var body: some View {
+        VStack {
+            // Load playlist with the playback SDK
+            PlaybackSDKManager.shared.loadPlaylist(entryIDs: entryIDs, 
+                                                entryIDToPlay: entryIDToPlay, 
+                                                authorizationToken: authorizationToken,
+                                                analyticsViewerId: analyticsViewerId) { 
+                errors in
+                    handlePlaybackError(errors)
+            }
+            .onDisappear {
+                // Remove the player here
+            }
+            Spacer()
+        }
+        .padding()
+    }
+```
+
 ## Resources
 
 - **Tutorial:** [Tutorial](https://streamamg.github.io/playback-sdk-ios/tutorials/table-of-contents/#resources)
