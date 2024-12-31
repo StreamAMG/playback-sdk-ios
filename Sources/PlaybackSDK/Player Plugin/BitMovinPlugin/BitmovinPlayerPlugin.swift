@@ -54,11 +54,11 @@ public class BitmovinPlayerPlugin: VideoPlayerPlugin, ObservableObject {
         playerConfig.styleConfig.userInterfaceConfig = uiConfig
     }
     
-    private func createAnalyticsConfig(analyticsViewerId: String? = nil) -> AnalyticsPlayerConfig {
+    private func createAnalyticsConfig(analyticsViewerId: String? = nil, videoDetails: PlaybackVideoDetails? = nil) -> AnalyticsPlayerConfig {
         guard let licenseKey = PlaybackSDKManager.shared.analytics?.envKey else {
             return .disabled
         }
-        let defaultMetadata = DefaultMetadata(cdnProvider: "PlaybackSDK", customUserId: analyticsViewerId)
+        let defaultMetadata = DefaultMetadata(cdnProvider: "PlaybackSDK", customUserId: analyticsViewerId, customData: CustomData(customData1: videoDetails?.videoId, customData2: videoDetails?.title))
         let analytics: BitmovinPlayerAnalytics.AnalyticsPlayerConfig = licenseKey != nil
             ? .enabled(analyticsConfig: AnalyticsConfig(licenseKey: licenseKey), defaultMetadata: defaultMetadata)
             : .disabled
@@ -73,7 +73,7 @@ public class BitmovinPlayerPlugin: VideoPlayerPlugin, ObservableObject {
         if self.player == nil {
             let player = PlayerFactory.createPlayer(
                 playerConfig: playerConfig,
-                analytics: self.createAnalyticsConfig(analyticsViewerId: analyticsViewerId)
+                analytics: self.createAnalyticsConfig(analyticsViewerId: analyticsViewerId, videoDetails: videoDetails.first)
             )
             self.player = player
             

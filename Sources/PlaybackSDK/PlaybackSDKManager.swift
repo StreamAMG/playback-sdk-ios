@@ -407,10 +407,13 @@ public class PlaybackSDKManager {
         }
         
         // Adding extra details
+        sourceConfig.metadata["videoTitle"] = details.title
         sourceConfig.metadata["details"] = details
         sourceConfig.metadata["authorizationToken"] = authorizationToken
         
-        return SourceFactory.createSource(from: sourceConfig)
+        let sourceMetadata = SourceMetadata(videoId: details.videoId, title: details.title)
+        
+        return SourceFactory.createSource(from: sourceConfig, sourceMetadata: sourceMetadata)
     }
     
 }
