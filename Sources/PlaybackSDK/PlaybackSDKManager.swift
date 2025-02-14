@@ -14,7 +14,6 @@ import BitmovinPlayer
 public enum SDKError: Error {
    case initializationError
    case missingLicense
-   case loadHLSStreamError
 }
 
 // Define reason codes returned by Playback SDK
@@ -23,9 +22,11 @@ public enum PlaybackErrorReason: Equatable {
     case headerError
     case badRequestError
     case siteNotFound
-    case configurationError
     case apiKeyError
+    
+    // Http error 400 and 401
     case mpPartnerError
+    case configurationError
     
     // Http error 401
     case tokenError
@@ -33,8 +34,10 @@ public enum PlaybackErrorReason: Equatable {
     case tooManyRequests
     case noEntitlement
     case noSubscription
-    case noActiveSession
     case notAuthenticated
+    
+    // Http error 401 and 440
+    case noActiveSession
     
     // Http error 404
     case noEntityExist
@@ -68,37 +71,35 @@ public enum PlaybackErrorReason: Equatable {
  Define the errors that can occur during API interactions
  */
 public enum PlaybackAPIError: Error {
-    
+    case initializationError
     case invalidResponsePlaybackData
     case invalidPlaybackDataURL
     case invalidPlayerInformationURL
-    case initializationError
     case loadHLSStreamError
-    case unknown
-
     case networkError(Error)
     case apiError(statusCode: Int, message: String, reason: PlaybackErrorReason)
+    case unknown
 }
 
 extension PlaybackAPIError: LocalizedError {
     public var errorDescription: String? {
         switch self {
+        case .initializationError:
+            return NSLocalizedString("Initialization error, Playback API not found", comment: "")
         case .invalidResponsePlaybackData:
             return NSLocalizedString("Invalid Response Playback data", comment: "")
         case .invalidPlaybackDataURL:
             return NSLocalizedString("Invalid Playback data URL", comment: "")
         case .invalidPlayerInformationURL:
             return NSLocalizedString("Invalid Player Information URL", comment: "")
-        case .initializationError:
-            return NSLocalizedString("Initialization error", comment: "")
         case .loadHLSStreamError:
             return NSLocalizedString("Load HLS Stream error", comment: "")
-        case .unknown:
-            return NSLocalizedString("Unknown", comment: "")
         case .networkError(let error):
             return NSLocalizedString("Network error \(error.localizedDescription)", comment: "")
         case .apiError(statusCode: let statusCode, message: let message, reason: let reason):
-            return NSLocalizedString("API error: [\(statusCode)] \(message)", comment: "")
+            return NSLocalizedString("API error: [\(statusCode)] \(message) - Reason: \(reason)", comment: "")
+        case .unknown:
+            return NSLocalizedString("Unknown", comment: "")
         }
     }
 }

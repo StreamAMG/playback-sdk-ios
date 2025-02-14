@@ -6,9 +6,11 @@ public enum PlaybackErrorReason: Equatable {
     case headerError
     case badRequestError
     case siteNotFound
-    case configurationError
     case apiKeyError
+    
+    // Http error 400 and 401
     case mpPartnerError
+    case configurationError
     
     // Http error 401
     case tokenError
@@ -16,8 +18,10 @@ public enum PlaybackErrorReason: Equatable {
     case tooManyRequests
     case noEntitlement
     case noSubscription
-    case noActiveSession
     case notAuthenticated
+    
+    // Http error 401 and 440
+    case noActiveSession
     
     // Http error 404
     case noEntityExist

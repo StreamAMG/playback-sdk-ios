@@ -6,8 +6,8 @@
         "repositoryURL": "https://github.com/bitmovin/bitmovin-analytics-collector-ios.git",
         "state": {
           "branch": null,
-          "revision": "3feebb1db5f6bc2d3ad0b7241f3baea523e9ab9e",
-          "version": "3.6.0"
+          "revision": "4333bb3606006f990ee349963c9cbaafe47965df",
+          "version": "3.12.0"
         }
       },
       {
@@ -15,8 +15,8 @@
         "repositoryURL": "https://github.com/bitmovin/player-ios.git",
         "state": {
           "branch": null,
-          "revision": "31ed8a5fb931bd600c5e1ca6d19c17d77762b56b",
-          "version": "3.56.1"
+          "revision": "5db025378722b80d7f79e7d7f8871abfbbb95b2c",
+          "version": "3.84.0"
         }
       },
       {
@@ -24,8 +24,8 @@
         "repositoryURL": "https://github.com/bitmovin/player-ios-core.git",
         "state": {
           "branch": null,
-          "revision": "7a2742ff415a7423fd62c0ed23fe1c9ca8fcaa9f",
-          "version": "3.56.1"
+          "revision": "eec4ae819b6b87fc9fc1406feb954ad842719678",
+          "version": "3.84.0"
         }
       },
       {

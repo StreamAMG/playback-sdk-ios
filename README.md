@@ -14,36 +14,30 @@ This library simplifies integrating video playback functionalities into OTT appl
 - **Flexibility:** Supports different video providers and allows the creation of custom playback plugins for extended functionalities.
 - **Error Handling:** Provides mechanisms to handle potential issues during playback and notify your application.
 
-**Supported Platforms and Version**
+## Getting Started
+
+### Supported Platforms and Version
 
 - Platforms: iOS 14 and later
-
-**Getting Started**
 
 To initialize the SDK, you will need an **API key**, which can be obtained by contacting your StreamAMG account manager. Additionally, to use the playback default plugin, your app needs to be **whitelisted**. Please communicate the bundle ID of your app to your StreamAMG account manager for whitelisting.
 
 Once you have obtained the API key and your app has been whitelisted, you can proceed with the initialisation of the SDK in your project.
 
-**Installation**
+### Installation
 
 1. Add the Playback SDK dependency to your project using Swift Package Manager.
 
-Swift
-
-```
+```swift
 dependencies: [
     .package(url: "https://github.com/StreamAMG/playback-sdk-ios", .branch("main"))
 ]
-
 ```
 
 2. Import the `PlaybackSDK` module in your Swift files.
 
-Swift
-
-```
+```swift
 import PlaybackSDK
-
 ```
 
 ## PlaybackSDKManager
@@ -57,26 +51,28 @@ To initialize the playback SDK, use the `initialize` method of the `PlaybackSDKM
 Example:
 
 ```swift
-    // Initialize SDK with the settings
-    PlaybackSDKManager.shared.initialize(apiKey: "<API_KEY>", baseURL: "<BASE_URL>") { result ->
-        // Register default layer plugin 
+// Initialize SDK with the settings
+PlaybackSDKManager.shared.initialize(apiKey: "<API_KEY>", baseURL: "<BASE_URL>") { result ->
+    // Register default layer plugin 
 
-        switch result {
-        case .success(let license):
-            let customPlugin = BitmovinPlayerPlugin()
-            
-            // Setting up player plugin
-            var config = VideoPlayerConfig()
-            config.playbackConfig.autoplayEnabled = true // Toggle autoplay
-            config.playbackConfig.backgroundPlaybackEnabled = true // Toggle background playback
-            customPlugin.setup(config: config)
-            
-            VideoPlayerPluginManager.shared.registerPlugin(customPlugin)
-        case .failure(let error):
-            // Handle error
-        }
+    switch result {
+    case .success(let license):
+        let customPlugin = BitmovinPlayerPlugin()
+        
+        // Setting up player plugin
+        var config = VideoPlayerConfig()
+        config.playbackConfig.autoplayEnabled = true // Toggle autoplay
+        config.playbackConfig.backgroundPlaybackEnabled = true // Toggle background playback
+        customPlugin.setup(config: config)
+        
+        VideoPlayerPluginManager.shared.registerPlugin(customPlugin)
+    case .failure(let error):
+        // Handle error as SDKError
     }
+}
 ```
+**Error Handling:** For information on handling potential errors during playlist loading, see the [Error Handling](#error-handling) section.
+
 
 ## Loading Player UI
 
@@ -89,9 +85,11 @@ PlaybackSDKManager.shared.loadPlayer(
     entryID: entryId,
     authorizationToken: authorizationToken
 ) { error in
-    // Handle player UI error 
+    // Handle player UI error as PlaybackAPIError
 } 
 ```
+**Error Handling:** For information on handling potential errors during playlist loading, see the [Error Handling](#error-handling) section.
+
 
 ## Loading a Playlist
 
@@ -107,9 +105,11 @@ PlaybackSDKManager.shared.loadPlaylist(
     entryIDToPlay: "0_xxxxxxxx",
     authorizationToken: authorizationToken
 ) { errors in
-    // Handle player UI playlist errors
+    // Handle player UI playlist errors as [PlaybackAPIError]
 } 
 ```
+**Error Handling:** For information on handling potential errors during playlist loading, see the [Error Handling](#error-handling) section.
+
 
 ### Controlling Playlist Playback
 
@@ -178,11 +178,15 @@ To play on-demand and live videos that require authorization, at some point befo
 "\(baseURL)/sso/start?token=\(authorizationToken)"
 ```
 
-Then the same token should be passed into the `loadPlayer(entryID:, authorizationToken:)` method of `PlaybackSDkManager`.
+Then the same token should be passed into the `loadPlaylist` or `loadPlayer(entryID:, authorizationToken:)` method of `PlaybackSDKManager`.
 For the free videos that user should be able to watch without logging in, starting the session is not required and `authorizationToken` can be set to an empty string.
 
 > \[!NOTE]
 > If the user is authenticated, has enough access level to watch a video, the session was started and the same token was passed to the player but the videos still throw a 401 error, it might be related to these requests having different user-agent headers.
+
+## Playing Free Content
+
+If you want to allow users to access free content or if you're implementing a guest mode, you can pass an empty string or `nil` value as the `authorizationToken` parameter when calling the `loadPlayer` or `loadPlaylist` function. This will bypass the need for authentication, enabling unrestricted access to the specified content.
 
 ## Configure user-agent
 
@@ -196,11 +200,95 @@ PlaybackSDKManager.shared.initialize(
     baseURL: baseURL,
     userAgent: customUserAgent
 ) { result in
-    // Handle player UI error
+    // Handle player UI error as SDKError
 }
 ```
 
 By default the SDK uses system user agent, so if your app uses native URL Session, the `userAgent` parameter most likely can be omitted.
+
+## Error Handling
+
+The `PlaybackSDKManager` provides error handling through sealed classes `SDKError` and `PlaybackAPIError`. These classes represent various errors that can occur during SDK and API operations respectively.
+
+- **`SDKError`** includes subclasses for initialization errors and missing license.
+    - `initializationError` : General SDK initialization failure. Occurs with configuration issues or internal problems.
+    - `missingLicense` : No valid license found. Occurs if no license key is provided or the key is invalid/expired.
+
+- **`PlaybackAPIError`** This enum defines several cases, each representing a specific type of error that can occur during playback:
+    - `initializationError` : An error during the initialization of the Playback API.
+    - `invalidResponsePlaybackData` : The playback data received from the API was invalid.
+    - `invalidPlaybackDataURL` : The URL providing the playback data was invalid.
+    - `invalidPlayerInformationURL` : The URL providing player information was invalid.
+    - `loadHLSStreamError` : An error occurred while loading the HLS stream.
+    - `networkError(Error)` :  A network error occurred; it wraps another Error object for more detail.
+    - `apiError(statusCode: Int, message: String, reason: PlaybackErrorReason)` : Represents API errors with specific details explained below
+    - `unknown` : A generic error case for situations where the specific error type isn't known.
+    
+### ApiError Details
+- `statusCode`: API error code (400, 401, 404, etc.)
+- `message`: Error description.
+- `reason`: Specific error classification from `PlaybackErrorReason`:
+    - `headerError`: Invalid or missing request headers
+    - `badRequestError`: Malformed request syntax
+    - `siteNotFound`: Requested site resource doesn't exist
+    - `configurationError`: Invalid backend configuration
+    - `apiKeyError`: Invalid or missing API key
+    - `mpPartnerError`: Partner-specific validation failure
+    - `tokenError`: Invalid or expired authentication token
+    - `tooManyDevices`: Device limit exceeded for account
+    - `tooManyRequests`: Rate limit exceeded
+    - `noEntitlement`: User lacks content access rights
+    - `noSubscription`: No active subscription found
+    - `noActiveSession`: Valid viewing session not found
+    - `notAuthenticated`: General authentication failure
+    - `noEntityExist`: Requested resource doesn't exist
+    - `unknownError(String)`: Unclassified error with original error string
+
+### Common ApiError StatusCode
+
+ Code | Message               | Description                                                                   | Reasons
+ ---- |-----------------------|-------------------------------------------------------------------------------|------------
+ 400  | Bad Request           | The request sent to the API was invalid or malformed.                         | headerError, badRequestError, siteNotFound, apiKeyError, mpPartnerError, configurationError
+ 401  | Unauthorized          | The user is not authenticated or authorized to access the requested resource. | tokenError, tooManyDevices, tooManyRequests, noEntitlement, noSubscription, notAuthenticated, mpPartnerError, configurationError, noActiveSession
+ 403  | Forbidden             | The user is not allowed to access the requested resource.                     |
+ 404  | Not Found             | The requested resource was not found on the server.                           | noEntityExist
+ 440  | Login Time-out        | Login session expired due to inactivity.                                      | noActiveSession
+ 500  | Internal Server Error | An unexpected error occurred on the server.                                   |
+
+Handle errors based on these classes to provide appropriate feedback to users.
+
+### Error Handling Example
+
+```swift
+PlaybackSDKManager.shared.loadPlayer(entryID: entryId,
+                                     authorizationToken: authorizationToken,
+                                     onError: { error in
+    switch error {
+    case .apiError(let statusCode, let message, let reason):
+        switch reason {
+        case .noEntitlement:
+            errorMessage = "User lacks content access rights."
+        case .notAuthenticated:
+            errorMessage = "User is not authenticated."
+        default:
+            errorMessage = ""
+        }
+    case .networkError(let error):
+        errorMessage = "Network issue: \(error.localizedDescription)"
+    case .initializationError:
+        errorMessage = "Initialization failed."
+    default:
+        errorMessage = "An unknown error occurred."
+    }
+})
+```
+
+## Video Player Plugin Manager
+
+Additionally, the package includes a singleton object `VideoPlayerPluginManager` for managing video player plugins. This object allows you to register, remove, and retrieve the currently selected video player plugin.
+
+For further details on how to use the `VideoPlayerPluginManager`, refer to the inline documentation provided in the code.
+
 
 ## Bitmovin analytics
 
@@ -209,29 +297,18 @@ Currently SDK supports tracking analytics on Bitmovin service. In case you have 
 Example: 
 
 ```swift
-    let entryId = "..."
-    let authorizationToken = "..."
-    let analyticsViewerId = "user id or empty string"
-    
-    /// ** Load player with the playback SDK **
-    PlayBackSDKManager.shared.loadPlayer(entryID: entryId,
-                                        authorizationToken: authorizationToken,
-                                        analyticsViewerId: analyticsViewerId,
-                                        onError: {
-    error in
-        // Handle the error here
-        
-        switch error {
-        case .apiError(let statusCode, let message, let reason):
-            let errorMessage = "\(message) Status Code \(statusCode), Reason: \(reason)"
-            print(errorMessage)
-            self.errorMessage = errorMessage
-        default:
-            print("Error loading HLS stream in PlaybackUIView: \(error.localizedDescription)")
-            errorMessage = "Error code and errorrMessage not found: \(error.localizedDescription)"
-        }
-        
-    })
+let entryId = "..."
+let authorizationToken = "..."
+let analyticsViewerId = "user id or empty string"
+
+/// ** Load player with the playback SDK **
+PlayBackSDKManager.shared.loadPlayer(entryID: entryId,
+                                    authorizationToken: authorizationToken,
+                                    analyticsViewerId: analyticsViewerId,
+                                    onError: {
+error in
+    // Handle the error as PlaybackAPIError        
+})
 ```
 
 ## Playlist and Analytics
@@ -240,49 +317,32 @@ If you still need to track analytics with the playlist functionality, you can pa
 
 ```swift
 private let entryIDs = ["ENTRY_ID1", "ENTRY_ID_2", "ENTRY_ID_3"]
-    private let entryIDToPlay = "ENTRY_ID_2" // Optional parameter
-    private let authorizationToken = "JWT_TOKEN"
-    let analyticsViewerId = "user id or empty string"
-    
-    var body: some View {
-        VStack {
-            // Load playlist with the playback SDK
-            PlaybackSDKManager.shared.loadPlaylist(entryIDs: entryIDs, 
-                                                entryIDToPlay: entryIDToPlay, 
-                                                authorizationToken: authorizationToken,
-                                                analyticsViewerId: analyticsViewerId) { 
-                errors in
-                    handlePlaybackError(errors)
-            }
-            .onDisappear {
-                // Remove the player here
-            }
-            Spacer()
+private let entryIDToPlay = "ENTRY_ID_2" // Optional parameter
+private let authorizationToken = "JWT_TOKEN"
+let analyticsViewerId = "user id or empty string"
+
+var body: some View {
+    VStack {
+        // Load playlist with the playback SDK
+        PlaybackSDKManager.shared.loadPlaylist(entryIDs: entryIDs, 
+                                            entryIDToPlay: entryIDToPlay, 
+                                            authorizationToken: authorizationToken,
+                                            analyticsViewerId: analyticsViewerId) { 
+            errors in
+                // Handle Errors as [PlaybackAPIError]
+                handlePlaybackError(errors)
         }
-        .padding()
+        .onDisappear {
+            // Remove the player here
+        }
+        Spacer()
     }
+    .padding()
+}
 ```
 
 ## Resources
 
-- **Tutorial:** [Tutorial](https://streamamg.github.io/playback-sdk-ios/tutorials/table-of-contents/#resources)
 - **Demo app:** [GitHub Repository](https://github.com/StreamAMG/playback-demo-ios)
-- **Stoplight API documentation:** [Documentation](https://streamamg.stoplight.io)
-
-**Collaboration:**
-
-To update the documentation, follow these steps:
-
-1. Make changes to the documentation code.
-2. Build the documentation by running the convenience script from the root of this repository.
-   ```sh
-   ./generate_docc
-   ```
-   or
-   ```sh
-   sh generate_docc
-   ```
-   Alternatively, follow the instructions at [this URL](https://swiftlang.github.io/swift-docc-plugin/documentation/swiftdoccplugin/publishing-to-github-pages/).
-3. Commit and push the changes onto your branch.
-4. Go to [GitHub Pages settings](https://github.com/StreamAMG/playback-sdk-ios/settings/pages), change the Branch in `Build and deployment` section to your branch and press "Save".
-5. After merging, redo step 4 to re-deploy the documentation from the branch where it was merged to.
+- **Stoplight API documentation:** [Documentation](https://streamamg.stoplight.io/docs/playback-sdk-ios/)
+- **Tutorial (deprecated):** [Tutorial](https://streamamg.github.io/playback-sdk-ios/tutorials/table-of-contents/#resources)
