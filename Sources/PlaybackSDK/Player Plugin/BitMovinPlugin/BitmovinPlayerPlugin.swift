@@ -77,6 +77,7 @@ public class BitmovinPlayerPlugin: VideoPlayerPlugin, ObservableObject {
             )
             self.player = player
             
+            
             return AnyView(
                 BitmovinPlayerView(
                     videoDetails: videoDetails,
