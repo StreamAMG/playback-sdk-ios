@@ -80,7 +80,7 @@ Example:
 
 ## Loading Player UI
 
-To load the player UI in your application, use the `loadPlayer` method of the `PlaybackSDKManager` singleton object. This method is a Composable function that you can use to load and render the player UI.
+To load the player UI in your application, use the `loadPlayer` method of the `PlaybackSDKManager` singleton object. This method is a SwiftUI view function that you can use to load and render the player UI.
 
 Example:
 
@@ -95,7 +95,7 @@ PlaybackSDKManager.shared.loadPlayer(
 
 ## Loading a Playlist
 
-To load a sequential list of videos into the player UI, use the `loadPlaylist` method of the `PlaybackSDKManager` singleton object. This method is a Composable function that you can use to load and render the player UI.
+To load a sequential list of videos into the player UI, use the `loadPlaylist` method of the `PlaybackSDKManager` singleton object. This method is a SwiftUI view function that you can use to load and render the player UI.
 `entryIDs`: An array of Strings containing the unique identifiers of all the videos in the playlist.
 `entryIDToPlay`: (Optional) Specifies the unique video identifier that will be played first in the playlist. If not provided, the first video in the `entryIDs` array will be played.
 
