@@ -23,7 +23,7 @@ let package = Package(
         .package(
             name: "BitmovinPlayer",
             url: "https://github.com/bitmovin/player-ios.git",
-            .exact("3.56.1")
+            .exact("3.84.0")
         ),
 
         // other dependencies
