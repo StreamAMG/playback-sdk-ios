@@ -11,7 +11,7 @@ import Combine
 
 public class BitmovinPlayerPlugin: VideoPlayerPlugin, ObservableObject {
 
-    private let playerConfig: PlayerConfig
+    private var playerConfig: PlayerConfig
     private weak var player: Player? {
         didSet {
             if self.player != nil {
@@ -31,17 +31,26 @@ public class BitmovinPlayerPlugin: VideoPlayerPlugin, ObservableObject {
     private let subject = PassthroughSubject<Any, Never>()
     
     public init() {
-        let playerConfig = PlayerConfig()
+        let defaultPlayerConfig = PlayerConfig()
         
-        playerConfig.playbackConfig.isAutoplayEnabled = true
-        playerConfig.playbackConfig.isBackgroundPlaybackEnabled = true
+        defaultPlayerConfig.playbackConfig.isAutoplayEnabled = true
+        defaultPlayerConfig.playbackConfig.isBackgroundPlaybackEnabled = true
+        defaultPlayerConfig.key = PlaybackSDKManager.shared.bitmovinLicense
         
-        playerConfig.key = PlaybackSDKManager.shared.bitmovinLicense
-        self.playerConfig = playerConfig
+        self.playerConfig = defaultPlayerConfig
         self.name = "BitmovinPlayerPlugin"
-        self.version = "1.3.0" // TODO: Get the version from Bundle
+        self.version = "1.4.0"
         
         self.event = subject.eraseToAnyPublisher()
+    }
+    
+    public func updatePlayerConfig(_ newConfig: PlayerConfig) {
+        self.playerConfig = newConfig
+        self.playerConfig.key = PlaybackSDKManager.shared.bitmovinLicense
+    }
+    
+    public func getPlayerConfig() -> PlayerConfig {
+        return self.playerConfig
     }
     
     // MARK: VideoPlayerPlugin protocol implementation
