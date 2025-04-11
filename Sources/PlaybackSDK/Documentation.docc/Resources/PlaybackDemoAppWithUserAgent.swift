@@ -31,6 +31,7 @@ struct PlaybackDemoApp: App {
                 var config = VideoPlayerConfig()
                 config.playbackConfig.autoplayEnabled = true // Toggle autoplay
                 config.playbackConfig.backgroundPlaybackEnabled = true // Toggle background playback
+                config.playbackConfig.skipBackForwardButton = true // Toggle Skip Forward and Backward buttons on Player UI
                 bitmovinPlugin.setup(config: config)
                 
                 VideoPlayerPluginManager.shared.registerPlugin(bitmovinPlugin)

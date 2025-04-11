@@ -57,14 +57,8 @@ PlaybackSDKManager.shared.initialize(apiKey: "<API_KEY>", baseURL: "<BASE_URL>")
 
     switch result {
     case .success(let license):
+        // Register default player plugin
         let customPlugin = BitmovinPlayerPlugin()
-        
-        // Setting up player plugin
-        var config = VideoPlayerConfig()
-        config.playbackConfig.autoplayEnabled = true // Toggle autoplay
-        config.playbackConfig.backgroundPlaybackEnabled = true // Toggle background playback
-        customPlugin.setup(config: config)
-        
         VideoPlayerPluginManager.shared.registerPlugin(customPlugin)
     case .failure(let error):
         // Handle error as SDKError
@@ -72,6 +66,36 @@ PlaybackSDKManager.shared.initialize(apiKey: "<API_KEY>", baseURL: "<BASE_URL>")
 }
 ```
 **Error Handling:** For information on handling potential errors during playlist loading, see the [Error Handling](#error-handling) section.
+
+# Video Player Configuration
+
+This snippet demonstrates how to configure a video player using the `VideoPlayerConfig` object in Swift.
+
+## Configuration Options
+
+The provided example sets the following playback configurations:
+
+* **`autoplayEnabled = true`**: Enables automatic playback of the video when it is loaded.
+* **`backgroundPlaybackEnabled = true`**: Allows the video to continue playing even when the application is in the background.
+* **`skipBackForwardButton`**: A boolean property that controls the visibility and functionality of the Skip Forward and Skip Backward buttons on the Player UI. When set to `true`, these buttons are displayed on the player interface, allowing users to skip 10 seconds backward or forward in the video. If set to `false`, the buttons are hidden, and the skip functionality is disabled.
+
+## Usage
+
+To utilize these configurations, create a `VideoPlayerConfig` instance and modify the desired properties within the `playbackConfig` object. Then, apply this configuration to your video player implementation.
+
+```swift
+// Register default player plugin
+let customPlugin = BitmovinPlayerPlugin()
+
+// Setting up player plugin
+var config = VideoPlayerConfig()
+config.playbackConfig.autoplayEnabled = true // Toggle autoplay
+config.playbackConfig.backgroundPlaybackEnabled = true // Toggle background playback
+config.playbackConfig.skipBackForwardButton = false // Toggle Skip Forward and Backward buttons
+customPlugin.setup(config: config)
+
+VideoPlayerPluginManager.shared.registerPlugin(customPlugin)
+```
 
 
 ## Loading Player UI

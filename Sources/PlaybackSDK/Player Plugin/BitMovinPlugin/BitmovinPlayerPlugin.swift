@@ -9,7 +9,7 @@ import BitmovinPlayer
 import SwiftUI
 import Combine
 
-public class BitmovinPlayerPlugin: VideoPlayerPlugin, ObservableObject {
+public class BitmovinPlayerPlugin: VideoPlayerPlugin, ObservableObject, CustomMessageHandlerDelegate {
 
     private var playerConfig: PlayerConfig
     private weak var player: Player? {
@@ -57,11 +57,47 @@ public class BitmovinPlayerPlugin: VideoPlayerPlugin, ObservableObject {
     public func setup(config: VideoPlayerConfig) {
         playerConfig.playbackConfig.isAutoplayEnabled = config.playbackConfig.autoplayEnabled
         playerConfig.playbackConfig.isBackgroundPlaybackEnabled = config.playbackConfig.backgroundPlaybackEnabled
-
-        let uiConfig = BitmovinUserInterfaceConfig()
-        uiConfig.hideFirstFrame = true
-        playerConfig.styleConfig.userInterfaceConfig = uiConfig
+        if config.playbackConfig.skipBackForwardButton {
+            let moduleBundle = Bundle.module
+            print("Module Bundle Path: \(moduleBundle.bundlePath)")
+            if let resourcePaths = try? FileManager.default.contentsOfDirectory(atPath: moduleBundle.bundlePath) {
+                print("Resources in Module Bundle: \(resourcePaths)")
+            }
+            if let cssURL = moduleBundle.url(forResource: "bitmovinplayer-ui", withExtension: "min.css"), let jsURL = moduleBundle.url(forResource: "bitmovinplayer-ui", withExtension: "min.js") {
+                print("Please specify the needed resources marked with TODO in ViewController.swift file.")
+                playerConfig.styleConfig.playerUiCss = cssURL
+                playerConfig.styleConfig.playerUiJs = jsURL
+                playerConfig.styleConfig.userInterfaceConfig = bitmovinUserInterfaceConfig
+            } else {
+                print("Bitmovin Player Web UI did not load correctly!")
+            }
+        } else {
+            let uiConfig = BitmovinUserInterfaceConfig()
+            uiConfig.hideFirstFrame = true
+            playerConfig.styleConfig.userInterfaceConfig = uiConfig
+        }
     }
+    
+    fileprivate var bitmovinUserInterfaceConfig: BitmovinUserInterfaceConfig {
+        // Configure the JS <> Native communication
+        let bitmovinUserInterfaceConfig = BitmovinUserInterfaceConfig()
+        bitmovinUserInterfaceConfig.hideFirstFrame = true
+        // Create an instance of the custom message handler
+        let customMessageHandler = CustomMessageHandler()
+        customMessageHandler.delegate = self
+        bitmovinUserInterfaceConfig.customMessageHandler = customMessageHandler
+        return bitmovinUserInterfaceConfig
+    }
+    
+    // MARK: - CustomMessageHandlerDelegate
+    public func receivedSynchronousMessage(_ message: String, withData data: String?) -> String? {
+        return nil
+    }
+    
+    public func receivedAsynchronousMessage(_ message: String, withData data: String?) {
+        
+    }
+    // MARK: -
     
     private func createAnalyticsConfig(analyticsViewerId: String? = nil) -> AnalyticsPlayerConfig {
         guard let licenseKey = PlaybackSDKManager.shared.analytics?.envKey else {
