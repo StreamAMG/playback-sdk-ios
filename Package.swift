@@ -39,7 +39,10 @@ let package = Package(
                 .product(name: "BitmovinPlayer", package: "BitmovinPlayer"),
             ],
             resources: [
-                .process("PrivacyInfo.xcprivacy")]
+                .process("PrivacyInfo.xcprivacy"),
+                .copy("Resources/bitmovinplayer-ui.min.css"),
+                .copy("Resources/bitmovinplayer-ui.min.js")
+            ]
         ),
         .testTarget(
             name: "PlaybackSDKTests",
