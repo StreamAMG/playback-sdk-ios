@@ -57,13 +57,19 @@ public class BitmovinPlayerPlugin: VideoPlayerPlugin, ObservableObject, CustomMe
     public func setup(config: VideoPlayerConfig) {
         playerConfig.playbackConfig.isAutoplayEnabled = config.playbackConfig.autoplayEnabled
         playerConfig.playbackConfig.isBackgroundPlaybackEnabled = config.playbackConfig.backgroundPlaybackEnabled
-        if config.playbackConfig.skipBackForwardButton {
+        if config.playbackConfig.skipBackForwardButton || config.playbackConfig.fullscreenButtonEnabled {
             let moduleBundle = Bundle.module
             print("Module Bundle Path: \(moduleBundle.bundlePath)")
             if let resourcePaths = try? FileManager.default.contentsOfDirectory(atPath: moduleBundle.bundlePath) {
                 print("Resources in Module Bundle: \(resourcePaths)")
             }
-            if let cssURL = moduleBundle.url(forResource: "bitmovinplayer-ui", withExtension: "min.css"), let jsURL = moduleBundle.url(forResource: "bitmovinplayer-ui", withExtension: "min.js") {
+            var uiResouce = "bitmovinplayer-ui-skip"
+            if config.playbackConfig.skipBackForwardButton && config.playbackConfig.fullscreenButtonEnabled {
+                uiResouce = "bitmovinplayer-ui-fullscreen-skip"
+            } else if !config.playbackConfig.skipBackForwardButton && config.playbackConfig.fullscreenButtonEnabled {
+                uiResouce = "bitmovinplayer-ui-fullscreen"
+            }
+            if let cssURL = moduleBundle.url(forResource: uiResouce, withExtension: "min.css"), let jsURL = moduleBundle.url(forResource: uiResouce, withExtension: "min.js") {
                 print("Please specify the needed resources marked with TODO in ViewController.swift file.")
                 playerConfig.styleConfig.playerUiCss = cssURL
                 playerConfig.styleConfig.playerUiJs = jsURL
@@ -95,7 +101,7 @@ public class BitmovinPlayerPlugin: VideoPlayerPlugin, ObservableObject, CustomMe
     }
     
     public func receivedAsynchronousMessage(_ message: String, withData data: String?) {
-        
+        NotificationCenter.default.post(name: NSNotification.Name(message), object: nil)
     }
     // MARK: -
     
