@@ -40,8 +40,12 @@ let package = Package(
             ],
             resources: [
                 .process("PrivacyInfo.xcprivacy"),
-                .copy("Resources/bitmovinplayer-ui.min.css"),
-                .copy("Resources/bitmovinplayer-ui.min.js")
+                .copy("Resources/bitmovinplayer-ui-fullscreen-skip.min.css"),
+                .copy("Resources/bitmovinplayer-ui-fullscreen-skip.min.js"),
+                .copy("Resources/bitmovinplayer-ui-fullscreen.min.css"),
+                .copy("Resources/bitmovinplayer-ui-fullscreen.min.js"),
+                .copy("Resources/bitmovinplayer-ui-skip.min.css"),
+                .copy("Resources/bitmovinplayer-ui-skip.min.js")
             ]
         ),
         .testTarget(
