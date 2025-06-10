@@ -78,7 +78,7 @@ The provided example sets the following playback configurations:
 * **`autoplayEnabled = true`**: Enables automatic playback of the video when it is loaded.
 * **`backgroundPlaybackEnabled = true`**: Allows the video to continue playing even when the application is in the background.
 * **`skipBackForwardButton`**: A boolean property that controls the visibility and functionality of the Skip Forward and Skip Backward buttons on the Player UI. When set to `true`, these buttons are displayed on the player interface, allowing users to skip 10 seconds backward or forward in the video. If set to `false`, the buttons are hidden, and the skip functionality is disabled.
-* ** fullscreenButtonEnabled`**: A boolean property that controls the visibility and functionality of the Fullscreen button on the Player UI. When set to `true`, this button is displayed on the player interface. Once the button has been pressed, a notification on the `NotificationCenter` will be fired with the name `fullscreenToggle` and you can observe that as the example below.
+* **`fullscreenButtonEnabled`**: A boolean property that controls the visibility and functionality of the Fullscreen button on the Player UI. When set to `true`, this button is displayed on the player interface. Once the button has been pressed, a notification on the `NotificationCenter` will be fired with the name `fullscreenToggle` and you can observe that as the example below.
 
 ## Usage
 
