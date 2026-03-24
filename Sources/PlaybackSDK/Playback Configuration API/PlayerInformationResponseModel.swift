@@ -30,7 +30,10 @@ struct Bitmovin: Decodable {
 
 struct Integrations: Decodable {
     let mux: Mux
-    let resume: Resume
+    let resume: Resume?
+
+    // When the backend omits `resume`, treat it as disabled.
+    var resumeEnabled: Bool { resume?.enabled ?? false }
 }
 
 struct Mux: Decodable {
@@ -46,6 +49,41 @@ struct Mux: Decodable {
 
 struct Resume: Decodable {
     let enabled: Bool
+
+    init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+
+        // Support absent `enabled` and common primitive variants.
+        let enabledBool: Bool? = try? container.decodeIfPresent(Bool.self, forKey: .enabled)
+        if let enabledBool {
+            self.enabled = enabledBool
+            return
+        }
+
+        let enabledInt: Int? = try? container.decodeIfPresent(Int.self, forKey: .enabled)
+        if let enabledInt {
+            self.enabled = enabledInt != 0
+            return
+        }
+
+        let enabledString: String? = try? container.decodeIfPresent(String.self, forKey: .enabled)
+        if let enabledString {
+            switch enabledString.trimmingCharacters(in: .whitespacesAndNewlines).lowercased() {
+            case "true", "1", "yes", "y":
+                self.enabled = true
+            default:
+                self.enabled = false
+            }
+            return
+        }
+
+        // Missing key -> default to false.
+        self.enabled = false
+    }
+
+    private enum CodingKeys: String, CodingKey {
+        case enabled
+    }
 }
 
 struct FeatureFlags: Decodable {
